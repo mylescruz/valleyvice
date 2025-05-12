@@ -3,30 +3,30 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import dateFormatter from "@/helpers/dateFormatter";
+import LoadingIndicator from "../layout/loadingIndicator";
 
 const SeasonsLayout = () => {
   const { season, seasonLoading } = useSeason(18);
 
-  return (
-    <div className="flex flex-col items-center">
-      <div className="w-11/12 sm:w-4/5">
-        <h1 className="text-3xl text-(--primary) text-center font-bold">
-          Seasons
-        </h1>
-        <div className="my-2 text-center">
-          <label htmlFor="season">Choose a season:</label>
-          <select
-            id="season"
-            className="px-2 border-1 border-(--secondary) rounded-lg mx-2 py-1"
-          >
-            <option>18</option>
-          </select>
-        </div>
-        <div className="flex flex-col items-center sm:flex-row sm:flex-wrap sm:justify-center">
-          {seasonLoading ? (
-            <h1>Loading</h1>
-          ) : (
-            season.games.map((game) => (
+  if (seasonLoading) return <LoadingIndicator />;
+  else {
+    return (
+      <div className="flex flex-col items-center">
+        <div className="w-11/12 sm:w-4/5">
+          <h1 className="text-3xl text-(--primary) text-center font-bold">
+            Seasons
+          </h1>
+          <div className="my-2 text-center">
+            <label htmlFor="season">Choose a season:</label>
+            <select
+              id="season"
+              className="px-2 border-1 border-(--secondary) rounded-lg mx-2 py-1"
+            >
+              <option>18</option>
+            </select>
+          </div>
+          <div className="flex flex-col items-center sm:flex-row sm:flex-wrap sm:justify-center">
+            {season.games.map((game) => (
               <Link
                 key={game.id}
                 href={{
@@ -56,12 +56,12 @@ const SeasonsLayout = () => {
                 </p>
                 <p>{dateFormatter(game.date)}</p>
               </Link>
-            ))
-          )}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default SeasonsLayout;

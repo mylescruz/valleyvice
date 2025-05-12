@@ -3,6 +3,7 @@ import useSeason from "@/hooks/useSeason";
 import { faArrowLeft, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import LoadingIndicator from "../layout/loadingIndicator";
 
 const GameLayout = ({ seasonNum, gameNum }) => {
   const { season, seasonLoading } = useSeason(seasonNum);
@@ -80,7 +81,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
           <p>{dateFormatter(game.date)}</p>
         </div>
         {seasonLoading ? (
-          <h1 className="text-center">Loading</h1>
+          <LoadingIndicator />
         ) : (
           <div className="flex flex-col items-center my-4">
             <table>

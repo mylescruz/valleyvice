@@ -1,4 +1,5 @@
 import GameLayout from "@/component/game/gameLayout";
+import LoadingIndicator from "@/component/layout/loadingIndicator";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
@@ -8,7 +9,7 @@ export default function Page() {
   const seasonNum = parseInt(router.query.seasonNum);
   const gameNum = parseInt(router.query.gameNum);
 
-  if (!seasonNum || !gameNum) return <h1 className="text-center">Loading</h1>;
+  if (!seasonNum || !gameNum) return <LoadingIndicator />;
   else {
     return (
       <>
