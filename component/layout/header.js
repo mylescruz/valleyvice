@@ -9,9 +9,11 @@ const Header = () => {
     height: 500,
   };
 
+  const seasonNum = 18;
+
   const pages = [
-    { id: 0, link: "/stats", name: "Stats" },
-    { id: 1, link: "/seasons/18", name: "Seasons" },
+    { id: 0, link: `/stats/${seasonNum}`, name: "Stats" },
+    { id: 1, link: `/seasons/${seasonNum}`, name: "Seasons" },
     { id: 2, link: "/roster", name: "Roster" },
   ];
 

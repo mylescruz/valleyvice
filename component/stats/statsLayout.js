@@ -1,8 +1,8 @@
 import useSeason from "@/hooks/useSeason";
 import LoadingIndicator from "../layout/loadingIndicator";
 
-const StatsLayout = () => {
-  const { season, seasonLoading } = useSeason(18);
+const StatsLayout = ({ seasonNum }) => {
+  const { season, seasonLoading } = useSeason(seasonNum);
 
   const teamTotals = season.playerTotalStats?.reduce(
     (sum, player) => {
@@ -106,10 +106,20 @@ const StatsLayout = () => {
           <LoadingIndicator />
         ) : (
           <>
+            <div className="my-2 text-center">
+              <label htmlFor="season">Choose a season:</label>
+              <select
+                id="season"
+                className="px-2 border-1 border-(--secondary) rounded-lg mx-2 py-1"
+              >
+                <option>{seasonNum}</option>
+              </select>
+            </div>
+
             <h1 className="text-3xl text-(--primary) text-center font-bold">
               Total Stats
             </h1>
-            <div className="flex flex-col items-center my-4">
+            <div className="flex flex-col my-4 overflow-x-auto">
               <table>
                 <thead className="border-b-1 border-white">
                   <tr>
@@ -213,7 +223,7 @@ const StatsLayout = () => {
             <h1 className="text-3xl text-(--primary) text-center font-bold mt-8">
               Per Game Stats
             </h1>
-            <div className="flex flex-col items-center my-4">
+            <div className="flex flex-col overflow-x-auto my-4">
               <table>
                 <thead className="border-b-1 border-white">
                   <tr>
