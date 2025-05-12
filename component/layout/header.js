@@ -10,22 +10,22 @@ const Header = () => {
   };
 
   const pages = [
-    { id: 0, link: "/current", name: "Stats" },
-    { id: 1, link: "/seaons", name: "Seasons" },
+    { id: 0, link: "/stats", name: "Stats" },
+    { id: 1, link: "/seasons", name: "Seasons" },
     { id: 2, link: "/roster", name: "Roster" },
   ];
 
   return (
-    <div className="w-full bg-[var(--tertiary)] p-1 text-start text-[var(--primary)] h-[10vh]">
+    <div className="w-full bg-[var(--tertiary)] p-1 text-start text-[var(--primary)]">
       <div className="flex w-full flex-row items-center">
-        <div className="m-3">
+        <div className="m-2">
           <Link href="/">
             <Image
               src={logo.src}
               alt={logo.alt}
               width={logo.width}
               height={logo.height}
-              className="w-[50px] aspect-square"
+              className="w-[50px] md:w-[60px] lg:w-[75px] aspect-square"
             />
           </Link>
         </div>
@@ -34,7 +34,7 @@ const Header = () => {
             <Link
               key={page.id}
               href={page.link}
-              className="mx-2 font-bold lg:text-xl hover:text-[var(--secondary)]"
+              className="mx-1 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-4"
             >
               {page.name}
             </Link>
