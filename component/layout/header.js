@@ -11,7 +11,7 @@ const Header = () => {
 
   const pages = [
     { id: 0, link: "/stats", name: "Stats" },
-    { id: 1, link: "/seasons", name: "Seasons" },
+    { id: 1, link: "/seasons/18", name: "Seasons" },
     { id: 2, link: "/roster", name: "Roster" },
   ];
 
@@ -34,7 +34,7 @@ const Header = () => {
             <Link
               key={page.id}
               href={page.link}
-              className="mx-1 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-4"
+              className="mx-2 md:mx-6 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10"
             >
               {page.name}
             </Link>
