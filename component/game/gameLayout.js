@@ -86,7 +86,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
         {seasonLoading ? (
           <LoadingIndicator />
         ) : (
-          <div className="flex flex-col items-center my-4">
+          <div className="flex flex-col overflow-x-auto my-4">
             <table>
               <thead className="border-b-1 border-white">
                 <tr>
