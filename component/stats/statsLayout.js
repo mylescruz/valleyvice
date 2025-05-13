@@ -1,6 +1,6 @@
 import { useState } from "react";
 import TotalsTable from "./totalsTable";
-import PerGameTable from "./PerGameTable";
+import AverageTable from "./averageTable";
 
 const StatsLayout = ({ seasonNum }) => {
   const [seasonNumber, setSeasonNumber] = useState(seasonNum);
@@ -26,7 +26,7 @@ const StatsLayout = ({ seasonNum }) => {
         </div>
 
         <TotalsTable seasonNumber={seasonNumber} />
-        <PerGameTable seasonNumber={seasonNumber} />
+        <AverageTable seasonNumber={seasonNumber} />
       </div>
     </div>
   );

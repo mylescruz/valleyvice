@@ -1,10 +1,9 @@
 import useSeason from "@/hooks/useSeason";
 import LoadingIndicator from "../layout/loadingIndicator";
 
-const PerGameTable = ({ seasonNumber }) => {
+const AverageTable = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
 
-  console.log(season);
   const teamAverages = season.playerTotalStats?.map((player) => {
     return {
       ...player,
@@ -62,7 +61,7 @@ const PerGameTable = ({ seasonNumber }) => {
     }
   );
 
-  const perGameCellsStyle = "w-1/15 p-1 text-center";
+  const averageCellsStyle = "w-1/15 p-1 text-center";
 
   if (seasonLoading) {
     return <LoadingIndicator />;
@@ -76,87 +75,87 @@ const PerGameTable = ({ seasonNumber }) => {
           <table>
             <thead className="border-b-1 border-white">
               <tr>
-                <th className={perGameCellsStyle}>PLR</th>
-                <th className={perGameCellsStyle}>PTS</th>
-                <th className={perGameCellsStyle}>2PM</th>
-                <th className={perGameCellsStyle}>2PA</th>
-                <th className={perGameCellsStyle}>3PM</th>
-                <th className={perGameCellsStyle}>3PA</th>
-                <th className={perGameCellsStyle}>FT</th>
-                <th className={perGameCellsStyle}>FTA</th>
-                <th className={perGameCellsStyle}>REB</th>
-                <th className={perGameCellsStyle}>AST</th>
-                <th className={perGameCellsStyle}>STL</th>
-                <th className={perGameCellsStyle}>BLK</th>
-                <th className={perGameCellsStyle}>TO</th>
-                <th className={perGameCellsStyle}>PF</th>
-                <th className={perGameCellsStyle}>CKD</th>
+                <th className={averageCellsStyle}>PLR</th>
+                <th className={averageCellsStyle}>PTS</th>
+                <th className={averageCellsStyle}>2PM</th>
+                <th className={averageCellsStyle}>2PA</th>
+                <th className={averageCellsStyle}>3PM</th>
+                <th className={averageCellsStyle}>3PA</th>
+                <th className={averageCellsStyle}>FT</th>
+                <th className={averageCellsStyle}>FTA</th>
+                <th className={averageCellsStyle}>REB</th>
+                <th className={averageCellsStyle}>AST</th>
+                <th className={averageCellsStyle}>STL</th>
+                <th className={averageCellsStyle}>BLK</th>
+                <th className={averageCellsStyle}>TO</th>
+                <th className={averageCellsStyle}>PF</th>
+                <th className={averageCellsStyle}>CKD</th>
               </tr>
             </thead>
             <tbody>
               {teamAverages.map((player) => (
                 <tr key={player.id}>
-                  <td className={perGameCellsStyle}>{player.name}</td>
-                  <td className={perGameCellsStyle}>{player.ppg.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.pm2.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.pa2.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.pm3.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.pa3.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.ft.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.fta.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.reb.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.ast.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.stl.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.blk.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.to.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.pf.toFixed(2)}</td>
-                  <td className={perGameCellsStyle}>{player.ckd.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.name}</td>
+                  <td className={averageCellsStyle}>{player.ppg.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.pm2.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.pa2.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.pm3.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.pa3.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.ft.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.fta.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.reb.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.ast.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.stl.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.blk.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.to.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.pf.toFixed(2)}</td>
+                  <td className={averageCellsStyle}>{player.ckd.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
             <tfoot>
               <tr className="border-t-1 border-white">
-                <td className={perGameCellsStyle}>Totals</td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>Totals</td>
+                <td className={averageCellsStyle}>
                   {averageTotals.ppg.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.pm2.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.pa2.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.pm3.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.pa3.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.ft.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.fta.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.reb.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.ast.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.stl.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.blk.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.to.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.pf.toFixed(2)}
                 </td>
-                <td className={perGameCellsStyle}>
+                <td className={averageCellsStyle}>
                   {averageTotals.ckd.toFixed(2)}
                 </td>
               </tr>
@@ -168,4 +167,4 @@ const PerGameTable = ({ seasonNumber }) => {
   }
 };
 
-export default PerGameTable;
+export default AverageTable;
