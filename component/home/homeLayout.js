@@ -1,13 +1,42 @@
+import useSeason from "@/hooks/useSeason";
+import Link from "next/link";
+import LoadingIndicator from "../layout/loadingIndicator";
+
 const HomeLayout = () => {
-  return (
-    <div className="flex flex-col items-center">
-      <div className="w-11/12 sm:w-4/5">
-        <h1 className="text-3xl text-(--primary) text-center font-bold">
-          Valley Vice
-        </h1>
+  const seasonNum = 18;
+
+  const { season, seasonLoading } = useSeason(seasonNum);
+
+  const pages = [
+    { id: 0, link: `/stats/${seasonNum}`, name: "Stats" },
+    { id: 1, link: `/seasons/${seasonNum}`, name: "Seasons" },
+    // { id: 2, link: "/roster", name: "Roster" },
+  ];
+
+  if (seasonLoading) {
+    return <LoadingIndicator />;
+  } else {
+    return (
+      <div className="flex flex-col items-center">
+        <div className="w-11/12 sm:w-4/5 text-center">
+          <h1 className="text-3xl lg:text-5xl text-(--primary) text-center font-bold">
+            Valley Vice
+          </h1>
+          <div className="flex flex-col items-center lg:flex-row lg:flex-wrap lg:justify-center my-8">
+            <div className="border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col sm:w-2/5 mx-4 sm:aspect-square md:aspect-auto lg:w-1/4">
+              <h2 className="text-xl font-bold">{season.league}</h2>
+              <p className="text-lg">
+                Season {season.seasonNumber} - {season.division}
+              </p>
+              <p>
+                {season.season} {season.year}
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default HomeLayout;
