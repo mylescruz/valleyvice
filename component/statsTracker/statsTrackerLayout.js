@@ -1,4 +1,7 @@
-import { faArrowRotateLeft } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowRotateLeft,
+  faFloppyDisk,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import StatsTable from "./statsTable";
@@ -23,15 +26,18 @@ const StatsTrackerLayout = () => {
     { id: 12, name: "CKD", value: "ckd" },
   ];
 
-  const { trackedGame, trackedGameLoading } = useTrackedGame();
+  const { trackedGame, trackedGameLoading, postTrackedGame } = useTrackedGame();
   const [game, setGame] = useState(trackedGame);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [statSelected, setStatSelected] = useState("");
-  const [statsRecorded, setStatsRecorded] = useState([]);
+  const [statsRecorded, setStatsRecorded] = useState(trackedGame.statsRecorded);
+  const [gameSaved, setGameSaved] = useState(trackedGame.saved);
 
   useEffect(() => {
     if (trackedGame) {
       setGame(trackedGame);
+      setGameSaved(trackedGame.saved);
+      setStatsRecorded(trackedGame.statsRecorded);
     }
   }, [trackedGame]);
 
@@ -46,14 +52,21 @@ const StatsTrackerLayout = () => {
         if (statSelected === "pm2") {
           player[statSelected] += 1;
           player.pa2 += 1;
+          game.teamStats[statSelected] += 1;
+          game.teamStats.pa2 += 1;
         } else if (statSelected === "pm3") {
           player[statSelected] += 1;
           player.pa3 += 1;
+          game.teamStats[statSelected] += 1;
+          game.teamStats.pa3 += 1;
         } else if (statSelected === "ft") {
           player[statSelected] += 1;
           player.fta += 1;
+          game.teamStats[statSelected] += 1;
+          game.teamStats.fta += 1;
         } else {
           player[statSelected] += 1;
+          game.teamStats[statSelected] += 1;
         }
 
         setStatsRecorded([
@@ -70,6 +83,7 @@ const StatsTrackerLayout = () => {
 
     setStatSelected("");
     setChoosePlayer(false);
+    setGameSaved(false);
     setGame({ ...game, playerStats: updatedStats });
   };
 
@@ -86,14 +100,21 @@ const StatsTrackerLayout = () => {
         if (lastStat.stat === "pm2") {
           player[lastStat.stat] -= 1;
           player.pa2 -= 1;
+          game.teamStats[lastStat.stat] -= 1;
+          game.teamStats.pa2 -= 1;
         } else if (lastStat.stat === "pm3") {
           player[lastStat.stat] -= 1;
           player.pa3 -= 1;
+          game.teamStats[lastStat.stat] -= 1;
+          game.teamStats.pa3 -= 1;
         } else if (lastStat.stat === "ft") {
           player[lastStat.stat] -= 1;
           player.fta -= 1;
+          game.teamStats[lastStat.stat] -= 1;
+          game.teamStats.fta -= 1;
         } else {
           player[lastStat.stat] -= 1;
+          game.teamStats[lastStat.stat] -= 1;
         }
       }
 
@@ -102,6 +123,13 @@ const StatsTrackerLayout = () => {
 
     setStatsRecorded(statsRecorded.slice(0, -1));
     setGame({ ...game, playerStats: updatedStats });
+  };
+
+  const saveGame = () => {
+    game.saved = true;
+    game.statsRecorded = statsRecorded;
+    setGameSaved(true);
+    postTrackedGame(game);
   };
 
   if (trackedGameLoading) {
@@ -159,10 +187,21 @@ const StatsTrackerLayout = () => {
                   className="text-lg hover:text-(--primary) hover:cursor-pointer"
                   onClick={undoStat}
                 />
+                <div className="flex flex-row">
+                  {gameSaved && <p className="text-sm mr-4">Saved</p>}
+                  <FontAwesomeIcon
+                    icon={faFloppyDisk}
+                    className="text-lg hover:text-(--primary) hover:cursor-pointer"
+                    onClick={saveGame}
+                  />
+                </div>
               </div>
             </div>
 
-            <StatsTable playerStats={game.playerStats} />
+            <StatsTable
+              playerStats={game.playerStats}
+              teamStats={game.teamStats}
+            />
           </div>
         </div>
       </div>

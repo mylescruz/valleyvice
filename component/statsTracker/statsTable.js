@@ -1,4 +1,4 @@
-const StatsTable = ({ playerStats }) => {
+const StatsTable = ({ playerStats, teamStats }) => {
   const playerCellsStyle = "w-1/18 p-1 text-center";
   return (
     <table>
@@ -62,6 +62,42 @@ const StatsTable = ({ playerStats }) => {
           </tr>
         ))}
       </tbody>
+      <tfoot>
+        <tr className="border-t-1 broder-white">
+          <td className={playerCellsStyle}>Totals</td>
+          <td className={playerCellsStyle}>
+            {teamStats?.pm2 * 2 + teamStats?.pm3 * 3 + teamStats?.ft}
+          </td>
+          <td className={playerCellsStyle}>{teamStats?.pm2}</td>
+          <td className={playerCellsStyle}>{teamStats?.pa2}</td>
+          <td className={playerCellsStyle}>
+            {teamStats?.pa2 === 0
+              ? `0%`
+              : `${((teamStats?.pm2 / teamStats?.pa2) * 100).toFixed(0)}%`}
+          </td>
+          <td className={playerCellsStyle}>{teamStats?.pm3}</td>
+          <td className={playerCellsStyle}>{teamStats?.pa3}</td>
+          <td className={playerCellsStyle}>
+            {teamStats?.pa3 === 0
+              ? `0%`
+              : `${((teamStats?.pm3 / teamStats?.pa3) * 100).toFixed(0)}%`}
+          </td>
+          <td className={playerCellsStyle}>{teamStats?.ft}</td>
+          <td className={playerCellsStyle}>{teamStats?.fta}</td>
+          <td className={playerCellsStyle}>
+            {teamStats?.fta === 0
+              ? `0%`
+              : `${((teamStats?.ft / teamStats?.fta) * 100).toFixed(0)}%`}
+          </td>
+          <td className={playerCellsStyle}>{teamStats?.reb}</td>
+          <td className={playerCellsStyle}>{teamStats?.ast}</td>
+          <td className={playerCellsStyle}>{teamStats?.stl}</td>
+          <td className={playerCellsStyle}>{teamStats?.blk}</td>
+          <td className={playerCellsStyle}>{teamStats?.to}</td>
+          <td className={playerCellsStyle}>{teamStats?.pf}</td>
+          <td className={playerCellsStyle}>{teamStats?.ckd}</td>
+        </tr>
+      </tfoot>
     </table>
   );
 };

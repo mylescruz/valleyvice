@@ -3,15 +3,38 @@ const GameForm = ({ game, setGame }) => {
     setGame({ ...game, [e.target.id]: e.target.value });
   };
 
-  const handleNumberInput = (e) => {
+  const handleIdInput = (e) => {
     const input = e.target.value;
 
     if (input === "") {
-      setGame({ ...game, [e.target.id]: e.target.value });
+      setGame({
+        ...game,
+        id: `s${input}g${game.gameNumber}`,
+        seasonNumber: input,
+      });
     } else {
       setGame({
         ...game,
-        [e.target.id]: parseInt(e.target.value),
+        id: `s${parseInt(input)}g${game.gameNumber}`,
+        seasonNumber: parseInt(input),
+      });
+    }
+  };
+
+  const handleGameInput = (e) => {
+    const input = e.target.value;
+
+    if (input === "") {
+      setGame({
+        ...game,
+        id: `s${game.seasonNumber}g${input}`,
+        gameNumber: input,
+      });
+    } else {
+      setGame({
+        ...game,
+        id: `s${game.seasonNumber}g${parseInt(input)}`,
+        gameNumber: parseInt(input),
       });
     }
   };
@@ -24,11 +47,20 @@ const GameForm = ({ game, setGame }) => {
     <div className="flex flex-col items-center">
       <form className="w-full sm:w-1/2 my-4 xl:w-1/4 flex flex-col lg:flex-row lg:justify-center">
         <div className={gameDetailsInputGroup}>
+          <label htmlFor="id">Season #</label>
+          <input
+            id="id"
+            type="number"
+            onChange={handleIdInput}
+            className={gameDetailsInput}
+          />
+        </div>
+        <div className={gameDetailsInputGroup}>
           <label htmlFor="gameNumber">Game #</label>
           <input
             id="gameNumber"
             type="number"
-            onChange={handleNumberInput}
+            onChange={handleGameInput}
             className={gameDetailsInput}
           />
         </div>

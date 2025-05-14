@@ -1,4 +1,8 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -76,6 +80,25 @@ export default async function handler(req, res) {
   if (method === "GET") {
     try {
       const trackedGame = await getTrackedGameData();
+
+      res.status(200).json(trackedGame);
+    } catch (error) {
+      console.error(`${method} tracked game request failed: ${error}`);
+      res.status(500).send("Error retrieving tracked game data");
+    }
+  } else if (method === "POST") {
+    try {
+      const trackedGame = req?.body;
+
+      // Save the tracked game into the saved tracked game file
+      const savedTrackedGameParams = {
+        Bucket: BUCKET,
+        Key: savedTrackedGameKey,
+        Body: JSON.stringify(trackedGame, null, 2),
+        ContentType: "application/json",
+      };
+
+      await S3.send(new PutObjectCommand(savedTrackedGameParams));
 
       res.status(200).json(trackedGame);
     } catch (error) {
