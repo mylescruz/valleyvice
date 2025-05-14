@@ -1,6 +1,7 @@
 import useRoster from "@/hooks/useRoster";
 import Image from "next/image";
 import LoadingIndicator from "../layout/loadingIndicator";
+import rosterSorter from "@/helpers/rosterSorter";
 
 const RosterLayout = () => {
   const { roster, rosterLoading } = useRoster();
@@ -15,14 +16,14 @@ const RosterLayout = () => {
             Roster
           </h1>
           <div className="flex flex-col items-center">
-            {roster.map((player) => (
+            {rosterSorter(roster).map((player) => (
               <div
                 key={player.id}
                 className="w-full border-2 border-(--secondary) rounded-lg my-2 px-4 py-4 sm:w-2/3 lg:w-1/2"
               >
                 <div className="flex flex-row">
                   <Image
-                    src={`/images/${player.imageSrc}.jpg`}
+                    src={`/images/${player.imageSrc}`}
                     alt="Player Image"
                     width={500}
                     height={500}
