@@ -1,16 +1,16 @@
-const GameForm = ({ gameDetails, setGameDetails }) => {
+const GameForm = ({ game, setGame }) => {
   const handleInput = (e) => {
-    setGameDetails({ ...gameDetails, [e.target.id]: e.target.value });
+    setGame({ ...game, [e.target.id]: e.target.value });
   };
 
   const handleNumberInput = (e) => {
     const input = e.target.value;
 
     if (input === "") {
-      setGameDetails({ ...gameDetails, [e.target.id]: e.target.value });
+      setGame({ ...game, [e.target.id]: e.target.value });
     } else {
-      setGameDetails({
-        ...gameDetails,
+      setGame({
+        ...game,
         [e.target.id]: parseInt(e.target.value),
       });
     }

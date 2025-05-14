@@ -1,8 +1,10 @@
 import { faArrowRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import StatsTable from "./statsTable";
 import GameForm from "./gameForm";
+import LoadingIndicator from "../layout/loadingIndicator";
+import useTrackedGame from "@/hooks/useTrackedGame";
 
 const StatsTrackerLayout = () => {
   const stats = [
@@ -21,202 +23,17 @@ const StatsTrackerLayout = () => {
     { id: 12, name: "CKD", value: "ckd" },
   ];
 
-  const emptyGameDetails = {
-    id: "s18g0",
-    gameNumber: "",
-    date: "",
-    location: "",
-    opponent: "",
-    totalScore: "",
-    opponentScore: "",
-    result: "",
-    teamStats: {
-      totalpm2: 0,
-      totalpa2: 0,
-      totalpm3: 0,
-      totalpa3: 0,
-      totalFT: 0,
-      totalFTA: 0,
-      totalREB: 0,
-      totalAST: 0,
-      totalSTL: 0,
-      totalBLK: 0,
-      totalTO: 0,
-      totalPF: 0,
-      totalCKD: 0,
-    },
-    playerStats: [
-      {
-        id: "andrewCh",
-        name: "Andrew",
-        number: 37,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "forrestGe",
-        name: "Forrest",
-        number: 17,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "jamesGe",
-        name: "James",
-        number: "00",
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "johnnyCh",
-        name: "Johnny",
-        number: 11,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "jonahBa",
-        name: "Jonah",
-        number: 12,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "mylesCr",
-        name: "Myles",
-        number: 5,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "rustyPu",
-        name: "Rusty",
-        number: 3,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "waleedKh",
-        name: "Waleed",
-        number: 1,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-      {
-        id: "lindseyDr",
-        name: "Lindsey",
-        number: 14,
-        pm2: 0,
-        pa2: 0,
-        pm3: 0,
-        pa3: 0,
-        ft: 0,
-        fta: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
-      },
-    ],
-  };
-
-  const emptyStatsRecorded = [];
-
-  const [gameDetails, setGameDetails] = useState(emptyGameDetails);
+  const { trackedGame, trackedGameLoading } = useTrackedGame();
+  const [game, setGame] = useState(trackedGame);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [statSelected, setStatSelected] = useState("");
-  const [statsRecorded, setStatsRecorded] = useState(emptyStatsRecorded);
+  const [statsRecorded, setStatsRecorded] = useState([]);
+
+  useEffect(() => {
+    if (trackedGame) {
+      setGame(trackedGame);
+    }
+  }, [trackedGame]);
 
   const chooseStat = (stat) => {
     setStatSelected(stat);
@@ -224,7 +41,7 @@ const StatsTrackerLayout = () => {
   };
 
   const addStat = (playerId) => {
-    const updatedStats = gameDetails.playerStats.map((player) => {
+    const updatedStats = game.playerStats.map((player) => {
       if (player.id === playerId) {
         if (statSelected === "pm2") {
           player[statSelected] += 1;
@@ -253,7 +70,7 @@ const StatsTrackerLayout = () => {
 
     setStatSelected("");
     setChoosePlayer(false);
-    setGameDetails({ ...gameDetails, playerStats: updatedStats });
+    setGame({ ...game, playerStats: updatedStats });
   };
 
   const undoStat = () => {
@@ -264,7 +81,7 @@ const StatsTrackerLayout = () => {
 
     const lastStat = statsRecorded[statsRecordedLength - 1];
 
-    const updatedStats = gameDetails.playerStats.map((player) => {
+    const updatedStats = game.playerStats.map((player) => {
       if (player.id === lastStat.playerId) {
         if (lastStat.stat === "pm2") {
           player[lastStat.stat] -= 1;
@@ -284,69 +101,73 @@ const StatsTrackerLayout = () => {
     });
 
     setStatsRecorded(statsRecorded.slice(0, -1));
-    setGameDetails({ ...gameDetails, playerStats: updatedStats });
+    setGame({ ...game, playerStats: updatedStats });
   };
 
-  return (
-    <div className="flex flex-col items-center mt-4">
-      <div className="w-11/12 sm:w-4/5">
-        <h1 className="text-3xl font-bold text-(--primary) text-center">
-          Track Stats
-        </h1>
+  if (trackedGameLoading) {
+    return <LoadingIndicator />;
+  } else {
+    return (
+      <div className="flex flex-col items-center mt-4">
+        <div className="w-11/12 sm:w-4/5">
+          <h1 className="text-3xl font-bold text-(--primary) text-center">
+            Track Stats
+          </h1>
 
-        <GameForm gameDetails={gameDetails} setGameDetails={setGameDetails} />
+          <GameForm game={game} setGame={setGame} />
 
-        {!choosePlayer ? (
-          <>
-            <h2 className="text-center my-2 text-lg">Choose a stat</h2>
-            <div className="flex flex-row flex-wrap justify-center">
-              {stats.map((stat) => (
-                <div
-                  key={stat.id}
-                  className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                  onClick={() => chooseStat(stat.value)}
-                >
-                  {stat.name}
-                </div>
-              ))}
-            </div>
-          </>
-        ) : (
-          <>
-            <h2 className="text-center my-2 text-lg">Choose a player</h2>
-            <div className="flex flex-row flex-wrap justify-center">
-              {gameDetails.playerStats.map((player) => (
-                <div
-                  key={player.id}
-                  className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                  onClick={() => addStat(player.id)}
-                >
-                  {player.name}
-                </div>
-              ))}
-            </div>
-          </>
-        )}
+          {!choosePlayer ? (
+            <>
+              <h2 className="text-center my-2 text-lg">Choose a stat</h2>
+              <div className="flex flex-row flex-wrap justify-center">
+                {stats.map((stat) => (
+                  <div
+                    key={stat.id}
+                    className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+                    onClick={() => chooseStat(stat.value)}
+                  >
+                    {stat.name}
+                  </div>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <h2 className="text-center my-2 text-lg">Choose a player</h2>
+              <div className="flex flex-row flex-wrap justify-center">
+                {game.playerStats.map((player) => (
+                  <div
+                    key={player.id}
+                    className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+                    onClick={() => addStat(player.id)}
+                  >
+                    {player.name}
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
 
-        <div className="flex flex-col my-4 overflow-x-auto">
-          <div className="flex flex-col mb-2">
-            <h2 className="text-center text-(--primary) text-2xl font-bold">
-              Game Stats
-            </h2>
-            <div className="text-(--secondary) flex flex-row justify-between">
-              <FontAwesomeIcon
-                icon={faArrowRotateLeft}
-                className="text-lg hover:text-(--primary) hover:cursor-pointer"
-                onClick={undoStat}
-              />
+          <div className="flex flex-col my-4 overflow-x-auto">
+            <div className="flex flex-col mb-2">
+              <h2 className="text-center text-(--primary) text-2xl font-bold">
+                Game Stats
+              </h2>
+              <div className="text-(--secondary) flex flex-row justify-between">
+                <FontAwesomeIcon
+                  icon={faArrowRotateLeft}
+                  className="text-lg hover:text-(--primary) hover:cursor-pointer"
+                  onClick={undoStat}
+                />
+              </div>
             </div>
+
+            <StatsTable playerStats={game.playerStats} />
           </div>
-
-          <StatsTable playerStats={gameDetails.playerStats} />
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default StatsTrackerLayout;

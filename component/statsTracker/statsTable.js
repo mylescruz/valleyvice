@@ -25,7 +25,7 @@ const StatsTable = ({ playerStats }) => {
         </tr>
       </thead>
       <tbody>
-        {playerStats.map((player) => (
+        {playerStats?.map((player) => (
           <tr key={player.id}>
             <td className={playerCellsStyle}>{player.name}</td>
             <td className={playerCellsStyle}>
