@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -104,6 +105,29 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error(`${method} tracked game request failed: ${error}`);
       res.status(500).send("Error retrieving tracked game data");
+    }
+  } else if (method === "DELETE") {
+    try {
+      // Delete the saved tracked game
+      const savedTrackedGameParams = {
+        Bucket: BUCKET,
+        Key: savedTrackedGameKey,
+      };
+
+      await S3.send(new DeleteObjectCommand(savedTrackedGameParams));
+
+      const trackedGame = await getTrackedGameData();
+
+      res.status(200).json(trackedGame);
+    } catch (error) {
+      if (error.name === "NoSuchKey") {
+        const trackedGame = await getTrackedGameData();
+
+        res.status(200).json(trackedGame);
+      } else {
+        console.error(`${method} tracked game request failed: ${error}`);
+        res.status(500).send("Error deleting tracked game");
+      }
     }
   } else {
     res.status(405).send(`Method ${method} not allowed`);

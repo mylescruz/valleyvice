@@ -49,7 +49,35 @@ const useTrackedGame = () => {
     }
   };
 
-  return { trackedGame, trackedGameLoading, postTrackedGame };
+  const deleteTrackedGame = async () => {
+    try {
+      const response = await fetch("/api/trackedGame", {
+        method: "DELETE",
+        headers: {
+          Accept: "application.json",
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        setTrackedGame(result);
+        setTrackedGameLoading(false);
+      } else {
+        const result = await response.text();
+        throw new Error(result);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return {
+    trackedGame,
+    trackedGameLoading,
+    postTrackedGame,
+    deleteTrackedGame,
+  };
 };
 
 export default useTrackedGame;

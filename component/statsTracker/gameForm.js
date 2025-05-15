@@ -1,4 +1,4 @@
-const GameForm = ({ game, setGame }) => {
+const GameForm = ({ game, setGame, setGameOverDisabled }) => {
   const handleInput = (e) => {
     setGame({ ...game, [e.target.id]: e.target.value });
   };
@@ -12,12 +12,16 @@ const GameForm = ({ game, setGame }) => {
         id: `s${input}g${game.gameNumber}`,
         seasonNumber: input,
       });
+
+      setGameOverDisabled(true);
     } else {
       setGame({
         ...game,
         id: `s${parseInt(input)}g${game.gameNumber}`,
         seasonNumber: parseInt(input),
       });
+
+      setGameOverDisabled(false);
     }
   };
 
@@ -47,12 +51,13 @@ const GameForm = ({ game, setGame }) => {
     <div className="flex flex-col items-center">
       <form className="w-full sm:w-1/2 my-4 xl:w-1/4 flex flex-col lg:flex-row lg:justify-center">
         <div className={gameDetailsInputGroup}>
-          <label htmlFor="id">Season #</label>
+          <label htmlFor="seasonNumber">Season #</label>
           <input
-            id="id"
+            id="seasonNumber"
             type="number"
             onChange={handleIdInput}
             className={gameDetailsInput}
+            value={game.seasonNumber}
           />
         </div>
         <div className={gameDetailsInputGroup}>
@@ -62,6 +67,7 @@ const GameForm = ({ game, setGame }) => {
             type="number"
             onChange={handleGameInput}
             className={gameDetailsInput}
+            value={game.gameNumber}
           />
         </div>
         <div className={gameDetailsInputGroup}>
@@ -71,6 +77,7 @@ const GameForm = ({ game, setGame }) => {
             type="date"
             onChange={handleInput}
             className={gameDetailsInput}
+            value={game.date}
           />
         </div>
         <div className={gameDetailsInputGroup}>
@@ -79,6 +86,7 @@ const GameForm = ({ game, setGame }) => {
             id="location"
             onChange={handleInput}
             className={gameDetailsInput}
+            value={game.location}
           />
         </div>
         <div className={gameDetailsInputGroup}>
@@ -87,6 +95,7 @@ const GameForm = ({ game, setGame }) => {
             id="opponent"
             onChange={handleInput}
             className={gameDetailsInput}
+            value={game.opponent}
           />
         </div>
       </form>

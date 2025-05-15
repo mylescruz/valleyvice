@@ -1,4 +1,8 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -63,6 +67,25 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error(`${method} season request failed: ${error}`);
       res.status(500).send("Error retrieving season data");
+    }
+  } else if (method === "PUT") {
+    try {
+      const updatedSeason = req?.body;
+
+      // Save the updated season into the season file
+      const seasonParams = {
+        Bucket: BUCKET,
+        Key: key,
+        Body: JSON.stringify(updatedSeason, null, 2),
+        ContentType: "application/json",
+      };
+
+      await S3.send(new PutObjectCommand(seasonParams));
+
+      res.status(200).json(updatedSeason);
+    } catch (error) {
+      console.error(`${method} season request failed: ${error}`);
+      res.status(500).send("Error updating season data");
     }
   } else {
     res.status(405).send(`Method ${method} not allowed`);
