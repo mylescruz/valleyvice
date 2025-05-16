@@ -35,12 +35,10 @@ const StatsTrackerLayout = () => {
   } = useTrackedGame();
 
   const [game, setGame] = useState(trackedGame);
+  const [enterGameInfo, setEnterGameInfo] = useState(true);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [statSelected, setStatSelected] = useState("");
   const [gameFinished, setGameFinished] = useState(false);
-  const [gameOverDisabled, setGameOverDisabled] = useState(
-    game.seasonNumber !== ""
-  );
 
   useEffect(() => {
     if (trackedGame) {
@@ -147,7 +145,8 @@ const StatsTrackerLayout = () => {
     setGameFinished(true);
   };
 
-  const buttonStyling = `font-bold rounded-lg mx-2 px-2 py-1 ${gameOverDisabled ? "bg-gray-400" : "bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer"}`;
+  const buttonStyling =
+    "font-bold rounded-lg mx-2 px-2 py-1 bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer";
 
   if (trackedGameLoading) {
     return <LoadingIndicator />;
@@ -156,85 +155,91 @@ const StatsTrackerLayout = () => {
       <>
         <div className="flex flex-col items-center mt-4">
           <div className="w-11/12 sm:w-4/5">
-            <h1 className="text-3xl font-bold text-(--primary) text-center">
-              Track Stats
-            </h1>
-
-            <GameInfoForm
-              game={game}
-              setGame={setGame}
-              setGameOverDisabled={setGameOverDisabled}
-            />
-
-            {!choosePlayer ? (
+            {enterGameInfo ? (
               <>
-                <h2 className="text-center my-2 text-lg">Choose a stat</h2>
-                <div className="flex flex-row flex-wrap justify-center">
-                  {stats.map((stat) => (
-                    <div
-                      key={stat.id}
-                      className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                      onClick={() => chooseStat(stat.value)}
-                    >
-                      {stat.name}
-                    </div>
-                  ))}
-                </div>
+                <h1 className="text-3xl font-bold text-(--primary) text-center">
+                  Enter Game Info
+                </h1>
+                <GameInfoForm
+                  game={game}
+                  setGame={setGame}
+                  setEnterGameInfo={setEnterGameInfo}
+                />
               </>
             ) : (
               <>
-                <h2 className="text-center my-2 text-lg">Choose a player</h2>
-                <div className="flex flex-row flex-wrap justify-center">
-                  {game.playerStats.map((player) => (
-                    <div
-                      key={player.id}
-                      className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                      onClick={() => addStat(player.id)}
-                    >
-                      {player.name}
+                {!choosePlayer ? (
+                  <>
+                    <h2 className="text-center my-2 text-lg">Choose a stat</h2>
+                    <div className="flex flex-row flex-wrap justify-center">
+                      {stats.map((stat) => (
+                        <div
+                          key={stat.id}
+                          className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+                          onClick={() => chooseStat(stat.value)}
+                        >
+                          {stat.name}
+                        </div>
+                      ))}
                     </div>
-                  ))}
+                  </>
+                ) : (
+                  <>
+                    <h1 className="text-3xl font-bold text-(--primary) text-center">
+                      Track Stats
+                    </h1>
+                    <h2 className="text-center my-2 text-lg">
+                      Choose a player
+                    </h2>
+                    <div className="flex flex-row flex-wrap justify-center">
+                      {game.playerStats.map((player) => (
+                        <div
+                          key={player.id}
+                          className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+                          onClick={() => addStat(player.id)}
+                        >
+                          {player.name}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                <div className="flex flex-col my-4 overflow-x-auto">
+                  <div className="flex flex-col mb-2">
+                    <h2 className="text-center text-(--primary) text-2xl font-bold">
+                      Game Stats
+                    </h2>
+                    <div className="text-(--secondary) flex flex-row justify-between">
+                      <FontAwesomeIcon
+                        icon={faArrowRotateLeft}
+                        className="text-lg hover:text-(--primary) hover:cursor-pointer"
+                        onClick={undoStat}
+                      />
+                      <div className="flex flex-row">
+                        {game.saved && <p className="text-sm mr-4">Saved</p>}
+                        <FontAwesomeIcon
+                          icon={faFloppyDisk}
+                          className="text-lg hover:text-(--primary) hover:cursor-pointer"
+                          onClick={saveGame}
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  <StatsTable
+                    playerStats={game.playerStats}
+                    teamStats={game.teamStats}
+                  />
+                </div>
+
+                <div className="flex flex-col items-end">
+                  <button className={buttonStyling} onClick={completeGame}>
+                    Game Over
+                  </button>
                 </div>
               </>
             )}
-
-            <div className="flex flex-col my-4 overflow-x-auto">
-              <div className="flex flex-col mb-2">
-                <h2 className="text-center text-(--primary) text-2xl font-bold">
-                  Game Stats
-                </h2>
-                <div className="text-(--secondary) flex flex-row justify-between">
-                  <FontAwesomeIcon
-                    icon={faArrowRotateLeft}
-                    className="text-lg hover:text-(--primary) hover:cursor-pointer"
-                    onClick={undoStat}
-                  />
-                  <div className="flex flex-row">
-                    {game.saved && <p className="text-sm mr-4">Saved</p>}
-                    <FontAwesomeIcon
-                      icon={faFloppyDisk}
-                      className="text-lg hover:text-(--primary) hover:cursor-pointer"
-                      onClick={saveGame}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <StatsTable
-                playerStats={game.playerStats}
-                teamStats={game.teamStats}
-              />
-            </div>
-
-            <div className="flex flex-col items-end">
-              <button
-                className={buttonStyling}
-                disabled={gameOverDisabled}
-                onClick={completeGame}
-              >
-                Game Over
-              </button>
-            </div>
           </div>
         </div>
 
@@ -245,6 +250,7 @@ const StatsTrackerLayout = () => {
             setGameFinished={setGameFinished}
             trackedGame={trackedGame}
             deleteTrackedGame={deleteTrackedGame}
+            setEnterGameInfo={setEnterGameInfo}
           />
         )}
       </>

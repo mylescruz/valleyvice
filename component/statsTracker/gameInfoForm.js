@@ -1,106 +1,173 @@
-const GameInfoForm = ({ game, setGame, setGameOverDisabled }) => {
+import { useState } from "react";
+import NewPlayerForm from "./newPlayerForm";
+
+const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
+  const [players, setPlayers] = useState([]);
+  const [inputPlayer, setInputPlayer] = useState(false);
+  const [gameInfo, setGameInfo] = useState({
+    seasonNumber: "",
+    gameNumber: "",
+    date: "",
+    location: "",
+    opponent: "",
+  });
+
   const handleInput = (e) => {
-    setGame({ ...game, [e.target.id]: e.target.value });
+    setGameInfo({ ...gameInfo, [e.target.id]: e.target.value });
   };
 
-  const handleIdInput = (e) => {
+  const handleNumInput = (e) => {
     const input = e.target.value;
 
     if (input === "") {
-      setGame({
-        ...game,
-        id: `s${input}g${game.gameNumber}`,
-        seasonNumber: input,
-      });
-
-      setGameOverDisabled(true);
+      setGameInfo({ ...gameInfo, [e.target.id]: input });
     } else {
-      setGame({
-        ...game,
-        id: `s${parseInt(input)}g${game.gameNumber}`,
-        seasonNumber: parseInt(input),
-      });
-
-      setGameOverDisabled(false);
+      setGameInfo({ ...gameInfo, [e.target.id]: parseInt(input) });
     }
   };
 
-  const handleGameInput = (e) => {
-    const input = e.target.value;
-
-    if (input === "") {
-      setGame({
-        ...game,
-        id: `s${game.seasonNumber}g${input}`,
-        gameNumber: input,
-      });
+  const enterPlayer = (playerId) => {
+    if (players.includes(playerId)) {
+      const updatedPlayers = players.filter((player) => player !== playerId);
+      setPlayers(updatedPlayers);
     } else {
-      setGame({
-        ...game,
-        id: `s${game.seasonNumber}g${parseInt(input)}`,
-        gameNumber: parseInt(input),
-      });
+      setPlayers([...players, playerId]);
     }
   };
 
-  const gameDetailsInputGroup = "flex flex-col my-1.5";
-  const gameDetailsInput =
-    "border-2 border-(--secondary) rounded-lg py-1 px-2 lg:mr-4";
+  const completeGameInfo = (e) => {
+    e.preventDefault();
+
+    const updatedPlayerStats = game.playerStats.filter((player) => {
+      if (players.includes(player.id)) {
+        return player;
+      }
+    });
+
+    setGame({
+      ...game,
+      id: `s${gameInfo.seasonNumber}g${gameInfo.gameNumber}`,
+      seasonNumber: gameInfo.seasonNumber,
+      gameNumber: gameInfo.gameNumber,
+      date: gameInfo.date,
+      location: gameInfo.location,
+      opponent: gameInfo.opponent,
+      playerStats: updatedPlayerStats,
+    });
+
+    setEnterGameInfo(false);
+  };
+
+  const enterNewPlayer = () => {
+    setInputPlayer(true);
+  };
+
+  const gameDetailsInputGroup = "flex flex-col my-1.5 mx-2";
+  const gameDetailsInput = "border-2 border-(--secondary) rounded-lg py-1 px-2";
+  const buttonStyling =
+    "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
 
   return (
     <div className="flex flex-col items-center">
-      <form className="w-full sm:w-1/2 my-4 xl:w-1/4 flex flex-col lg:flex-row lg:justify-center">
-        <div className={gameDetailsInputGroup}>
-          <label htmlFor="seasonNumber">Season #</label>
-          <input
-            id="seasonNumber"
-            type="number"
-            onChange={handleIdInput}
-            className={gameDetailsInput}
-            value={game.seasonNumber}
-          />
+      <form
+        className="w-full my-4 flex flex-col items-center sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4"
+        onSubmit={completeGameInfo}
+      >
+        <div className="flex flex-col w-full">
+          <div className={gameDetailsInputGroup}>
+            <label htmlFor="seasonNumber">Season #</label>
+            <input
+              id="seasonNumber"
+              type="number"
+              onChange={handleNumInput}
+              className={gameDetailsInput}
+              value={gameInfo.seasonNumber}
+              required
+            />
+          </div>
+          <div className={gameDetailsInputGroup}>
+            <label htmlFor="gameNumber">Game #</label>
+            <input
+              id="gameNumber"
+              type="number"
+              onChange={handleNumInput}
+              className={gameDetailsInput}
+              value={gameInfo.gameNumber}
+              required
+            />
+          </div>
+          <div className={gameDetailsInputGroup}>
+            <label htmlFor="date">Date</label>
+            <input
+              id="date"
+              type="date"
+              onChange={handleInput}
+              className={gameDetailsInput}
+              value={gameInfo.date}
+              required
+            />
+          </div>
+          <div className={gameDetailsInputGroup}>
+            <label htmlFor="location">Location</label>
+            <input
+              id="location"
+              type="text"
+              onChange={handleInput}
+              className={gameDetailsInput}
+              value={gameInfo.location}
+              required
+            />
+          </div>
+          <div className={gameDetailsInputGroup}>
+            <label htmlFor="opponent">Oppponent</label>
+            <input
+              id="opponent"
+              type="text"
+              onChange={handleInput}
+              className={gameDetailsInput}
+              value={gameInfo.opponent}
+              required
+            />
+          </div>
         </div>
-        <div className={gameDetailsInputGroup}>
-          <label htmlFor="gameNumber">Game #</label>
-          <input
-            id="gameNumber"
-            type="number"
-            onChange={handleGameInput}
-            className={gameDetailsInput}
-            value={game.gameNumber}
-          />
+        <div className="flex flex-col items-center mt-1.5">
+          <p>Who played this game?</p>
+          <div className="flex flex-row flex-wrap justify-center">
+            {game?.playerStats?.map((player) => (
+              <div
+                key={player.id}
+                className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${players.includes(player.id) && "bg-(--primary) font-bold"}`}
+                onClick={() => {
+                  enterPlayer(player.id);
+                }}
+              >
+                {player.name}
+              </div>
+            ))}
+            <div
+              className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+              onClick={enterNewPlayer}
+            >
+              New
+            </div>
+          </div>
         </div>
-        <div className={gameDetailsInputGroup}>
-          <label htmlFor="date">Date</label>
-          <input
-            id="date"
-            type="date"
-            onChange={handleInput}
-            className={gameDetailsInput}
-            value={game.date}
-          />
-        </div>
-        <div className={gameDetailsInputGroup}>
-          <label htmlFor="location">Location</label>
-          <input
-            id="location"
-            type="text"
-            onChange={handleInput}
-            className={gameDetailsInput}
-            value={game.location}
-          />
-        </div>
-        <div className={gameDetailsInputGroup}>
-          <label htmlFor="opponent">Oppponent</label>
-          <input
-            id="opponent"
-            type="text"
-            onChange={handleInput}
-            className={gameDetailsInput}
-            value={game.opponent}
-          />
+        <div className="mt-2 text-center">
+          <button type="submit" className={buttonStyling}>
+            Enter
+          </button>
         </div>
       </form>
+
+      {inputPlayer && (
+        <NewPlayerForm
+          players={players}
+          setPlayers={setPlayers}
+          setInputPlayer={setInputPlayer}
+          game={game}
+          setGame={setGame}
+        />
+      )}
     </div>
   );
 };

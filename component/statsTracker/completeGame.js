@@ -7,6 +7,7 @@ const CompleteGame = ({
   setGameFinished,
   trackedGame,
   deleteTrackedGame,
+  setEnterGameInfo,
 }) => {
   const { season, putSeason } = useSeason(game.seasonNumber);
   const [gameScores, setGameScores] = useState({
@@ -71,6 +72,7 @@ const CompleteGame = ({
     setGame(trackedGame);
 
     closeComplete();
+    setEnterGameInfo(true);
   };
 
   const gameDetailsInputGroup = "flex flex-col my-1.5";
