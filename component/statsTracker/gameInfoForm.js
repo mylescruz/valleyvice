@@ -1,4 +1,4 @@
-const GameForm = ({ game, setGame, setGameOverDisabled }) => {
+const GameInfoForm = ({ game, setGame, setGameOverDisabled }) => {
   const handleInput = (e) => {
     setGame({ ...game, [e.target.id]: e.target.value });
   };
@@ -84,6 +84,7 @@ const GameForm = ({ game, setGame, setGameOverDisabled }) => {
           <label htmlFor="location">Location</label>
           <input
             id="location"
+            type="text"
             onChange={handleInput}
             className={gameDetailsInput}
             value={game.location}
@@ -93,6 +94,7 @@ const GameForm = ({ game, setGame, setGameOverDisabled }) => {
           <label htmlFor="opponent">Oppponent</label>
           <input
             id="opponent"
+            type="text"
             onChange={handleInput}
             className={gameDetailsInput}
             value={game.opponent}
@@ -103,4 +105,4 @@ const GameForm = ({ game, setGame, setGameOverDisabled }) => {
   );
 };
 
-export default GameForm;
+export default GameInfoForm;

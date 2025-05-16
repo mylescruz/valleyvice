@@ -5,10 +5,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useState } from "react";
 import StatsTable from "./statsTable";
-import GameForm from "./gameForm";
 import LoadingIndicator from "../layout/loadingIndicator";
 import useTrackedGame from "@/hooks/useTrackedGame";
 import CompleteGame from "./completeGame";
+import GameInfoForm from "./gameInfoForm";
 
 const StatsTrackerLayout = () => {
   const stats = [
@@ -37,8 +37,6 @@ const StatsTrackerLayout = () => {
   const [game, setGame] = useState(trackedGame);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [statSelected, setStatSelected] = useState("");
-  const [statsRecorded, setStatsRecorded] = useState(trackedGame.statsRecorded);
-  const [gameSaved, setGameSaved] = useState(trackedGame.saved);
   const [gameFinished, setGameFinished] = useState(false);
   const [gameOverDisabled, setGameOverDisabled] = useState(
     game.seasonNumber !== ""
@@ -47,8 +45,6 @@ const StatsTrackerLayout = () => {
   useEffect(() => {
     if (trackedGame) {
       setGame(trackedGame);
-      setGameSaved(trackedGame.saved);
-      setStatsRecorded(trackedGame.statsRecorded);
     }
   }, [trackedGame]);
 
@@ -86,7 +82,6 @@ const StatsTrackerLayout = () => {
 
     setStatSelected("");
     setChoosePlayer(false);
-    setGameSaved(false);
     setGame({
       ...game,
       playerStats: updatedStats,
@@ -94,16 +89,17 @@ const StatsTrackerLayout = () => {
         ...game.statsRecorded,
         { playerId: playerId, stat: statSelected },
       ],
+      saved: false,
     });
   };
 
   const undoStat = () => {
-    const statsRecordedLength = statsRecorded.length;
+    const statsRecordedLength = game.statsRecorded.length;
     if (statsRecordedLength === 0) {
       return;
     }
 
-    const lastStat = statsRecorded[statsRecordedLength - 1];
+    const lastStat = game.statsRecorded[statsRecordedLength - 1];
 
     const updatedStats = game.playerStats.map((player) => {
       if (player.id === lastStat.playerId) {
@@ -134,13 +130,16 @@ const StatsTrackerLayout = () => {
     setGame({
       ...game,
       playerStats: updatedStats,
-      statsRecorded: statsRecorded.slice(0, -1),
+      statsRecorded: game.statsRecorded.slice(0, -1),
     });
   };
 
   const saveGame = () => {
     game.saved = true;
-    setGameSaved(true);
+    setGame({
+      ...game,
+      saved: true,
+    });
     postTrackedGame(game);
   };
 
@@ -161,7 +160,7 @@ const StatsTrackerLayout = () => {
               Track Stats
             </h1>
 
-            <GameForm
+            <GameInfoForm
               game={game}
               setGame={setGame}
               setGameOverDisabled={setGameOverDisabled}
@@ -211,7 +210,7 @@ const StatsTrackerLayout = () => {
                     onClick={undoStat}
                   />
                   <div className="flex flex-row">
-                    {gameSaved && <p className="text-sm mr-4">Saved</p>}
+                    {game.saved && <p className="text-sm mr-4">Saved</p>}
                     <FontAwesomeIcon
                       icon={faFloppyDisk}
                       className="text-lg hover:text-(--primary) hover:cursor-pointer"
