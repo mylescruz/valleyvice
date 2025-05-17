@@ -4,7 +4,7 @@ import LoadingIndicator from "../layout/loadingIndicator";
 const TotalsTable = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
 
-  const totalCellsStyle = "w-1/18 p-1 text-center";
+  const totalCellsStyle = "w-1/19 p-1 text-center";
 
   const teamTotals = season.playerTotalStats?.reduce(
     (sum, player) => {
@@ -54,6 +54,7 @@ const TotalsTable = ({ seasonNumber }) => {
             <thead className="border-b-1 border-white">
               <tr>
                 <th className={totalCellsStyle}>PLR</th>
+                <th className={totalCellsStyle}>GP</th>
                 <th className={totalCellsStyle}>PTS</th>
                 <th className={totalCellsStyle}>2PM</th>
                 <th className={totalCellsStyle}>2PA</th>
@@ -77,6 +78,7 @@ const TotalsTable = ({ seasonNumber }) => {
               {season.playerTotalStats.map((player) => (
                 <tr key={player.id}>
                   <td className={totalCellsStyle}>{player.name}</td>
+                  <td className={totalCellsStyle}>{player.gp}</td>
                   <td className={totalCellsStyle}>
                     {player.pm2 * 2 + player.pm3 * 3 + player.ft}
                   </td>
@@ -114,6 +116,7 @@ const TotalsTable = ({ seasonNumber }) => {
             <tfoot>
               <tr className="border-t-1 border-white">
                 <td className={totalCellsStyle}>Totals</td>
+                <td className={totalCellsStyle}></td>
                 <td className={totalCellsStyle}>
                   {teamTotals.pm2 * 2 + teamTotals.pm3 * 3 + teamTotals.ft}
                 </td>
