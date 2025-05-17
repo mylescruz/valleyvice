@@ -25,12 +25,12 @@ const SeasonsGames = ({ seasonNumber }) => {
           </p>
         </div>
         <h2 className="text-2xl text-(--primary) font-bold">Games</h2>
-        <div className="flex flex-col items-center sm:flex-row sm:flex-wrap sm:justify-between ">
+        <div className="flex flex-col items-center sm:flex-row sm:flex-wrap sm:justify-between">
           {season.games.map((game) => (
             <Link
               key={game.id}
               href={`/games/${seasonNumber}/${game.gameNumber}`}
-              className="border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col sm:w-2/5 mx-4 sm:aspect-square md:aspect-auto lg:w-1/4"
+              className="border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col md:w-4/9 xl:w-1/4 xl:mx-2"
             >
               <h1 className="text-lg font-bold">
                 Game {game.gameNumber}: {game.opponent}
