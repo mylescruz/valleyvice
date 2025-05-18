@@ -20,10 +20,10 @@ const SeasonsGames = ({ seasonNumber }) => {
           <p className="text-xl text-(--secondary) font-bold">
             Record: {season.wins} - {season.losses}
           </p>
-          <p className="text-(--secondary) font-bold">
+          <p className="font-bold">
             {season.season} {season.year}
           </p>
-          <p className="text-(--secondary) font-bold">
+          <p className="font-bold">
             {season.league} - {season.division}
           </p>
         </div>

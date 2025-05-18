@@ -61,10 +61,10 @@ const AverageTable = ({ seasonNumber }) => {
     }
   );
 
-  const averageCellsStyle = "w-1/15 p-1 text-center";
+  const averageCellsStyle = "w-1/16 p-1 text-center";
 
   if (seasonLoading) {
-    return <LoadingIndicator />;
+    return <></>;
   } else {
     return (
       <>
@@ -76,7 +76,8 @@ const AverageTable = ({ seasonNumber }) => {
             <thead className="border-b-1 border-white">
               <tr>
                 <th className={averageCellsStyle}>PLR</th>
-                <th className={averageCellsStyle}>PTS</th>
+                <th className={averageCellsStyle}>GP</th>
+                <th className={averageCellsStyle}>PPG</th>
                 <th className={averageCellsStyle}>2PM</th>
                 <th className={averageCellsStyle}>2PA</th>
                 <th className={averageCellsStyle}>3PM</th>
@@ -96,6 +97,7 @@ const AverageTable = ({ seasonNumber }) => {
               {teamAverages.map((player) => (
                 <tr key={player.id}>
                   <td className={averageCellsStyle}>{player.name}</td>
+                  <td className={averageCellsStyle}>{player.gp}</td>
                   <td className={averageCellsStyle}>{player.ppg.toFixed(2)}</td>
                   <td className={averageCellsStyle}>{player.pm2.toFixed(2)}</td>
                   <td className={averageCellsStyle}>{player.pa2.toFixed(2)}</td>
@@ -116,6 +118,7 @@ const AverageTable = ({ seasonNumber }) => {
             <tfoot>
               <tr className="border-t-1 border-white">
                 <td className={averageCellsStyle}>Totals</td>
+                <td className={averageCellsStyle}></td>
                 <td className={averageCellsStyle}>
                   {averageTotals.ppg.toFixed(2)}
                 </td>

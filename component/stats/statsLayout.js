@@ -12,7 +12,7 @@ const StatsLayout = ({ seasonNum }) => {
   return (
     <div className="flex flex-col items-center">
       <div className="w-11/12 sm:w-4/5">
-        <div className="my-2 text-center">
+        <div className="mt-2 mb-4 text-center">
           <label htmlFor="season">Choose a season:</label>
           <select
             id="season"
