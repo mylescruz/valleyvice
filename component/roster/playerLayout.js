@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import SeasonTotals from "./seasonTotals";
 import SeasonAverages from "./seasonAverages";
+import Link from "next/link";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 
 const PlayerLayout = ({ playerId }) => {
   const { roster, rosterLoading } = useRoster();
@@ -34,12 +37,19 @@ const PlayerLayout = ({ playerId }) => {
   const averagesTitleStyling = "text-xl text-(--secondary) font-bold";
   const averagesValueStyling = "font-bold";
 
-  if (rosterLoading || !roster || !player) {
+  if (rosterLoading || !roster) {
     return <LoadingIndicator />;
   } else {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
+          <Link href={"/roster"} className="group hover:text-(--secondary)">
+            <FontAwesomeIcon
+              icon={faArrowLeft}
+              className="mr-2 group-hover:-translate-x-1.5 duration-300"
+            />
+            <span className="group-hover:font-bold">Back to Roster</span>
+          </Link>
           <div className="flex flex-col lg:flex-row lg:items-center">
             <div className="my-4 flex flex-col items-center lg:flex-row lg:justify-start">
               <Image
@@ -81,8 +91,14 @@ const PlayerLayout = ({ playerId }) => {
               </div>
             </div>
           </div>
-          <SeasonAverages playerId={player.id} />
-          <SeasonTotals playerId={player.id} />
+          <SeasonAverages
+            playerId={player.id}
+            seasonsPlayed={player.seasonsPlayed}
+          />
+          <SeasonTotals
+            playerId={player.id}
+            seasonsPlayed={player.seasonsPlayed}
+          />
         </div>
       </div>
     );

@@ -20,7 +20,7 @@ const SeasonTotalsRows = ({ playerId, seasonNumber, totalCellsStyle }) => {
             ? `0%`
             : `${((playerTotals.pm2 / playerTotals.pa2) * 100).toFixed(0)}%`,
         pct3:
-          playerTotals.pa2 === 0
+          playerTotals.pa3 === 0
             ? `0%`
             : `${((playerTotals.pm3 / playerTotals.pa3) * 100).toFixed(0)}%`,
         pctft:

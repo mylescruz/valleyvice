@@ -1,15 +1,6 @@
 import SeasonAveragesRows from "./seasonAveragesRows";
 
-const SeasonAverages = ({ playerId }) => {
-  const seasonsPlayed = [
-    { id: "s18", seasonNumber: 18 },
-    { id: "s17", seasonNumber: 17 },
-    { id: "s16", seasonNumber: 16 },
-    { id: "s15", seasonNumber: 15 },
-    { id: "s14", seasonNumber: 14 },
-    { id: "s13", seasonNumber: 13 },
-  ];
-
+const SeasonAverages = ({ playerId, seasonsPlayed }) => {
   const averageCellsStyle = "w-1/16 p-1 text-center";
 
   return (
@@ -40,7 +31,7 @@ const SeasonAverages = ({ playerId }) => {
             </tr>
           </thead>
           <tbody>
-            {seasonsPlayed.map((season) => (
+            {seasonsPlayed?.map((season) => (
               <SeasonAveragesRows
                 key={season.id}
                 seasonNumber={season.seasonNumber}
