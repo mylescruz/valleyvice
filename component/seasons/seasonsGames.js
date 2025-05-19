@@ -28,22 +28,28 @@ const SeasonsGames = ({ seasonNumber }) => {
           </p>
         </div>
         <h2 className="text-2xl text-(--primary) font-bold">Games</h2>
-        <div className="flex flex-col items-center sm:flex-row sm:flex-wrap sm:justify-between">
+        <div className="flex flex-col items-center sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {season.games.map((game) => (
             <Link
               key={game.id}
               href={`/games/${seasonNumber}/${game.gameNumber}`}
-              className="border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col md:w-4/9 xl:w-1/4 xl:mx-2"
+              className="border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col sm:w-11/12"
             >
-              <h1 className="text-lg font-bold">
-                Game {game.gameNumber}: {game.opponent}
-              </h1>
-              <p>
-                <span className="font-bold text-(--primary)">
-                  {game.result}
-                </span>{" "}
-                {game.totalScore} - {game.opponentScore}
+              <div className="flex flex-row justify-between">
+                <h1 className="font-bold">Game {game.gameNumber}</h1>
+                <p className="font-bold">
+                  <span
+                    className={`${game.result === "W" ? "text-(--primary)" : "text-(--secondary)"}`}
+                  >
+                    {game.result}
+                  </span>{" "}
+                  {game.totalScore} - {game.opponentScore}
+                </p>
+              </div>
+              <p className="font-bold text-lg text-(--primary)">
+                {game.opponent}
               </p>
+
               <p>
                 <FontAwesomeIcon
                   icon={faLocationDot}

@@ -8,6 +8,15 @@ const SeasonsLayout = ({ seasonNum }) => {
     setSeasonNumber(e.target.value);
   };
 
+  const seasonsPlayed = [
+    { id: "s18", seasonNumber: 18 },
+    { id: "s17", seasonNumber: 17 },
+    { id: "s16", seasonNumber: 16 },
+    { id: "s15", seasonNumber: 15 },
+    { id: "s14", seasonNumber: 14 },
+    { id: "s13", seasonNumber: 13 },
+  ];
+
   return (
     <div className="flex flex-col items-center">
       <div className="w-11/12 sm:w-4/5">
@@ -19,8 +28,11 @@ const SeasonsLayout = ({ seasonNum }) => {
             onChange={selectSeason}
             value={seasonNumber}
           >
-            <option value={18}>18</option>
-            <option value={17}>17</option>
+            {seasonsPlayed.map((season) => (
+              <option key={season.id} value={season.seasonNumber}>
+                {season.seasonNumber}
+              </option>
+            ))}
           </select>
         </div>
 
