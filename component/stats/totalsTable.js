@@ -4,23 +4,24 @@ import LoadingIndicator from "../layout/loadingIndicator";
 const TotalsTable = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
 
+  const noStats = 0;
   const totalCellsStyle = "w-1/19 p-1 text-center";
 
   const teamTotals = season.playerTotalStats?.reduce(
     (sum, player) => {
-      sum.pm2 += player.pm2;
-      sum.pa2 += player.pa2;
-      sum.pm3 += player.pm3;
-      sum.pa3 += player.pa3;
-      sum.ft += player.ft;
-      sum.fta += player.fta;
-      sum.reb += player.reb;
-      sum.ast += player.ast;
-      sum.stl += player.stl;
-      sum.blk += player.blk;
-      sum.to += player.to;
-      sum.pf += player.pf;
-      sum.ckd += player.ckd;
+      sum.pm2 += player.pm2 ? player.pm2 : noStats;
+      sum.pa2 += player.pa2 ? player.pa2 : noStats;
+      sum.pm3 += player.pm3 ? player.pm3 : noStats;
+      sum.pa3 += player.pa3 ? player.pa3 : noStats;
+      sum.ft += player.ft ? player.ft : noStats;
+      sum.fta += player.fta ? player.fta : noStats;
+      sum.reb += player.reb ? player.reb : noStats;
+      sum.ast += player.ast ? player.ast : noStats;
+      sum.stl += player.stl ? player.stl : noStats;
+      sum.blk += player.blk ? player.blk : noStats;
+      sum.to += player.to ? player.to : noStats;
+      sum.pf += player.pf ? player.pf : noStats;
+      sum.ckd += player.ckd ? player.ckd : noStats;
 
       return sum;
     },
@@ -80,36 +81,64 @@ const TotalsTable = ({ seasonNumber }) => {
                   <td className={totalCellsStyle}>{player.name}</td>
                   <td className={totalCellsStyle}>{player.gp}</td>
                   <td className={totalCellsStyle}>
-                    {player.pm2 * 2 + player.pm3 * 3 + player.ft}
+                    {player.pm2 * 2 +
+                      player.pm3 * 3 +
+                      (player.ft ? player.ft : noStats)}
                   </td>
-                  <td className={totalCellsStyle}>{player.pm2}</td>
-                  <td className={totalCellsStyle}>{player.pa2}</td>
                   <td className={totalCellsStyle}>
-                    {player.pa2 === 0
+                    {player.pm2 ? player.pm2 : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.pa2 ? player.pa2 : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.pa2 === 0 || !player.pa2
                       ? `0%`
                       : `${((player.pm2 / player.pa2) * 100).toFixed(0)}%`}
                   </td>
-                  <td className={totalCellsStyle}>{player.pm3}</td>
-                  <td className={totalCellsStyle}>{player.pa3}</td>
                   <td className={totalCellsStyle}>
-                    {player.pa3 === 0
+                    {player.pm3 ? player.pm3 : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.pa3 ? player.pa3 : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.pa3 === 0 || !player.pa3
                       ? `0%`
                       : `${((player.pm3 / player.pa3) * 100).toFixed(0)}%`}
                   </td>
-                  <td className={totalCellsStyle}>{player.ft}</td>
-                  <td className={totalCellsStyle}>{player.fta}</td>
                   <td className={totalCellsStyle}>
-                    {player.fta === 0
+                    {player.ft ? player.ft : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.fta ? player.fta : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.fta === 0 || !player.fta
                       ? `0%`
                       : `${((player.ft / player.fta) * 100).toFixed(0)}%`}
                   </td>
-                  <td className={totalCellsStyle}>{player.reb}</td>
-                  <td className={totalCellsStyle}>{player.ast}</td>
-                  <td className={totalCellsStyle}>{player.stl}</td>
-                  <td className={totalCellsStyle}>{player.blk}</td>
-                  <td className={totalCellsStyle}>{player.to}</td>
-                  <td className={totalCellsStyle}>{player.pf}</td>
-                  <td className={totalCellsStyle}>{player.ckd}</td>
+                  <td className={totalCellsStyle}>
+                    {player.reb ? player.reb : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.ast ? player.ast : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.stl ? player.stl : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.blk ? player.blk : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.to ? player.to : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.pf ? player.pf : noStats}
+                  </td>
+                  <td className={totalCellsStyle}>
+                    {player.ckd ? player.ckd : noStats}
+                  </td>
                 </tr>
               ))}
             </tbody>

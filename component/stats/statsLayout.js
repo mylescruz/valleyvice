@@ -1,23 +1,20 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TotalsTable from "./totalsTable";
 import AverageTable from "./averageTable";
+import { InfoContext } from "@/contexts/InfoContext";
+import LoadingIndicator from "../layout/loadingIndicator";
 
 const StatsLayout = ({ seasonNum }) => {
+  const { info, infoLoading } = useContext(InfoContext);
   const [seasonNumber, setSeasonNumber] = useState(seasonNum);
 
   const selectSeason = (e) => {
     setSeasonNumber(e.target.value);
   };
 
-  const seasonsPlayed = [
-    { id: "s18", seasonNumber: 18 },
-    { id: "s17", seasonNumber: 17 },
-    { id: "s16", seasonNumber: 16 },
-    { id: "s15", seasonNumber: 15 },
-    { id: "s14", seasonNumber: 14 },
-    { id: "s13", seasonNumber: 13 },
-  ];
-
+  if (infoLoading) {
+    return <LoadingIndicator />;
+  }
   return (
     <div className="flex flex-col items-center">
       <div className="w-11/12 sm:w-4/5">
@@ -29,7 +26,7 @@ const StatsLayout = ({ seasonNum }) => {
             onChange={selectSeason}
             value={seasonNumber}
           >
-            {seasonsPlayed.map((season) => (
+            {info.seasonsPlayed.map((season) => (
               <option key={season.id} value={season.seasonNumber}>
                 {season.seasonNumber}
               </option>

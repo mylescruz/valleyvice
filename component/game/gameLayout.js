@@ -154,6 +154,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
               <tfoot>
                 <tr className="border-t-1 border-white">
                   <td className={totalCellsStyle}>Totals</td>
+                  <td className={totalCellsStyle}></td>
                   <td className={totalCellsStyle}>
                     {teamTotals.pm2 * 2 + teamTotals.pm3 * 3 + teamTotals.ft}
                   </td>

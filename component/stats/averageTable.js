@@ -1,26 +1,28 @@
 import useSeason from "@/hooks/useSeason";
-import LoadingIndicator from "../layout/loadingIndicator";
 
 const AverageTable = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
+  const noStats = 0;
 
   const teamAverages = season.playerTotalStats?.map((player) => {
     return {
       ...player,
-      ppg: (player.pm2 * 2 + player.pm3 * 3 + player.ft) / player.gp,
-      pm2: player.pm2 / player.gp,
-      pa2: player.pa2 / player.gp,
-      pm3: player.pm3 / player.gp,
-      pa3: player.pa3 / player.gp,
-      ft: player.ft / player.gp,
-      fta: player.fta / player.gp,
-      reb: player.reb / player.gp,
-      ast: player.ast / player.gp,
-      stl: player.stl / player.gp,
-      blk: player.blk / player.gp,
-      to: player.to / player.gp,
-      pf: player.pf / player.gp,
-      ckd: player.ckd / player.gp,
+      ppg:
+        (player.pm2 * 2 + player.pm3 * 3 + (player.ft ? player.ft : 0)) /
+        player.gp,
+      pm2: player.pm2 ? player.pm2 / player.gp : noStats,
+      pa2: player.pa2 ? player.pa2 / player.gp : noStats,
+      pm3: player.pm3 ? player.pm3 / player.gp : noStats,
+      pa3: player.pa3 ? player.pa3 / player.gp : noStats,
+      ft: player.ft ? player.ft / player.gp : noStats,
+      fta: player.fta ? player.fta / player.gp : noStats,
+      reb: player.reb ? player.reb / player.gp : noStats,
+      ast: player.ast ? player.ast / player.gp : noStats,
+      stl: player.stl ? player.stl / player.gp : noStats,
+      blk: player.blk ? player.blk / player.gp : noStats,
+      to: player.to ? player.to / player.gp : noStats,
+      pf: player.pf ? player.pf / player.gp : noStats,
+      ckd: player.ckd ? player.ckd / player.gp : noStats,
     };
   });
 

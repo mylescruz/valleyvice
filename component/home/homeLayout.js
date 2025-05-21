@@ -5,9 +5,19 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
+import LoadingIndicator from "../layout/loadingIndicator";
+import { useContext, useEffect, useState } from "react";
+import { InfoContext } from "@/contexts/InfoContext";
 
 const HomeLayout = () => {
-  const seasonNumber = 18;
+  const { info, infoLoading } = useContext(InfoContext);
+  const [seasonNumber, setSeasonNumber] = useState("");
+
+  useEffect(() => {
+    if (!infoLoading && info) {
+      setSeasonNumber(info.currentSeason);
+    }
+  }, [info, infoLoading]);
 
   const sectionHeaderStyling = "text-xl font-bold mb-4";
   const iconStyling =
@@ -15,6 +25,9 @@ const HomeLayout = () => {
   const linkDivStyling =
     "border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col sm:w-2/5 mx-4 lg:w-1/4 hover:bg-(--primary) group";
 
+  if (infoLoading) {
+    return <LoadingIndicator />;
+  }
   return (
     <div className="flex flex-col items-center">
       <div className="w-11/12 sm:w-4/5 text-center">
