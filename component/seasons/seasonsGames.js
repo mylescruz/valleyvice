@@ -38,14 +38,16 @@ const SeasonsGames = ({ seasonNumber }) => {
             >
               <div className="flex flex-row justify-between">
                 <h1 className="font-bold">Game {game.gameNumber}</h1>
-                <p className="font-bold">
-                  <span
-                    className={`${game.result === "W" ? "text-(--primary)" : "text-(--secondary)"}`}
-                  >
-                    {game.result}
-                  </span>{" "}
-                  {game.totalScore} - {game.opponentScore}
-                </p>
+                {game.result !== "" && (
+                  <p className="font-bold">
+                    <span
+                      className={`${game.result === "W" ? "text-(--primary)" : "text-(--secondary)"}`}
+                    >
+                      {game.result}
+                    </span>{" "}
+                    {game.totalScore} - {game.opponentScore}
+                  </p>
+                )}
               </div>
               <p className="font-bold text-lg text-(--primary)">
                 {game.opponent}
