@@ -6,6 +6,8 @@ const SeasonAveragesRows = ({ playerId, seasonNumber, averageCellsStyle }) => {
 
   const [averages, setAverages] = useState({});
 
+  const noStats = "0.00";
+
   useEffect(() => {
     if (!seasonLoading && season) {
       const playerTotals = season.playerTotalStats.find(
@@ -15,22 +17,50 @@ const SeasonAveragesRows = ({ playerId, seasonNumber, averageCellsStyle }) => {
       setAverages({
         ...playerTotals,
         ppg: (
-          (playerTotals.pm2 * 2 + playerTotals.pm3 * 3 + playerTotals.ft) /
+          (playerTotals.pm2 * 2 +
+            playerTotals.pm3 * 3 +
+            (playerTotals.ft ? playerTotals.ft : 0)) /
           playerTotals.gp
         ).toFixed(2),
-        pm2: (playerTotals.pm2 / playerTotals.gp).toFixed(2),
-        pa2: (playerTotals.pa2 / playerTotals.gp).toFixed(2),
-        pm3: (playerTotals.pm3 / playerTotals.gp).toFixed(2),
-        pa3: (playerTotals.pa3 / playerTotals.gp).toFixed(2),
-        ft: (playerTotals.ft / playerTotals.gp).toFixed(2),
-        fta: (playerTotals.fta / playerTotals.gp).toFixed(2),
-        reb: (playerTotals.reb / playerTotals.gp).toFixed(2),
-        ast: (playerTotals.ast / playerTotals.gp).toFixed(2),
-        stl: (playerTotals.stl / playerTotals.gp).toFixed(2),
-        blk: (playerTotals.blk / playerTotals.gp).toFixed(2),
-        to: (playerTotals.to / playerTotals.gp).toFixed(2),
-        pf: (playerTotals.pf / playerTotals.gp).toFixed(2),
-        ckd: (playerTotals.ckd / playerTotals.gp).toFixed(2),
+        pm2: playerTotals.pm2
+          ? (playerTotals.pm2 / playerTotals.gp).toFixed(2)
+          : noStats,
+        pa2: playerTotals.pa2
+          ? (playerTotals.pa2 / playerTotals.gp).toFixed(2)
+          : noStats,
+        pm3: playerTotals.pm3
+          ? (playerTotals.pm3 / playerTotals.gp).toFixed(2)
+          : noStats,
+        pa3: playerTotals.pa3
+          ? (playerTotals.pa3 / playerTotals.gp).toFixed(2)
+          : noStats,
+        ft: playerTotals.ft
+          ? (playerTotals.ft / playerTotals.gp).toFixed(2)
+          : noStats,
+        fta: playerTotals.fta
+          ? (playerTotals.fta / playerTotals.gp).toFixed(2)
+          : noStats,
+        reb: playerTotals.reb
+          ? (playerTotals.reb / playerTotals.gp).toFixed(2)
+          : noStats,
+        ast: playerTotals.ast
+          ? (playerTotals.ast / playerTotals.gp).toFixed(2)
+          : noStats,
+        stl: playerTotals.stl
+          ? (playerTotals.stl / playerTotals.gp).toFixed(2)
+          : noStats,
+        blk: playerTotals.blk
+          ? (playerTotals.blk / playerTotals.gp).toFixed(2)
+          : noStats,
+        to: playerTotals.to
+          ? (playerTotals.to / playerTotals.gp).toFixed(2)
+          : noStats,
+        pf: playerTotals.pf
+          ? (playerTotals.pf / playerTotals.gp).toFixed(2)
+          : noStats,
+        ckd: playerTotals.ckd
+          ? (playerTotals.ckd / playerTotals.gp).toFixed(2)
+          : noStats,
       });
     }
   }, [season, seasonLoading, playerId]);

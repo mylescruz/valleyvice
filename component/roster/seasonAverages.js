@@ -1,6 +1,7 @@
 import SeasonAveragesRows from "./seasonAveragesRows";
 
-const SeasonAverages = ({ playerId, seasonsPlayed }) => {
+const SeasonAverages = ({ player }) => {
+  const playerStats = player.totalStats;
   const averageCellsStyle = "w-1/16 p-1 text-center";
 
   return (
@@ -31,15 +32,68 @@ const SeasonAverages = ({ playerId, seasonsPlayed }) => {
             </tr>
           </thead>
           <tbody>
-            {seasonsPlayed?.map((season) => (
+            {player.seasonsPlayed?.map((season) => (
               <SeasonAveragesRows
                 key={season.id}
                 seasonNumber={season.seasonNumber}
-                playerId={playerId}
+                playerId={player.id}
                 averageCellsStyle={averageCellsStyle}
               />
             ))}
           </tbody>
+          <tfoot className="border-t-1 border-white">
+            <tr>
+              <td className={averageCellsStyle}>Totals</td>
+              <td className={averageCellsStyle}>{playerStats?.gp}</td>
+              <td className={averageCellsStyle}>
+                {(
+                  (playerStats?.pm2 * 2 +
+                    playerStats?.pm3 * 3 +
+                    (playerStats?.ft ? playerStats?.ft : 0)) /
+                  playerStats?.gp
+                ).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.pm2 / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.pa2 / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.pm3 / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.pa2 / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.ft / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.fta / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.reb / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.ast / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.stl / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.blk / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.to / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.pf / playerStats?.gp).toFixed(2)}
+              </td>
+              <td className={averageCellsStyle}>
+                {(playerStats?.ckd / playerStats?.gp).toFixed(2)}
+              </td>
+            </tr>
+          </tfoot>
         </table>
       </div>
     </div>

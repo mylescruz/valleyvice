@@ -6,6 +6,8 @@ const SeasonTotalsRows = ({ playerId, seasonNumber, totalCellsStyle }) => {
 
   const [stats, setStats] = useState({});
 
+  const noStats = 0;
+
   useEffect(() => {
     if (!seasonLoading && season) {
       const playerTotals = season.playerTotalStats.find(
@@ -14,7 +16,12 @@ const SeasonTotalsRows = ({ playerId, seasonNumber, totalCellsStyle }) => {
 
       setStats({
         ...playerTotals,
-        pts: playerTotals.pm2 * 2 + playerTotals.pm3 * 3 + playerTotals.ft,
+        pts:
+          playerTotals.pm2 * 2 +
+          playerTotals.pm3 * 3 +
+          (playerTotals.ft ? playerTotals.ft : noStats),
+        pm2: playerTotals.pm2 ? playerTotals.pm2 : noStats,
+        pa2: playerTotals.pa2 ? playerTotals.pa2 : noStats,
         pct2:
           playerTotals.pa2 === 0
             ? `0%`
@@ -23,10 +30,21 @@ const SeasonTotalsRows = ({ playerId, seasonNumber, totalCellsStyle }) => {
           playerTotals.pa3 === 0
             ? `0%`
             : `${((playerTotals.pm3 / playerTotals.pa3) * 100).toFixed(0)}%`,
+        ft: playerTotals.ft ? playerTotals.ft : 0,
+        fta: playerTotals.fta ? playerTotals.fta : 0,
         pctft:
-          playerTotals.fta === 0
+          playerTotals.fta === 0 || !playerTotals.fta || !playerTotals.ft
             ? `0%`
             : `${((playerTotals.ft / playerTotals.fta) * 100).toFixed(0)}%`,
+        pm3: playerTotals.pm3 ? playerTotals.pm3 : noStats,
+        pa3: playerTotals.pa3 ? playerTotals.pa3 : noStats,
+        reb: playerTotals.reb ? playerTotals.reb : noStats,
+        ast: playerTotals.ast ? playerTotals.ast : noStats,
+        stl: playerTotals.stl ? playerTotals.stl : noStats,
+        blk: playerTotals.blk ? playerTotals.blk : noStats,
+        to: playerTotals.to ? playerTotals.to : noStats,
+        pf: playerTotals.pf ? playerTotals.pf : noStats,
+        ckd: playerTotals.ckd ? playerTotals.ckd : noStats,
       });
     }
   }, [season, seasonLoading, playerId]);

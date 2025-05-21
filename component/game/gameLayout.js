@@ -4,6 +4,7 @@ import { faArrowLeft, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
+import rosterSorter from "@/helpers/rosterSorter";
 
 const GameLayout = ({ seasonNum, gameNum }) => {
   const { season, seasonLoading } = useSeason(seasonNum);
@@ -50,7 +51,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
     );
   }
 
-  const totalCellsStyle = "w-1/18 p-1 text-center";
+  const totalCellsStyle = "w-1/19 p-1 text-center";
 
   return (
     <div className="flex flex-col items-center">
@@ -90,6 +91,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
             <table>
               <thead className="border-b-1 border-white">
                 <tr>
+                  <th className={totalCellsStyle}>#</th>
                   <th className={totalCellsStyle}>PLR</th>
                   <th className={totalCellsStyle}>PTS</th>
                   <th className={totalCellsStyle}>2PM</th>
@@ -111,8 +113,9 @@ const GameLayout = ({ seasonNum, gameNum }) => {
                 </tr>
               </thead>
               <tbody>
-                {game.playerStats.map((player) => (
+                {rosterSorter(game.playerStats).map((player) => (
                   <tr key={player.id}>
+                    <td className={totalCellsStyle}>{player.number}</td>
                     <td className={totalCellsStyle}>{player.name}</td>
                     <td className={totalCellsStyle}>
                       {player.pm2 * 2 + player.pm3 * 3 + player.ft}

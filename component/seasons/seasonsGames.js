@@ -4,6 +4,7 @@ import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
 import dateFormatter from "@/helpers/dateFormatter";
+import gameSorter from "@/helpers/gameSorter";
 
 const SeasonsGames = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
@@ -29,7 +30,7 @@ const SeasonsGames = ({ seasonNumber }) => {
         </div>
         <h2 className="text-2xl text-(--primary) font-bold">Games</h2>
         <div className="flex flex-col items-center sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {season.games.map((game) => (
+          {gameSorter(season.games).map((game) => (
             <Link
               key={game.id}
               href={`/games/${seasonNumber}/${game.gameNumber}`}

@@ -92,10 +92,12 @@ const PlayerLayout = ({ playerId }) => {
             </div>
           </div>
           <SeasonAverages
+            player={player}
             playerId={player.id}
             seasonsPlayed={player.seasonsPlayed}
           />
           <SeasonTotals
+            player={player}
             playerId={player.id}
             seasonsPlayed={player.seasonsPlayed}
           />
