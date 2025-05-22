@@ -1,3 +1,4 @@
+import useRoster from "@/hooks/useRoster";
 import useSeason from "@/hooks/useSeason";
 import { useState } from "react";
 
@@ -10,11 +11,11 @@ const CompleteGame = ({
   setEnterGameInfo,
 }) => {
   const { season, putSeason } = useSeason(game.seasonNumber);
+  const { roster, putRoster } = useRoster();
   const [gameScores, setGameScores] = useState({
     opponentScore: 0,
     totalScore: 0,
   });
-  console.log(game);
 
   const handleInput = (e) => {
     const input = e.target.value;
@@ -31,48 +32,80 @@ const CompleteGame = ({
   };
 
   const submitGame = () => {
-    const finalGame = {
-      ...game,
-      opponentScore: gameScores.opponentScore,
-      totalScore: gameScores.totalScore,
-      result: gameScores.totalScore > gameScores.opponentScore ? "W" : "L",
-    };
+    try {
+      const finalGame = {
+        ...game,
+        opponentScore: gameScores.opponentScore,
+        totalScore: gameScores.totalScore,
+        result: gameScores.totalScore > gameScores.opponentScore ? "W" : "L",
+      };
 
-    const updatedPlayerStats = season.playerTotalStats.map((player) => {
-      game.playerStats.forEach((pyr) => {
-        if (player.id === pyr.id) {
-          player.gp += 1;
-          player.pm2 += pyr.pm2;
-          player.pa2 += pyr.pa2;
-          player.pm3 += pyr.pm3;
-          player.pa3 += pyr.pa3;
-          player.ft += pyr.ft;
-          player.fta += pyr.fta;
-          player.reb += pyr.reb;
-          player.ast += pyr.ast;
-          player.stl += pyr.stl;
-          player.blk += pyr.blk;
-          player.to += pyr.to;
-          player.pf += pyr.pf;
-          player.ckd += pyr.ckd;
-        }
+      const updatedPlayerStats = season.playerTotalStats.map((player) => {
+        game.playerStats.forEach((pyr) => {
+          if (player.id === pyr.id) {
+            player.gp += 1;
+            player.pm2 += pyr.pm2;
+            player.pa2 += pyr.pa2;
+            player.pm3 += pyr.pm3;
+            player.pa3 += pyr.pa3;
+            player.ft += pyr.ft;
+            player.fta += pyr.fta;
+            player.reb += pyr.reb;
+            player.ast += pyr.ast;
+            player.stl += pyr.stl;
+            player.blk += pyr.blk;
+            player.to += pyr.to;
+            player.pf += pyr.pf;
+            player.ckd += pyr.ckd;
+          }
+        });
+
+        return player;
       });
 
-      return player;
-    });
+      const updatedSeason = {
+        ...season,
+        playerTotalStats: updatedPlayerStats,
+        games: [...season.games, finalGame],
+        wins: finalGame.result === "W" ? season.wins + 1 : season.wins,
+        losses: finalGame.result === "L" ? season.losses + 1 : season.losses,
+      };
 
-    const updatedSeason = {
-      ...season,
-      playerTotalStats: updatedPlayerStats,
-      games: [...season.games, finalGame],
-    };
+      const updatedRoster = roster.map((player) => {
+        updatedPlayerStats.forEach((playerStats) => {
+          if (player.id === playerStats.id) {
+            player.gp += playerStats.gp;
+            player.pm2 += playerStats.pm2;
+            player.pa2 += playerStats.pa2;
+            player.pm3 += playerStats.pm3;
+            player.pa3 += playerStats.pa3;
+            player.ft += playerStats.ft;
+            player.fta += playerStats.fta;
+            player.reb += playerStats.reb;
+            player.ast += playerStats.ast;
+            player.stl += playerStats.stl;
+            player.blk += playerStats.blk;
+            player.to += playerStats.to;
+            player.pf += playerStats.pf;
+            player.ckd += playerStats.ckd;
+          }
+        });
 
-    putSeason(updatedSeason);
-    deleteTrackedGame();
-    setGame(trackedGame);
+        return player;
+      });
 
-    closeComplete();
-    setEnterGameInfo(true);
+      putSeason(updatedSeason);
+      putRoster(updatedRoster);
+      deleteTrackedGame();
+      setGame(trackedGame);
+
+      closeComplete();
+      setEnterGameInfo(true);
+    } catch (error) {
+      console.error(error);
+      closeComplete();
+      return;
+    }
   };
 
   const gameDetailsInputGroup = "flex flex-col my-1.5";
@@ -104,6 +137,7 @@ const CompleteGame = ({
               type="number"
               onChange={handleInput}
               className={gameDetailsInput}
+              value={gameScores.opponentScore}
             />
           </div>
         </form>

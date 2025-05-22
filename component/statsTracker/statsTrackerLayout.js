@@ -35,7 +35,7 @@ const StatsTrackerLayout = () => {
   } = useTrackedGame();
 
   const [game, setGame] = useState(trackedGame);
-  const [enterGameInfo, setEnterGameInfo] = useState(true);
+  const [enterGameInfo, setEnterGameInfo] = useState(!trackedGame.saved);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [statSelected, setStatSelected] = useState("");
   const [gameFinished, setGameFinished] = useState(false);
@@ -43,6 +43,7 @@ const StatsTrackerLayout = () => {
   useEffect(() => {
     if (trackedGame) {
       setGame(trackedGame);
+      setEnterGameInfo(!trackedGame.saved);
     }
   }, [trackedGame]);
 

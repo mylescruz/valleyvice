@@ -8,7 +8,7 @@ const NewPlayerForm = ({
   setGame,
 }) => {
   const [newPlayer, setNewPlayer] = useState({
-    id: "",
+    id: "vvSubs",
     name: "",
     number: "",
     pm2: 0,
@@ -72,16 +72,6 @@ const NewPlayerForm = ({
               type="text"
               onChange={handleInput}
               className={gameDetailsInput}
-            />
-          </div>
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="id">Player ID</label>
-            <input
-              id="id"
-              type="text"
-              onChange={handleInput}
-              className={gameDetailsInput}
-              value={newPlayer.id}
             />
           </div>
           <div className={gameDetailsInputGroup}>

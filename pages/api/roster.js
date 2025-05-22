@@ -1,4 +1,8 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -62,6 +66,25 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error(`${method} roster request failed: ${error}`);
       res.status(500).send("Error retrieving roster data");
+    }
+  } else if (method === "PUT") {
+    try {
+      const updatedRoster = req?.body;
+
+      // Save the updated roster into the roster file
+      const rosterParams = {
+        Bucket: BUCKET,
+        Key: key,
+        Body: JSON.stringify(updatedRoster, null, 2),
+        ContentType: "application/json",
+      };
+
+      await S3.send(new PutObjectCommand(rosterParams));
+
+      res.status(200).json(updatedRoster);
+    } catch (error) {
+      console.error(`${method} roster request failed: ${error}`);
+      res.status(500).send("Error updating roster data");
     }
   } else {
     res.status(405).send(`Method ${method} not allowed`);
