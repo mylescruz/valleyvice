@@ -39,6 +39,7 @@ const streamToJSON = (stream) => {
 
 export default async function handler(req, res) {
   const method = req.method;
+  const seasonNum = req.query.seasonNum;
 
   const key = "roster/roster.json";
 
@@ -50,8 +51,11 @@ export default async function handler(req, res) {
     };
 
     try {
+      // Get the roster for the selected season
+      const seasonId = `s${seasonNum}`;
       const rosterData = await S3.send(new GetObjectCommand(rosterParams));
-      return await streamToJSON(rosterData.Body);
+      const rosterJSON = await streamToJSON(rosterData.Body);
+      return rosterJSON[seasonId];
     } catch (error) {
       console.error("Error retrieving the roster data from S3: ", error);
       return null;

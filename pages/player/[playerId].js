@@ -8,6 +8,7 @@ export default function Page() {
   const router = useRouter();
 
   const playerId = router.query.playerId;
+  const seasonNum = router.query.seasonNum;
 
   if (!playerId) {
     return <LoadingIndicator />;
@@ -21,7 +22,7 @@ export default function Page() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <PlayerLayout playerId={playerId} />
+      <PlayerLayout playerId={playerId} seasonNum={seasonNum} />
     </>
   );
 }

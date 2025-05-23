@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 
-const useRoster = () => {
-  const [roster, setRoster] = useState({});
+const useRoster = (seasonNumber) => {
+  const [roster, setRoster] = useState([]);
   const [rosterLoading, setRosterLoading] = useState(true);
 
   useEffect(() => {
     const getRoster = async () => {
       try {
-        const response = await fetch(`/api/roster`);
+        const response = await fetch(`/api/roster/${seasonNumber}`);
 
         if (response.ok) {
           const result = await response.json();
@@ -23,11 +23,11 @@ const useRoster = () => {
     };
 
     getRoster();
-  }, []);
+  }, [seasonNumber]);
 
   const putRoster = async (roster) => {
     try {
-      const response = await fetch("/api/roster", {
+      const response = await fetch(`/api/roster/${seasonNumber}`, {
         method: "PUT",
         headers: {
           Accept: "application.json",

@@ -1,51 +1,39 @@
-import useRoster from "@/hooks/useRoster";
-import Image from "next/image";
 import LoadingIndicator from "../layout/loadingIndicator";
-import rosterSorter from "@/helpers/rosterSorter";
-import Link from "next/link";
+import { useContext, useState } from "react";
+import SeasonRoster from "./seasonRoster";
+import { InfoContext } from "@/contexts/InfoContext";
 
-const RosterLayout = () => {
-  const { roster, rosterLoading } = useRoster();
+const RosterLayout = ({ seasonNum }) => {
+  const { info, infoLoading } = useContext(InfoContext);
+  const [seasonNumber, setSeasonNumber] = useState(seasonNum);
 
-  if (rosterLoading) {
+  const selectSeason = (e) => {
+    setSeasonNumber(e.target.value);
+  };
+
+  if (infoLoading) {
     return <LoadingIndicator />;
   } else {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
-          <h1 className="text-3xl text-(--primary) text-center font-bold mb-4">
-            Roster
-          </h1>
-          <div className="flex flex-col items-center">
-            {rosterSorter(roster).map((player) => (
-              <Link
-                key={player.id}
-                href={`/roster/${player.id}`}
-                className="w-full border-2 border-(--secondary) rounded-lg my-2 px-4 py-4 sm:w-2/3 lg:w-1/2"
-              >
-                <div className="flex flex-row">
-                  <Image
-                    src={`/images/${player.imageSrc}`}
-                    alt="Player Image"
-                    width={500}
-                    height={500}
-                    className="w-[100px] rounded-full shadow shadow-gray-500"
-                  />
-                  <div className="flex flex-col justify-evenly ml-4">
-                    <p className="text-xl">
-                      <span className="text-(--primary) font-bold">
-                        #{player.number}
-                      </span>{" "}
-                      {player.name}
-                    </p>
-
-                    <p>{player.height}</p>
-                    <p>{player.position}</p>
-                  </div>
-                </div>
-              </Link>
-            ))}
+          <div className="mt-2 mb-4 text-center">
+            <label htmlFor="season">Choose a season:</label>
+            <select
+              id="season"
+              className="px-2 border-1 border-(--secondary) rounded-lg mx-2 py-1"
+              onChange={selectSeason}
+              value={seasonNumber}
+            >
+              {info.seasonsPlayed.map((season) => (
+                <option key={season.id} value={season.seasonNumber}>
+                  {season.seasonNumber}
+                </option>
+              ))}
+            </select>
           </div>
+
+          <SeasonRoster seasonNumber={seasonNumber} />
         </div>
       </div>
     );

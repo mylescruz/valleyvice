@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import usePlayer from "@/hooks/usePlayer";
 
-const PlayerLayout = ({ playerId }) => {
+const PlayerLayout = ({ playerId, seasonNum }) => {
   const { player, playerLoading } = usePlayer(playerId);
 
   const playerAverages = {
@@ -32,7 +32,10 @@ const PlayerLayout = ({ playerId }) => {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
-          <Link href={"/roster"} className="group hover:text-(--secondary)">
+          <Link
+            href={`/roster/${seasonNum}`}
+            className="group hover:text-(--secondary)"
+          >
             <FontAwesomeIcon
               icon={faArrowLeft}
               className="mr-2 group-hover:-translate-x-1.5 duration-300"
