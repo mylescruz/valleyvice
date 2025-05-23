@@ -48,7 +48,7 @@ const HomeLayout = () => {
             <FontAwesomeIcon icon={faBasketball} className={iconStyling} />
             <p className={sectionHeaderStyling}>Current games</p>
           </Link>
-          <Link href={`/roster`} className={linkDivStyling}>
+          <Link href={`/roster/${seasonNumber}`} className={linkDivStyling}>
             <FontAwesomeIcon icon={faUser} className={iconStyling} />
             <p className={sectionHeaderStyling}>Current roster</p>
           </Link>
