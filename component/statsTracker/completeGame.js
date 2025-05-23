@@ -11,7 +11,7 @@ const CompleteGame = ({
   setEnterGameInfo,
 }) => {
   const { season, putSeason } = useSeason(game.seasonNumber);
-  const { roster, putRoster } = useRoster();
+  const { roster, putRoster } = useRoster(game.seasonNumber);
   const [gameScores, setGameScores] = useState({
     opponentScore: 0,
     totalScore: 0,

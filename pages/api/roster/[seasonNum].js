@@ -40,6 +40,7 @@ const streamToJSON = (stream) => {
 export default async function handler(req, res) {
   const method = req.method;
   const seasonNum = req.query.seasonNum;
+  const seasonId = `s${seasonNum}`;
 
   const key = "roster/roster.json";
 
@@ -51,11 +52,8 @@ export default async function handler(req, res) {
     };
 
     try {
-      // Get the roster for the selected season
-      const seasonId = `s${seasonNum}`;
       const rosterData = await S3.send(new GetObjectCommand(rosterParams));
-      const rosterJSON = await streamToJSON(rosterData.Body);
-      return rosterJSON[seasonId];
+      return await streamToJSON(rosterData.Body);
     } catch (error) {
       console.error("Error retrieving the roster data from S3: ", error);
       return null;
@@ -66,7 +64,8 @@ export default async function handler(req, res) {
     try {
       const roster = await getRosterData();
 
-      res.status(200).json(roster);
+      // Get the roster for the selected season
+      res.status(200).json(roster[seasonId]);
     } catch (error) {
       console.error(`${method} roster request failed: ${error}`);
       res.status(500).send("Error retrieving roster data");
@@ -75,11 +74,16 @@ export default async function handler(req, res) {
     try {
       const updatedRoster = req?.body;
 
+      // Update the roster for the selected season
+      const roster = await getRosterData();
+
+      roster[seasonId] = updatedRoster;
+
       // Save the updated roster into the roster file
       const rosterParams = {
         Bucket: BUCKET,
         Key: key,
-        Body: JSON.stringify(updatedRoster, null, 2),
+        Body: JSON.stringify(roster, null, 2),
         ContentType: "application/json",
       };
 
