@@ -1,3 +1,4 @@
+import usePlayerStats from "@/hooks/usePlayersStats";
 import useRoster from "@/hooks/useRoster";
 import useSeason from "@/hooks/useSeason";
 import { useState } from "react";
@@ -11,7 +12,7 @@ const CompleteGame = ({
   setEnterGameInfo,
 }) => {
   const { season, putSeason } = useSeason(game.seasonNumber);
-  const { roster, putRoster } = useRoster(game.seasonNumber);
+  const { putPlayersStats } = usePlayerStats(game.seasonNumber);
   const [gameScores, setGameScores] = useState({
     opponentScore: 0,
     totalScore: 0,
@@ -71,31 +72,8 @@ const CompleteGame = ({
         losses: finalGame.result === "L" ? season.losses + 1 : season.losses,
       };
 
-      const updatedRoster = roster.map((player) => {
-        updatedPlayerStats.forEach((playerStats) => {
-          if (player.id === playerStats.id) {
-            player.gp += playerStats.gp;
-            player.pm2 += playerStats.pm2;
-            player.pa2 += playerStats.pa2;
-            player.pm3 += playerStats.pm3;
-            player.pa3 += playerStats.pa3;
-            player.ft += playerStats.ft;
-            player.fta += playerStats.fta;
-            player.reb += playerStats.reb;
-            player.ast += playerStats.ast;
-            player.stl += playerStats.stl;
-            player.blk += playerStats.blk;
-            player.to += playerStats.to;
-            player.pf += playerStats.pf;
-            player.ckd += playerStats.ckd;
-          }
-        });
-
-        return player;
-      });
-
       putSeason(updatedSeason);
-      putRoster(updatedRoster);
+      putPlayersStats(finalGame.playerStats);
       deleteTrackedGame();
       setGame(trackedGame);
 
