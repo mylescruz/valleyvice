@@ -1,25 +1,14 @@
-import useRoster from "@/hooks/useRoster";
 import LoadingIndicator from "../layout/loadingIndicator";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import SeasonTotals from "./seasonTotals";
 import SeasonAverages from "./seasonAverages";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import usePlayer from "@/hooks/usePlayer";
 
 const PlayerLayout = ({ playerId }) => {
-  const { roster, rosterLoading } = useRoster();
-
-  const [player, setPlayer] = useState({});
-
-  useEffect(() => {
-    if (!rosterLoading && roster) {
-      const foundPlayer = roster?.find((player) => player.id === playerId);
-
-      setPlayer(foundPlayer);
-    }
-  }, [roster, rosterLoading, playerId]);
+  const { player, playerLoading } = usePlayer(playerId);
 
   const playerAverages = {
     ppg: (
@@ -37,7 +26,7 @@ const PlayerLayout = ({ playerId }) => {
   const averagesTitleStyling = "text-xl text-(--secondary) font-bold";
   const averagesValueStyling = "font-bold";
 
-  if (rosterLoading || !roster) {
+  if (playerLoading || !player) {
     return <LoadingIndicator />;
   } else {
     return (

@@ -1,3 +1,4 @@
+import seasonSorter from "@/helpers/seasonSorter";
 import SeasonTotalsRows from "./seasonTotalsRows";
 
 const SeasonTotals = ({ player }) => {
@@ -35,11 +36,10 @@ const SeasonTotals = ({ player }) => {
             </tr>
           </thead>
           <tbody>
-            {player.seasonsPlayed?.map((season) => (
+            {seasonSorter(player.statsPerSeason)?.map((season) => (
               <SeasonTotalsRows
                 key={season.id}
-                seasonNumber={season.seasonNumber}
-                playerId={player.id}
+                season={season}
                 totalCellsStyle={totalCellsStyle}
               />
             ))}

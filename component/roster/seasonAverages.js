@@ -1,3 +1,4 @@
+import seasonSorter from "@/helpers/seasonSorter";
 import SeasonAveragesRows from "./seasonAveragesRows";
 
 const SeasonAverages = ({ player }) => {
@@ -32,11 +33,10 @@ const SeasonAverages = ({ player }) => {
             </tr>
           </thead>
           <tbody>
-            {player.seasonsPlayed?.map((season) => (
+            {seasonSorter(player.statsPerSeason)?.map((season) => (
               <SeasonAveragesRows
                 key={season.id}
-                seasonNumber={season.seasonNumber}
-                playerId={player.id}
+                season={season}
                 averageCellsStyle={averageCellsStyle}
               />
             ))}
