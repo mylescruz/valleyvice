@@ -70,85 +70,87 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
   return (
     <div className="flex flex-col items-center">
       <form
-        className="w-full my-4 flex flex-col items-center sm:w-2/3 md:w-1/2 lg:w-1/3 xl:w-1/4"
+        className="w-full my-4 flex flex-col items-center sm:w-4/5 lg:w-2/3 xl:w-1/2"
         onSubmit={completeGameInfo}
       >
-        <div className="flex flex-col w-full">
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="seasonNumber">Season #</label>
-            <input
-              id="seasonNumber"
-              type="number"
-              onChange={handleNumInput}
-              className={gameDetailsInput}
-              value={gameInfo.seasonNumber}
-              required
-            />
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col">
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="seasonNumber">Season #</label>
+              <input
+                id="seasonNumber"
+                type="number"
+                onChange={handleNumInput}
+                className={gameDetailsInput}
+                value={gameInfo.seasonNumber}
+                required
+              />
+            </div>
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="gameNumber">Game #</label>
+              <input
+                id="gameNumber"
+                type="number"
+                onChange={handleNumInput}
+                className={gameDetailsInput}
+                value={gameInfo.gameNumber}
+                required
+              />
+            </div>
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="date">Date</label>
+              <input
+                id="date"
+                type="date"
+                onChange={handleInput}
+                className={gameDetailsInput}
+                value={gameInfo.date}
+                required
+              />
+            </div>
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="location">Location</label>
+              <input
+                id="location"
+                type="text"
+                onChange={handleInput}
+                className={gameDetailsInput}
+                value={gameInfo.location}
+                required
+              />
+            </div>
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="opponent">Oppponent</label>
+              <input
+                id="opponent"
+                type="text"
+                onChange={handleInput}
+                className={gameDetailsInput}
+                value={gameInfo.opponent}
+                required
+              />
+            </div>
           </div>
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="gameNumber">Game #</label>
-            <input
-              id="gameNumber"
-              type="number"
-              onChange={handleNumInput}
-              className={gameDetailsInput}
-              value={gameInfo.gameNumber}
-              required
-            />
-          </div>
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="date">Date</label>
-            <input
-              id="date"
-              type="date"
-              onChange={handleInput}
-              className={gameDetailsInput}
-              value={gameInfo.date}
-              required
-            />
-          </div>
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="location">Location</label>
-            <input
-              id="location"
-              type="text"
-              onChange={handleInput}
-              className={gameDetailsInput}
-              value={gameInfo.location}
-              required
-            />
-          </div>
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="opponent">Oppponent</label>
-            <input
-              id="opponent"
-              type="text"
-              onChange={handleInput}
-              className={gameDetailsInput}
-              value={gameInfo.opponent}
-              required
-            />
-          </div>
-        </div>
-        <div className="flex flex-col items-center mt-1.5">
-          <p>Who played this game?</p>
-          <div className="flex flex-row flex-wrap justify-center">
-            {game?.playerStats?.map((player) => (
+          <div className="flex flex-col items-center mt-1.5">
+            <p>Who played this game?</p>
+            <div className="flex flex-row flex-wrap justify-center lg:w-3/4 xl:w-4/5">
+              {game?.playerStats?.map((player) => (
+                <div
+                  key={player.id}
+                  className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${players.includes(player.id) && "bg-(--primary) font-bold"}`}
+                  onClick={() => {
+                    enterPlayer(player.id);
+                  }}
+                >
+                  {player.name}
+                </div>
+              ))}
               <div
-                key={player.id}
-                className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${players.includes(player.id) && "bg-(--primary) font-bold"}`}
-                onClick={() => {
-                  enterPlayer(player.id);
-                }}
+                className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+                onClick={enterNewPlayer}
               >
-                {player.name}
+                New
               </div>
-            ))}
-            <div
-              className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-              onClick={enterNewPlayer}
-            >
-              New
             </div>
           </div>
         </div>

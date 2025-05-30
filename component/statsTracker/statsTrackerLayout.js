@@ -36,7 +36,10 @@ const StatsTrackerLayout = () => {
 
   const [game, setGame] = useState(trackedGame);
   const [enterGameInfo, setEnterGameInfo] = useState(!trackedGame.saved);
+  const [chooseStat, setChooseStat] = useState(true);
   const [choosePlayer, setChoosePlayer] = useState(false);
+  const [chooseAssist, setChooseAssist] = useState(false);
+  const [shotMaker, setShotMaker] = useState("");
   const [statSelected, setStatSelected] = useState("");
   const [gameFinished, setGameFinished] = useState(false);
 
@@ -47,9 +50,49 @@ const StatsTrackerLayout = () => {
     }
   }, [trackedGame]);
 
-  const chooseStat = (stat) => {
+  const selectStat = (stat) => {
+    setChooseStat(false);
     setStatSelected(stat);
     setChoosePlayer(true);
+  };
+
+  const selectAssister = (playerId) => {
+    if (statSelected === "pm2" || statSelected === "pm3") {
+      setChoosePlayer(false);
+      setChooseAssist(true);
+    } else {
+      setChoosePlayer(false);
+      addStat(playerId);
+    }
+  };
+
+  const addAssist = (playerId) => {
+    addStat(shotMaker);
+
+    if (playerId !== "") {
+      const updatedStats = game.playerStats.map((player) => {
+        if (player.id === playerId) {
+          player.ast += 1;
+          game.teamStats.ast += 1;
+        }
+
+        return player;
+      });
+
+      setGame({
+        ...game,
+        playerStats: updatedStats,
+        statsRecorded: [
+          ...game.statsRecorded,
+          { playerId: shotMaker, stat: statSelected },
+          { playerId: playerId, stat: "ast" },
+        ],
+      });
+    }
+
+    setShotMaker("");
+    setChooseAssist(false);
+    setChooseStat(true);
   };
 
   const addStat = (playerId) => {
@@ -80,7 +123,6 @@ const StatsTrackerLayout = () => {
     });
 
     setStatSelected("");
-    setChoosePlayer(false);
     setGame({
       ...game,
       playerStats: updatedStats,
@@ -90,6 +132,7 @@ const StatsTrackerLayout = () => {
       ],
       saved: false,
     });
+    setChooseStat(true);
   };
 
   const undoStat = () => {
@@ -148,6 +191,8 @@ const StatsTrackerLayout = () => {
 
   const buttonStyling =
     "font-bold rounded-lg mx-2 px-2 py-1 bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer";
+  const bubbleStyling =
+    "border-2 border-(--secondary) w-[70px] aspect-square rounded-full flex flex-col items-center justify-center m-2 font-bold hover:bg-(--primary) hover:cursor-pointer";
 
   if (trackedGameLoading) {
     return <LoadingIndicator />;
@@ -169,26 +214,27 @@ const StatsTrackerLayout = () => {
               </>
             ) : (
               <>
-                {!choosePlayer ? (
+                <h1 className="text-3xl font-bold text-(--primary) text-center">
+                  Track Game Stats
+                </h1>
+                {chooseStat && (
                   <>
                     <h2 className="text-center my-2 text-lg">Choose a stat</h2>
                     <div className="flex flex-row flex-wrap justify-center">
                       {stats.map((stat) => (
                         <div
                           key={stat.id}
-                          className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                          onClick={() => chooseStat(stat.value)}
+                          className={bubbleStyling}
+                          onClick={() => selectStat(stat.value)}
                         >
                           {stat.name}
                         </div>
                       ))}
                     </div>
                   </>
-                ) : (
+                )}
+                {choosePlayer && (
                   <>
-                    <h1 className="text-3xl font-bold text-(--primary) text-center">
-                      Track Stats
-                    </h1>
                     <h2 className="text-center my-2 text-lg">
                       Choose a player
                     </h2>
@@ -196,12 +242,39 @@ const StatsTrackerLayout = () => {
                       {game.playerStats.map((player) => (
                         <div
                           key={player.id}
-                          className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                          onClick={() => addStat(player.id)}
+                          className={bubbleStyling}
+                          onClick={() => {
+                            setShotMaker(player.id);
+                            selectAssister(player.id);
+                          }}
                         >
                           {player.name}
                         </div>
                       ))}
+                    </div>
+                  </>
+                )}
+                {chooseAssist && (
+                  <>
+                    <h2 className="text-center my-2 text-lg">Who assisted?</h2>
+                    <div className="flex flex-row flex-wrap justify-center">
+                      <div
+                        className={bubbleStyling}
+                        onClick={() => addAssist("")}
+                      >
+                        None
+                      </div>
+                      {game.playerStats
+                        .filter((player) => player.id !== shotMaker)
+                        .map((player) => (
+                          <div
+                            key={player.id}
+                            className={bubbleStyling}
+                            onClick={() => addAssist(player.id)}
+                          >
+                            {player.name}
+                          </div>
+                        ))}
                     </div>
                   </>
                 )}
@@ -214,7 +287,7 @@ const StatsTrackerLayout = () => {
                     <div className="text-(--secondary) flex flex-row justify-between">
                       <FontAwesomeIcon
                         icon={faArrowRotateLeft}
-                        className="text-lg hover:text-(--primary) hover:cursor-pointer"
+                        className={`${game.statsRecorded?.length === 0 ? "text-gray-500" : "text-lg hover:text-(--primary) hover:cursor-pointer"}`}
                         onClick={undoStat}
                       />
                       <div className="flex flex-row">

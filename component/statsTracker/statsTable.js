@@ -66,7 +66,9 @@ const StatsTable = ({ playerStats, teamStats }) => {
         <tr className="border-t-1 broder-white">
           <td className={playerCellsStyle}>Totals</td>
           <td className={playerCellsStyle}>
-            {teamStats?.pm2 * 2 + teamStats?.pm3 * 3 + teamStats?.ft}
+            {teamStats
+              ? teamStats.pm2 * 2 + teamStats.pm3 * 3 + teamStats.ft
+              : 0}
           </td>
           <td className={playerCellsStyle}>{teamStats?.pm2}</td>
           <td className={playerCellsStyle}>{teamStats?.pa2}</td>
