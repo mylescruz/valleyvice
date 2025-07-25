@@ -12,13 +12,15 @@ const useInfo = () => {
         if (response.ok) {
           const result = await response.json();
           setInfo(result);
-          setInfoLoading(false);
         } else {
           const result = await response.text();
           throw new Error(result);
         }
       } catch (error) {
+        setInfo(null);
         console.error(error);
+      } finally {
+        setInfoLoading(false);
       }
     };
 

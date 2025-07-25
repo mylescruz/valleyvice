@@ -1,5 +1,6 @@
 import useSeason from "@/hooks/useSeason";
 import LoadingIndicator from "../layout/loadingIndicator";
+import ErrorLayout from "../layout/errorLayout";
 
 const TotalsTable = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
@@ -44,7 +45,7 @@ const TotalsTable = ({ seasonNumber }) => {
 
   if (seasonLoading) {
     return <LoadingIndicator />;
-  } else {
+  } else if (season) {
     return (
       <>
         <h1 className="text-3xl text-(--primary) text-center font-bold">
@@ -183,6 +184,8 @@ const TotalsTable = ({ seasonNumber }) => {
         </div>
       </>
     );
+  } else {
+    return <ErrorLayout />;
   }
 };
 

@@ -5,6 +5,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
 import rosterSorter from "@/helpers/rosterSorter";
+import ErrorLayout from "../layout/errorLayout";
+
+const TOTAL_CELLS_STYLE = "w-1/19 p-1 text-center";
 
 const GameLayout = ({ seasonNum, gameNum }) => {
   const { season, seasonLoading } = useSeason(seasonNum);
@@ -52,11 +55,9 @@ const GameLayout = ({ seasonNum, gameNum }) => {
     );
   }
 
-  const totalCellsStyle = "w-1/19 p-1 text-center";
-
   if (seasonLoading) {
     return <LoadingIndicator />;
-  } else {
+  } else if (season) {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
@@ -97,89 +98,89 @@ const GameLayout = ({ seasonNum, gameNum }) => {
               <table>
                 <thead className="border-b-1 border-white">
                   <tr>
-                    <th className={totalCellsStyle}>#</th>
-                    <th className={totalCellsStyle}>PLR</th>
-                    <th className={totalCellsStyle}>PTS</th>
-                    <th className={totalCellsStyle}>2PM</th>
-                    <th className={totalCellsStyle}>2PA</th>
-                    <th className={totalCellsStyle}>2P%</th>
-                    <th className={totalCellsStyle}>3PM</th>
-                    <th className={totalCellsStyle}>3PA</th>
-                    <th className={totalCellsStyle}>3P%</th>
-                    <th className={totalCellsStyle}>FT</th>
-                    <th className={totalCellsStyle}>FTA</th>
-                    <th className={totalCellsStyle}>FT%</th>
-                    <th className={totalCellsStyle}>REB</th>
-                    <th className={totalCellsStyle}>AST</th>
-                    <th className={totalCellsStyle}>STL</th>
-                    <th className={totalCellsStyle}>BLK</th>
-                    <th className={totalCellsStyle}>TO</th>
-                    <th className={totalCellsStyle}>PF</th>
-                    <th className={totalCellsStyle}>CKD</th>
+                    <th className={TOTAL_CELLS_STYLE}>#</th>
+                    <th className={TOTAL_CELLS_STYLE}>PLR</th>
+                    <th className={TOTAL_CELLS_STYLE}>PTS</th>
+                    <th className={TOTAL_CELLS_STYLE}>2PM</th>
+                    <th className={TOTAL_CELLS_STYLE}>2PA</th>
+                    <th className={TOTAL_CELLS_STYLE}>2P%</th>
+                    <th className={TOTAL_CELLS_STYLE}>3PM</th>
+                    <th className={TOTAL_CELLS_STYLE}>3PA</th>
+                    <th className={TOTAL_CELLS_STYLE}>3P%</th>
+                    <th className={TOTAL_CELLS_STYLE}>FT</th>
+                    <th className={TOTAL_CELLS_STYLE}>FTA</th>
+                    <th className={TOTAL_CELLS_STYLE}>FT%</th>
+                    <th className={TOTAL_CELLS_STYLE}>REB</th>
+                    <th className={TOTAL_CELLS_STYLE}>AST</th>
+                    <th className={TOTAL_CELLS_STYLE}>STL</th>
+                    <th className={TOTAL_CELLS_STYLE}>BLK</th>
+                    <th className={TOTAL_CELLS_STYLE}>TO</th>
+                    <th className={TOTAL_CELLS_STYLE}>PF</th>
+                    <th className={TOTAL_CELLS_STYLE}>CKD</th>
                   </tr>
                 </thead>
                 <tbody>
                   {rosterSorter(game.playerStats).map((player) => (
                     <tr key={player.id}>
-                      <td className={totalCellsStyle}>{player.number}</td>
-                      <td className={totalCellsStyle}>{player.name}</td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>{player.number}</td>
+                      <td className={TOTAL_CELLS_STYLE}>{player.name}</td>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pm2 * 2 +
                           player.pm3 * 3 +
                           (player.ft ? player.ft : noStats)}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pm2 ? player.pm2 : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pa2 ? player.pa2 : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pa2 === 0 || !player.pa2
                           ? `0%`
                           : `${((player.pm2 / player.pa2) * 100).toFixed(0)}%`}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pm3 ? player.pm3 : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pa3 ? player.pa3 : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pa3 === 0 || !player.pa3
                           ? `0%`
                           : `${((player.pm3 / player.pa3) * 100).toFixed(0)}%`}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.ft ? player.ft : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.fta ? player.fta : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.fta === 0 || !player.fta
                           ? `0%`
                           : `${((player.ft / player.fta) * 100).toFixed(0)}%`}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.reb ? player.reb : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.ast ? player.ast : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.stl ? player.stl : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.blk ? player.blk : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.to ? player.to : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.pf ? player.pf : noStats}
                       </td>
-                      <td className={totalCellsStyle}>
+                      <td className={TOTAL_CELLS_STYLE}>
                         {player.ckd ? player.ckd : noStats}
                       </td>
                     </tr>
@@ -187,39 +188,39 @@ const GameLayout = ({ seasonNum, gameNum }) => {
                 </tbody>
                 <tfoot>
                   <tr className="border-t-1 border-white">
-                    <td className={totalCellsStyle}>Totals</td>
-                    <td className={totalCellsStyle}></td>
-                    <td className={totalCellsStyle}>
+                    <td className={TOTAL_CELLS_STYLE}>Totals</td>
+                    <td className={TOTAL_CELLS_STYLE}></td>
+                    <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.pm2 * 2 + teamTotals.pm3 * 3 + teamTotals.ft}
                     </td>
-                    <td className={totalCellsStyle}>{teamTotals.pm2}</td>
-                    <td className={totalCellsStyle}>{teamTotals.pa2}</td>
-                    <td className={totalCellsStyle}>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.pm2}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.pa2}</td>
+                    <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.pa2 === 0
                         ? `0%`
                         : `${((teamTotals.pm2 / teamTotals.pa2) * 100).toFixed(0)}%`}
                     </td>
-                    <td className={totalCellsStyle}>{teamTotals.pm3}</td>
-                    <td className={totalCellsStyle}>{teamTotals.pa3}</td>
-                    <td className={totalCellsStyle}>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.pm3}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.pa3}</td>
+                    <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.pa3 === 0
                         ? `0%`
                         : `${((teamTotals.pm3 / teamTotals.pa3) * 100).toFixed(0)}%`}
                     </td>
-                    <td className={totalCellsStyle}>{teamTotals.ft}</td>
-                    <td className={totalCellsStyle}>{teamTotals.fta}</td>
-                    <td className={totalCellsStyle}>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.ft}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.fta}</td>
+                    <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.fta === 0
                         ? `0%`
                         : `${((teamTotals.ft / teamTotals.fta) * 100).toFixed(0)}%`}
                     </td>
-                    <td className={totalCellsStyle}>{teamTotals.reb}</td>
-                    <td className={totalCellsStyle}>{teamTotals.ast}</td>
-                    <td className={totalCellsStyle}>{teamTotals.stl}</td>
-                    <td className={totalCellsStyle}>{teamTotals.blk}</td>
-                    <td className={totalCellsStyle}>{teamTotals.to}</td>
-                    <td className={totalCellsStyle}>{teamTotals.pf}</td>
-                    <td className={totalCellsStyle}>{teamTotals.ckd}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.reb}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.ast}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.stl}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.blk}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.to}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.pf}</td>
+                    <td className={TOTAL_CELLS_STYLE}>{teamTotals.ckd}</td>
                   </tr>
                 </tfoot>
               </table>
@@ -228,6 +229,8 @@ const GameLayout = ({ seasonNum, gameNum }) => {
         </div>
       </div>
     );
+  } else {
+    return <ErrorLayout />;
   }
 };
 

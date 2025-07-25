@@ -12,13 +12,15 @@ const useSeason = (seasonNumber) => {
         if (response.ok) {
           const result = await response.json();
           setSeason(result);
-          setSeasonLoading(false);
         } else {
           const result = await response.text();
           throw new Error(result);
         }
       } catch (error) {
+        setSeason(null);
         console.error(error);
+      } finally {
+        setSeasonLoading(false);
       }
     };
 
@@ -45,7 +47,10 @@ const useSeason = (seasonNumber) => {
         throw new Error(result);
       }
     } catch (error) {
+      setSeason(null);
       console.error(error);
+    } finally {
+      setSeasonLoading(false);
     }
   };
 

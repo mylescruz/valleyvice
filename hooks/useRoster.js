@@ -12,13 +12,15 @@ const useRoster = (seasonNumber) => {
         if (response.ok) {
           const result = await response.json();
           setRoster(result);
-          setRosterLoading(false);
         } else {
           const result = await response.text();
           throw new Error(result);
         }
       } catch (error) {
+        setRoster(null);
         console.error(error);
+      } finally {
+        setRosterLoading(false);
       }
     };
 
@@ -39,13 +41,15 @@ const useRoster = (seasonNumber) => {
       if (response.ok) {
         const result = await response.json();
         setRoster(result);
-        setRosterLoading(false);
       } else {
         const result = await response.text();
         throw new Error(result);
       }
     } catch (error) {
+      setRoster(null);
       console.error(error);
+    } finally {
+      setRosterLoading(false);
     }
   };
 

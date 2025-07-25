@@ -5,13 +5,14 @@ import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
 import dateFormatter from "@/helpers/dateFormatter";
 import gameSorter from "@/helpers/gameSorter";
+import ErrorLayout from "../layout/errorLayout";
 
 const SeasonsGames = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
 
   if (seasonLoading) {
     return <LoadingIndicator />;
-  } else {
+  } else if (season) {
     return (
       <>
         <div className="text-center my-4">
@@ -68,6 +69,8 @@ const SeasonsGames = ({ seasonNumber }) => {
         </div>
       </>
     );
+  } else {
+    return <ErrorLayout />;
   }
 };
 

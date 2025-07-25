@@ -1,4 +1,5 @@
 import useSeason from "@/hooks/useSeason";
+import ErrorLayout from "../layout/errorLayout";
 
 const AverageTable = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
@@ -8,8 +9,10 @@ const AverageTable = ({ seasonNumber }) => {
     return {
       ...player,
       ppg:
-        (player.pm2 * 2 + player.pm3 * 3 + (player.ft ? player.ft : 0)) /
-        player.gp,
+        player.pm2 || player.pm3 || player.ft
+          ? (player.pm2 * 2 + player.pm3 * 3 + (player.ft ? player.ft : 0)) /
+            player.gp
+          : noStats,
       pm2: player.pm2 ? player.pm2 / player.gp : noStats,
       pa2: player.pa2 ? player.pa2 / player.gp : noStats,
       pm3: player.pm3 ? player.pm3 / player.gp : noStats,
@@ -67,7 +70,7 @@ const AverageTable = ({ seasonNumber }) => {
 
   if (seasonLoading) {
     return <></>;
-  } else {
+  } else if (season) {
     return (
       <>
         <h1 className="text-3xl text-(--primary) text-center font-bold mt-8">
@@ -169,6 +172,8 @@ const AverageTable = ({ seasonNumber }) => {
         </div>
       </>
     );
+  } else {
+    return <ErrorLayout />;
   }
 };
 

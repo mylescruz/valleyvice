@@ -12,13 +12,15 @@ const usePlayer = (playerId) => {
         if (response.ok) {
           const result = await response.json();
           setPlayer(result);
-          setPlayerLoading(false);
         } else {
           const result = await response.text();
           throw new Error(result);
         }
       } catch (error) {
+        setPlayer(null);
         console.error(error);
+      } finally {
+        setPlayerLoading(false);
       }
     };
 
@@ -39,13 +41,15 @@ const usePlayer = (playerId) => {
       if (response.ok) {
         const result = await response.json();
         setPlayer(result);
-        setPlayerLoading(false);
       } else {
         const result = await response.text();
         throw new Error(result);
       }
     } catch (error) {
+      setPlayer(null);
       console.error(error);
+    } finally {
+      setPlayerLoading(false);
     }
   };
 

@@ -12,13 +12,15 @@ const useTrackedGame = () => {
         if (response.ok) {
           const result = await response.json();
           setTrackedGame(result);
-          setTrackedGameLoading(false);
         } else {
           const result = await response.text();
           throw new Error(result);
         }
       } catch (error) {
+        setTrackedGame(null);
         console.error(error);
+      } finally {
+        setTrackedGameLoading(false);
       }
     };
 
@@ -39,13 +41,15 @@ const useTrackedGame = () => {
       if (response.ok) {
         const result = await response.json();
         setTrackedGame(result);
-        setTrackedGameLoading(false);
       } else {
         const result = await response.text();
         throw new Error(result);
       }
     } catch (error) {
+      setTrackedGame(null);
       console.error(error);
+    } finally {
+      setTrackedGameLoading(false);
     }
   };
 
@@ -62,13 +66,15 @@ const useTrackedGame = () => {
       if (response.ok) {
         const result = await response.json();
         setTrackedGame(result);
-        setTrackedGameLoading(false);
       } else {
         const result = await response.text();
         throw new Error(result);
       }
     } catch (error) {
+      setTrackedGame(null);
       console.error(error);
+    } finally {
+      setTrackedGameLoading(false);
     }
   };
 
