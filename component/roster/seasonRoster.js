@@ -23,7 +23,7 @@ const SeasonRoster = ({ seasonNumber }) => {
                 key={player.id}
                 href={{
                   pathname: "/player/[playerId]",
-                  query: { playerId: player.id, seasonNum: seasonNumber },
+                  query: { playerId: player.id },
                 }}
                 className="w-full border-2 border-(--secondary) rounded-lg my-2 px-4 py-4 sm:w-2/3 lg:w-1/2"
               >

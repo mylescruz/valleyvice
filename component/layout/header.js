@@ -23,7 +23,7 @@ const Header = () => {
   const pages = [
     { id: 0, link: `/stats/${seasonNumber}`, name: "Stats" },
     { id: 1, link: `/seasons/${seasonNumber}`, name: "Seasons" },
-    { id: 2, link: `/roster/${seasonNumber}`, name: "Roster" },
+    { id: 2, link: "/roster", name: "Roster" },
   ];
 
   if (infoLoading) {

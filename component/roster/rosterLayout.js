@@ -1,11 +1,18 @@
 import LoadingIndicator from "../layout/loadingIndicator";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import SeasonRoster from "./seasonRoster";
 import { InfoContext } from "@/contexts/InfoContext";
+import ErrorLayout from "../layout/errorLayout";
 
-const RosterLayout = ({ seasonNum }) => {
+const RosterLayout = () => {
   const { info, infoLoading } = useContext(InfoContext);
-  const [seasonNumber, setSeasonNumber] = useState(seasonNum);
+  const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
+
+  useEffect(() => {
+    if (!infoLoading && info) {
+      setSeasonNumber(info.currentSeason);
+    }
+  }, [info, infoLoading]);
 
   const selectSeason = (e) => {
     setSeasonNumber(e.target.value);
@@ -13,7 +20,7 @@ const RosterLayout = ({ seasonNum }) => {
 
   if (infoLoading) {
     return <LoadingIndicator />;
-  } else {
+  } else if (info) {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
@@ -37,6 +44,8 @@ const RosterLayout = ({ seasonNum }) => {
         </div>
       </div>
     );
+  } else {
+    return <ErrorLayout />;
   }
 };
 
