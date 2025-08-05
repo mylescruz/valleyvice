@@ -39,7 +39,7 @@ const streamToJSON = (stream) => {
 
 export default async function handler(req, res) {
   const method = req.method;
-  const seasonNum = req.query.seasonNum;
+  const seasonNum = parseInt(req.query.seasonNum);
   const seasonId = `s${seasonNum}`;
 
   // Function to get the player's stats data from Amazon S3
@@ -68,14 +68,15 @@ export default async function handler(req, res) {
       const playersStats = req?.body;
 
       // Map through each player to update their stats
-      playersStats.map(async (playerStats) => {
+      playersStats.forEach(async (playerStats) => {
         const player = await getPlayerStatsData(playerStats.id);
 
-        // Add the new season to the seasons played for the player
-        const seasonsPlayed = player.seasonsPlayed.find(
+        // Add the current season to the seasons played for the player
+        const currentSeason = player.seasonsPlayed.find(
           (season) => season.id === seasonId
         );
-        if (!seasonsPlayed) {
+
+        if (!currentSeason) {
           player.seasonsPlayed.push({ id: seasonId, seasonNumber: seasonNum });
           player.statsPerSeason.push({
             id: seasonId,
