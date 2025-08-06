@@ -5,29 +5,14 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
-import LoadingIndicator from "../layout/loadingIndicator";
-import { useContext, useEffect, useState } from "react";
-import { InfoContext } from "@/contexts/InfoContext";
 
 const HomeLayout = () => {
-  const { info, infoLoading } = useContext(InfoContext);
-  const [seasonNumber, setSeasonNumber] = useState("");
-
-  useEffect(() => {
-    if (!infoLoading && info) {
-      setSeasonNumber(info.currentSeason);
-    }
-  }, [info, infoLoading]);
-
   const sectionHeaderStyling = "text-xl font-bold mb-4";
   const iconStyling =
     "text-3xl text-(--primary) mt-4 mb-2 group-hover:text-(--foreground)";
   const linkDivStyling =
     "border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col sm:w-2/5 mx-4 lg:w-1/4 hover:bg-(--primary) group";
 
-  if (infoLoading) {
-    return <LoadingIndicator />;
-  }
   return (
     <div className="flex flex-col items-center">
       <div className="w-11/12 sm:w-4/5 text-center">
@@ -40,7 +25,7 @@ const HomeLayout = () => {
         </p>
         <h2 className="mt-8 text-2xl text-(--primary) font-bold">Check out</h2>
         <div className="flex flex-col items-center md:flex-row lg:flex-wrap lg:justify-center my-3">
-          <Link href={`/stats/${seasonNumber}`} className={linkDivStyling}>
+          <Link href={"/stats"} className={linkDivStyling}>
             <FontAwesomeIcon icon={faChartSimple} className={iconStyling} />
             <p className={sectionHeaderStyling}>Current stats</p>
           </Link>
