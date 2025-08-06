@@ -44,7 +44,7 @@ const HomeLayout = () => {
             <FontAwesomeIcon icon={faChartSimple} className={iconStyling} />
             <p className={sectionHeaderStyling}>Current stats</p>
           </Link>
-          <Link href={`/seasons/${seasonNumber}`} className={linkDivStyling}>
+          <Link href={"/seasons"} className={linkDivStyling}>
             <FontAwesomeIcon icon={faBasketball} className={iconStyling} />
             <p className={sectionHeaderStyling}>Current games</p>
           </Link>

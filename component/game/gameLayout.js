@@ -61,17 +61,12 @@ const GameLayout = ({ seasonNum, gameNum }) => {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
-          <Link
-            href={`/seasons/${seasonNum}`}
-            className="group hover:text-(--secondary)"
-          >
+          <Link href={"/seasons"} className="group hover:text-(--secondary)">
             <FontAwesomeIcon
               icon={faArrowLeft}
               className="mr-2 group-hover:-translate-x-1.5 duration-300"
             />
-            <span className="group-hover:font-bold">
-              Back to Season {seasonNum}
-            </span>
+            <span className="group-hover:font-bold">Back to Seasons</span>
           </Link>
           <div className="text-center flex flex-col">
             <h1 className="text-2xl text-(--primary) text-center font-bold">
