@@ -10,7 +10,7 @@ const Header = () => {
   };
 
   const pages = [
-    { id: 0, link: "stats", name: "Stats" },
+    { id: 0, link: "/stats", name: "Stats" },
     { id: 1, link: "/seasons", name: "Seasons" },
     { id: 2, link: "/roster", name: "Roster" },
   ];

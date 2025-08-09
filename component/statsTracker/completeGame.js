@@ -1,5 +1,4 @@
 import usePlayerStats from "@/hooks/usePlayersStats";
-import useRoster from "@/hooks/useRoster";
 import useSeason from "@/hooks/useSeason";
 import { useState } from "react";
 
@@ -32,7 +31,7 @@ const CompleteGame = ({
     setGameFinished(false);
   };
 
-  const submitGame = () => {
+  const submitGame = async () => {
     try {
       const finalGame = {
         ...game,
@@ -72,14 +71,16 @@ const CompleteGame = ({
         losses: finalGame.result === "L" ? season.losses + 1 : season.losses,
       };
 
-      putSeason(updatedSeason);
-      putPlayersStats(finalGame.playerStats);
-      deleteTrackedGame();
+      await putSeason(updatedSeason);
+      await putPlayersStats(finalGame.playerStats);
+      await deleteTrackedGame();
       setGame(trackedGame);
 
       closeComplete();
       setEnterGameInfo(true);
+      window.alert("Game stats saved!");
     } catch (error) {
+      window.alert("Error saving game stats. Check console.");
       console.error(error);
       closeComplete();
       return;
