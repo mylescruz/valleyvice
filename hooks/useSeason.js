@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const useSeason = (seasonNumber) => {
   const [season, setSeason] = useState({});
@@ -27,7 +27,7 @@ const useSeason = (seasonNumber) => {
     getSeason();
   }, [seasonNumber]);
 
-  const putSeason = async (season) => {
+  const putSeason = useCallback(async (season) => {
     try {
       const response = await fetch(`/api/season/${season.seasonNumber}`, {
         method: "PUT",
@@ -52,7 +52,7 @@ const useSeason = (seasonNumber) => {
     } finally {
       setSeasonLoading(false);
     }
-  };
+  }, []);
 
   return { season, seasonLoading, putSeason };
 };

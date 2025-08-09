@@ -176,13 +176,13 @@ const StatsTrackerLayout = () => {
     });
   };
 
-  const saveGame = () => {
+  const saveGame = async () => {
     game.saved = true;
     setGame({
       ...game,
       saved: true,
     });
-    postTrackedGame(game);
+    await postTrackedGame(game);
   };
 
   const completeGame = () => {

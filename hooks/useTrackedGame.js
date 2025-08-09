@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const useTrackedGame = () => {
   const [trackedGame, setTrackedGame] = useState({});
@@ -27,7 +27,7 @@ const useTrackedGame = () => {
     getTrackedGame();
   }, []);
 
-  const postTrackedGame = async (game) => {
+  const postTrackedGame = useCallback(async (game) => {
     try {
       const response = await fetch("/api/trackedGame", {
         method: "POST",
@@ -51,9 +51,9 @@ const useTrackedGame = () => {
     } finally {
       setTrackedGameLoading(false);
     }
-  };
+  }, []);
 
-  const deleteTrackedGame = async () => {
+  const deleteTrackedGame = useCallback(async () => {
     try {
       const response = await fetch("/api/trackedGame", {
         method: "DELETE",
@@ -76,7 +76,7 @@ const useTrackedGame = () => {
     } finally {
       setTrackedGameLoading(false);
     }
-  };
+  }, []);
 
   return {
     trackedGame,

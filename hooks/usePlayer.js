@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const usePlayer = (playerId) => {
   const [player, setPlayer] = useState({});
@@ -27,15 +27,15 @@ const usePlayer = (playerId) => {
     getPlayer();
   }, [playerId]);
 
-  const putPlayer = async (player) => {
+  const putPlayer = useCallback(async (updatedPlayer) => {
     try {
-      const response = await fetch(`/api/player/${player.playerId}`, {
+      const response = await fetch(`/api/player/${updatedPlayer.playerId}`, {
         method: "PUT",
         headers: {
           Accept: "application.json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(player),
+        body: JSON.stringify(updatedPlayer),
       });
 
       if (response.ok) {
@@ -51,7 +51,7 @@ const usePlayer = (playerId) => {
     } finally {
       setPlayerLoading(false);
     }
-  };
+  }, []);
 
   return { player, playerLoading, putPlayer };
 };
