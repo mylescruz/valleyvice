@@ -1,7 +1,10 @@
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
 const Header = () => {
+  const { data: session } = useSession();
+
   const logo = {
     src: "/favicon.ico",
     alt: "Logo",
@@ -40,6 +43,14 @@ const Header = () => {
             </Link>
           ))}
         </div>
+        {session && (
+          <p
+            className="text-end mx-2 md:mx-6 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10 cursor-pointer"
+            onClick={() => signOut()}
+          >
+            Logout
+          </p>
+        )}
       </div>
     </div>
   );
