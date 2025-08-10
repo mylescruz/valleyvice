@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SubstituteForm from "./substituteForm";
+import { InfoContext } from "@/contexts/InfoContext";
 
 const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
+  const { info } = useContext(InfoContext);
   const [players, setPlayers] = useState([]);
   const [inputPlayer, setInputPlayer] = useState(false);
   const [gameInfo, setGameInfo] = useState({
-    seasonNumber: "",
+    seasonNumber: info.currentSeason,
     gameNumber: "",
     date: "",
     location: "",
@@ -151,7 +153,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
                 className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
                 onClick={enterSubstitute}
               >
-                Sub
+                Subs?
               </div>
             </div>
           </div>

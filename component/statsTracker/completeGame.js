@@ -89,7 +89,7 @@ const CompleteGame = ({
 
   const gameDetailsInputGroup = "flex flex-col my-1.5";
   const gameDetailsInput =
-    "border-2 border-(--secondary) rounded-lg py-1 px-2 lg:mr-4";
+    "border-2 border-(--secondary) rounded-lg py-1 px-2 lg:mr-2";
   const buttonStyling =
     "font-bold rounded-lg mx-2 px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
 

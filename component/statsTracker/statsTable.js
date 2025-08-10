@@ -1,9 +1,12 @@
+import rosterSorter from "@/helpers/rosterSorter";
+
 const StatsTable = ({ playerStats, teamStats }) => {
-  const playerCellsStyle = "w-1/18 p-1 text-center";
+  const playerCellsStyle = "w-1/19 p-1 text-center";
   return (
     <table>
       <thead className="border-b-1 border-white">
         <tr>
+          <th className={playerCellsStyle}>#</th>
           <th className={playerCellsStyle}>PLR</th>
           <th className={playerCellsStyle}>PTS</th>
           <th className={playerCellsStyle}>2PM</th>
@@ -25,8 +28,9 @@ const StatsTable = ({ playerStats, teamStats }) => {
         </tr>
       </thead>
       <tbody>
-        {playerStats?.map((player) => (
+        {rosterSorter(playerStats)?.map((player) => (
           <tr key={player.id}>
+            <td className={playerCellsStyle}>{player.number}</td>
             <td className={playerCellsStyle}>{player.name}</td>
             <td className={playerCellsStyle}>
               {player.pm2 * 2 + player.pm3 * 3 + player.ft}
@@ -65,6 +69,7 @@ const StatsTable = ({ playerStats, teamStats }) => {
       <tfoot>
         <tr className="border-t-1 broder-white">
           <td className={playerCellsStyle}>Totals</td>
+          <td className={playerCellsStyle}></td>
           <td className={playerCellsStyle}>
             {teamStats
               ? teamStats.pm2 * 2 + teamStats.pm3 * 3 + teamStats.ft

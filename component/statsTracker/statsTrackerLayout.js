@@ -3,30 +3,66 @@ import {
   faFloppyDisk,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import StatsTable from "./statsTable";
 import LoadingIndicator from "../layout/loadingIndicator";
 import useTrackedGame from "@/hooks/useTrackedGame";
 import CompleteGame from "./completeGame";
 import GameInfoForm from "./gameInfoForm";
+import { InfoContext } from "@/contexts/InfoContext";
+import useRoster from "@/hooks/useRoster";
+import dateFormatter from "@/helpers/dateFormatter";
+
+const emptyGame = {
+  id: "",
+  seasonNumber: "",
+  gameNumber: "",
+  date: "",
+  location: "",
+  opponent: "",
+  totalScore: "",
+  opponentScore: "",
+  result: "",
+  teamStats: {
+    pm2: 0,
+    pa2: 0,
+    pm3: 0,
+    pa3: 0,
+    ft: 0,
+    fta: 0,
+    reb: 0,
+    ast: 0,
+    stl: 0,
+    blk: 0,
+    to: 0,
+    pf: 0,
+    ckd: 0,
+  },
+  playerStats: [],
+  statsRecorded: [],
+  saved: false,
+};
 
 const stats = [
-  { id: 0, name: "2PM", value: "pm2" },
-  { id: 1, name: "2PA", value: "pa2" },
-  { id: 2, name: "3PM", value: "pm3" },
-  { id: 3, name: "3PA", value: "pa3" },
-  { id: 4, name: "FT", value: "ft" },
-  { id: 5, name: "FTA", value: "fta" },
-  { id: 6, name: "REB", value: "reb" },
-  { id: 7, name: "AST", value: "ast" },
-  { id: 8, name: "STL", value: "stl" },
-  { id: 9, name: "BLK", value: "blk" },
-  { id: 10, name: "TO", value: "to" },
-  { id: 11, name: "PF", value: "pf" },
-  { id: 12, name: "CKD", value: "ckd" },
+  { name: "2PM", value: "pm2" },
+  { name: "2PA", value: "pa2" },
+  { name: "3PM", value: "pm3" },
+  { name: "3PA", value: "pa3" },
+  { name: "FT", value: "ft" },
+  { name: "FTA", value: "fta" },
+  { name: "REB", value: "reb" },
+  { name: "AST", value: "ast" },
+  { name: "STL", value: "stl" },
+  { name: "BLK", value: "blk" },
+  { name: "TO", value: "to" },
+  { name: "PF", value: "pf" },
+  { name: "CKD", value: "ckd" },
 ];
 
 const StatsTrackerLayout = () => {
+  const { info, infoLoading } = useContext(InfoContext);
+  const { roster, rosterLoading } = useRoster(info.currentSeason);
+
   const {
     trackedGame,
     trackedGameLoading,
@@ -34,8 +70,8 @@ const StatsTrackerLayout = () => {
     deleteTrackedGame,
   } = useTrackedGame();
 
-  const [game, setGame] = useState(trackedGame);
-  const [enterGameInfo, setEnterGameInfo] = useState(!trackedGame.saved);
+  const [game, setGame] = useState(emptyGame);
+  const [enterGameInfo, setEnterGameInfo] = useState(false);
   const [chooseStat, setChooseStat] = useState(true);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [chooseAssist, setChooseAssist] = useState(false);
@@ -43,6 +79,37 @@ const StatsTrackerLayout = () => {
   const [statSelected, setStatSelected] = useState("");
   const [gameFinished, setGameFinished] = useState(false);
 
+  // Set the current roster to determine who is playing
+  useEffect(() => {
+    if (roster && !trackedGame) {
+      const currentRoster = roster
+        .filter((player) => player.id !== "vvSubs")
+        .map((player) => {
+          return {
+            id: player.id,
+            name: player.name,
+            number: player.number,
+            pm2: 0,
+            pa2: 0,
+            pm3: 0,
+            pa3: 0,
+            ft: 0,
+            fta: 0,
+            reb: 0,
+            ast: 0,
+            stl: 0,
+            blk: 0,
+            to: 0,
+            pf: 0,
+            ckd: 0,
+          };
+        });
+
+      setGame({ ...emptyGame, playerStats: currentRoster });
+    }
+  }, [roster, trackedGame]);
+
+  // If there is already a saved game, set the game to the tracked game
   useEffect(() => {
     if (trackedGame) {
       setGame(trackedGame);
@@ -194,7 +261,7 @@ const StatsTrackerLayout = () => {
   const bubbleStyling =
     "border-2 border-(--secondary) w-[70px] aspect-square rounded-full flex flex-col items-center justify-center m-2 font-bold hover:bg-(--primary) hover:cursor-pointer";
 
-  if (trackedGameLoading) {
+  if (infoLoading || rosterLoading || trackedGameLoading) {
     return <LoadingIndicator />;
   } else {
     return (
@@ -214,16 +281,24 @@ const StatsTrackerLayout = () => {
               </>
             ) : (
               <>
-                <h1 className="text-3xl font-bold text-(--primary) text-center">
-                  Track Game Stats
-                </h1>
+                <div className="text-center">
+                  <h1 className="text-3xl font-bold text-(--primary)">
+                    Track Game Stats
+                  </h1>
+                  <p className="text-(--secondary)">
+                    Valley Vice vs. {game.opponent}
+                  </p>
+                  <p className="text-(--secondary)">
+                    {dateFormatter(game.date)} at {game.location}
+                  </p>
+                </div>
                 {chooseStat && (
                   <>
                     <h2 className="text-center my-2 text-lg">Choose a stat</h2>
                     <div className="flex flex-row flex-wrap justify-center">
-                      {stats.map((stat) => (
+                      {stats.map((stat, index) => (
                         <div
-                          key={stat.id}
+                          key={index}
                           className={bubbleStyling}
                           onClick={() => selectStat(stat.value)}
                         >

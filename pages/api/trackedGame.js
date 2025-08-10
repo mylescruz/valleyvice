@@ -42,7 +42,6 @@ export default async function handler(req, res) {
   const method = req.method;
 
   const savedTrackedGameKey = "tracker/savedTrackedGame.json";
-  const newTrackedGameKey = "tracker/newTrackedGame.json";
 
   // Function to get the tracked game data from Amazon S3
   async function getTrackedGameData() {
@@ -59,15 +58,7 @@ export default async function handler(req, res) {
     } catch (error) {
       // If there is no saved tracked game, get the new tracked game
       if (error.name === "NoSuchKey") {
-        const newTrackedGameParams = {
-          Bucket: BUCKET,
-          Key: newTrackedGameKey,
-        };
-
-        const newTrackedGameData = await S3.send(
-          new GetObjectCommand(newTrackedGameParams)
-        );
-        return await streamToJSON(newTrackedGameData.Body);
+        return null;
       } else {
         console.error(
           "Error retrieving the tracked game data from S3: ",
