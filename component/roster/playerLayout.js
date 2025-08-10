@@ -6,29 +6,34 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import usePlayer from "@/hooks/usePlayer";
+import ErrorLayout from "../layout/errorLayout";
+
+const averagesContainer = "flex flex-col text-center";
+const averagesTitleStyling = "text-xl text-(--secondary) font-bold";
+const averagesValueStyling = "font-bold";
 
 const PlayerLayout = ({ playerId }) => {
   const { player, playerLoading } = usePlayer(playerId);
 
-  const playerAverages = {
-    ppg: (
-      (player.totalStats?.pm2 * 2 +
-        player.totalStats?.pm3 * 3 +
-        player.totalStats?.ft) /
-      player.totalStats?.gp
-    ).toFixed(2),
-    reb: (player.totalStats?.reb / player.totalStats?.gp).toFixed(2),
-    ast: (player.totalStats?.ast / player.totalStats?.gp).toFixed(2),
-    stl: (player.totalStats?.stl / player.totalStats?.gp).toFixed(2),
-  };
+  let playerAverages = {};
 
-  const averagesContainer = "flex flex-col text-center";
-  const averagesTitleStyling = "text-xl text-(--secondary) font-bold";
-  const averagesValueStyling = "font-bold";
+  if (!playerLoading && player) {
+    playerAverages = {
+      ppg: (
+        (player.totalStats?.pm2 * 2 +
+          player.totalStats?.pm3 * 3 +
+          player.totalStats?.ft) /
+        player.totalStats?.gp
+      ).toFixed(2),
+      reb: (player.totalStats?.reb / player.totalStats?.gp).toFixed(2),
+      ast: (player.totalStats?.ast / player.totalStats?.gp).toFixed(2),
+      stl: (player.totalStats?.stl / player.totalStats?.gp).toFixed(2),
+    };
+  }
 
-  if (playerLoading || !player) {
+  if (playerLoading) {
     return <LoadingIndicator />;
-  } else {
+  } else if (player) {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
@@ -93,6 +98,8 @@ const PlayerLayout = ({ playerId }) => {
         </div>
       </div>
     );
+  } else {
+    return <ErrorLayout />;
   }
 };
 

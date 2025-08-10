@@ -1,6 +1,10 @@
 import dateFormatter from "@/helpers/dateFormatter";
 import useSeason from "@/hooks/useSeason";
-import { faArrowLeft, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faArrowLeft,
+  faLocationDot,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
@@ -16,7 +20,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
   let teamTotals = [];
   const noStats = 0;
 
-  if (!seasonLoading) {
+  if (!seasonLoading && season) {
     game = season.games[gameNum - 1];
 
     teamTotals = season.games[gameNum - 1].playerStats.reduce(
@@ -193,21 +197,27 @@ const GameLayout = ({ seasonNum, gameNum }) => {
                     <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.pa2 === 0
                         ? `0%`
-                        : `${((teamTotals.pm2 / teamTotals.pa2) * 100).toFixed(0)}%`}
+                        : `${((teamTotals.pm2 / teamTotals.pa2) * 100).toFixed(
+                            0
+                          )}%`}
                     </td>
                     <td className={TOTAL_CELLS_STYLE}>{teamTotals.pm3}</td>
                     <td className={TOTAL_CELLS_STYLE}>{teamTotals.pa3}</td>
                     <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.pa3 === 0
                         ? `0%`
-                        : `${((teamTotals.pm3 / teamTotals.pa3) * 100).toFixed(0)}%`}
+                        : `${((teamTotals.pm3 / teamTotals.pa3) * 100).toFixed(
+                            0
+                          )}%`}
                     </td>
                     <td className={TOTAL_CELLS_STYLE}>{teamTotals.ft}</td>
                     <td className={TOTAL_CELLS_STYLE}>{teamTotals.fta}</td>
                     <td className={TOTAL_CELLS_STYLE}>
                       {teamTotals.fta === 0
                         ? `0%`
-                        : `${((teamTotals.ft / teamTotals.fta) * 100).toFixed(0)}%`}
+                        : `${((teamTotals.ft / teamTotals.fta) * 100).toFixed(
+                            0
+                          )}%`}
                     </td>
                     <td className={TOTAL_CELLS_STYLE}>{teamTotals.reb}</td>
                     <td className={TOTAL_CELLS_STYLE}>{teamTotals.ast}</td>
