@@ -2,6 +2,9 @@ import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 
+const linkStyling =
+  "mx-2 md:mx-6 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10";
+
 const Header = () => {
   const { data: session } = useSession();
 
@@ -13,9 +16,10 @@ const Header = () => {
   };
 
   const pages = [
-    { id: 0, link: "/stats", name: "Stats" },
-    { id: 1, link: "/seasons", name: "Seasons" },
-    { id: 2, link: "/roster", name: "Roster" },
+    { name: "Stats", link: "/stats", adminPage: false },
+    { name: "Seasons", link: "/seasons", adminPage: false },
+    { name: "Roster", link: "/roster", adminPage: false },
+    { name: "Tracker", link: "/tracker", adminPage: true },
   ];
 
   return (
@@ -33,24 +37,25 @@ const Header = () => {
           </Link>
         </div>
         <div>
-          {pages.map((page) => (
-            <Link
-              key={page.id}
-              href={page.link}
-              className="mx-2 md:mx-6 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10"
-            >
-              {page.name}
+          {pages.map((page, index) =>
+            session ? (
+              <Link key={index} href={page.link} className={linkStyling}>
+                {page.name}
+              </Link>
+            ) : (
+              !page.adminPage && (
+                <Link key={index} href={page.link} className={linkStyling}>
+                  {page.name}
+                </Link>
+              )
+            )
+          )}
+          {session && (
+            <Link className={linkStyling} href="/" onClick={() => signOut()}>
+              Logout
             </Link>
-          ))}
+          )}
         </div>
-        {session && (
-          <p
-            className="text-end mx-2 md:mx-6 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10 cursor-pointer"
-            onClick={() => signOut()}
-          >
-            Logout
-          </p>
-        )}
       </div>
     </div>
   );

@@ -10,23 +10,23 @@ import useTrackedGame from "@/hooks/useTrackedGame";
 import CompleteGame from "./completeGame";
 import GameInfoForm from "./gameInfoForm";
 
-const StatsTrackerLayout = () => {
-  const stats = [
-    { id: 0, name: "2PM", value: "pm2" },
-    { id: 1, name: "2PA", value: "pa2" },
-    { id: 2, name: "3PM", value: "pm3" },
-    { id: 3, name: "3PA", value: "pa3" },
-    { id: 4, name: "FT", value: "ft" },
-    { id: 5, name: "FTA", value: "fta" },
-    { id: 6, name: "REB", value: "reb" },
-    { id: 7, name: "AST", value: "ast" },
-    { id: 8, name: "STL", value: "stl" },
-    { id: 9, name: "BLK", value: "blk" },
-    { id: 10, name: "TO", value: "to" },
-    { id: 11, name: "PF", value: "pf" },
-    { id: 12, name: "CKD", value: "ckd" },
-  ];
+const stats = [
+  { id: 0, name: "2PM", value: "pm2" },
+  { id: 1, name: "2PA", value: "pa2" },
+  { id: 2, name: "3PM", value: "pm3" },
+  { id: 3, name: "3PA", value: "pa3" },
+  { id: 4, name: "FT", value: "ft" },
+  { id: 5, name: "FTA", value: "fta" },
+  { id: 6, name: "REB", value: "reb" },
+  { id: 7, name: "AST", value: "ast" },
+  { id: 8, name: "STL", value: "stl" },
+  { id: 9, name: "BLK", value: "blk" },
+  { id: 10, name: "TO", value: "to" },
+  { id: 11, name: "PF", value: "pf" },
+  { id: 12, name: "CKD", value: "ckd" },
+];
 
+const StatsTrackerLayout = () => {
   const {
     trackedGame,
     trackedGameLoading,
@@ -287,7 +287,11 @@ const StatsTrackerLayout = () => {
                     <div className="text-(--secondary) flex flex-row justify-between">
                       <FontAwesomeIcon
                         icon={faArrowRotateLeft}
-                        className={`${game.statsRecorded?.length === 0 ? "text-gray-500" : "text-lg hover:text-(--primary) hover:cursor-pointer"}`}
+                        className={`${
+                          game.statsRecorded?.length === 0
+                            ? "text-gray-500"
+                            : "text-lg hover:text-(--primary) hover:cursor-pointer"
+                        }`}
                         onClick={undoStat}
                       />
                       <div className="flex flex-row">
