@@ -1,13 +1,13 @@
 import { useState } from "react";
 
-const NewPlayerForm = ({
+const SubstituteForm = ({
   players,
   setPlayers,
   setInputPlayer,
   game,
   setGame,
 }) => {
-  const [newPlayer, setNewPlayer] = useState({
+  const [substitutePlayer, setSubstitutePlayer] = useState({
     id: "vvSubs",
     name: "",
     number: "",
@@ -27,16 +27,19 @@ const NewPlayerForm = ({
   });
 
   const handleInput = (e) => {
-    setNewPlayer({ ...newPlayer, [e.target.id]: e.target.value });
+    setSubstitutePlayer({ ...substitutePlayer, [e.target.id]: e.target.value });
   };
 
   const handleNumInput = (e) => {
     const input = e.target.value;
 
     if (input === "") {
-      setNewPlayer({ ...newPlayer, [e.target.id]: input });
+      setSubstitutePlayer({ ...substitutePlayer, [e.target.id]: input });
     } else {
-      setNewPlayer({ ...newPlayer, [e.target.id]: parseInt(input) });
+      setSubstitutePlayer({
+        ...substitutePlayer,
+        [e.target.id]: parseInt(input),
+      });
     }
   };
 
@@ -47,8 +50,8 @@ const NewPlayerForm = ({
   const submitPlayer = (e) => {
     e.preventDefault();
 
-    setPlayers([...players, newPlayer.id]);
-    setGame({ ...game, playerStats: [...game.playerStats, newPlayer] });
+    setPlayers([...players, substitutePlayer.id]);
+    setGame({ ...game, playerStats: [...game.playerStats, substitutePlayer] });
 
     closeEnterPlayer();
   };
@@ -62,7 +65,7 @@ const NewPlayerForm = ({
     <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-[rgba(255,255,255,0.2)] z-50 flex flex-col justify-center items-center">
       <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
         <h1 className="text-(--primary) text-xl mb-2">
-          Enter new player details
+          Enter substitute&#39;s details
         </h1>
         <form onSubmit={submitPlayer} className="w-full flex flex-col">
           <div className={gameDetailsInputGroup}>
@@ -72,6 +75,7 @@ const NewPlayerForm = ({
               type="text"
               onChange={handleInput}
               className={gameDetailsInput}
+              value={substitutePlayer.name}
             />
           </div>
           <div className={gameDetailsInputGroup}>
@@ -81,6 +85,7 @@ const NewPlayerForm = ({
               type="number"
               onChange={handleNumInput}
               className={gameDetailsInput}
+              value={substitutePlayer.number}
             />
           </div>
           <div className="flex flex-row justify-end mt-4">
@@ -103,4 +108,4 @@ const NewPlayerForm = ({
   );
 };
 
-export default NewPlayerForm;
+export default SubstituteForm;

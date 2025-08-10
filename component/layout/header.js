@@ -20,6 +20,7 @@ const Header = () => {
     { name: "Seasons", link: "/seasons", adminPage: false },
     { name: "Roster", link: "/roster", adminPage: false },
     { name: "Tracker", link: "/tracker", adminPage: true },
+    { name: "Info", link: "/info", adminPage: true },
   ];
 
   return (

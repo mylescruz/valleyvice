@@ -1,5 +1,5 @@
 import { useState } from "react";
-import NewPlayerForm from "./newPlayerForm";
+import SubstituteForm from "./substituteForm";
 
 const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
   const [players, setPlayers] = useState([]);
@@ -58,7 +58,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
     setEnterGameInfo(false);
   };
 
-  const enterNewPlayer = () => {
+  const enterSubstitute = () => {
     setInputPlayer(true);
   };
 
@@ -137,7 +137,9 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
               {game?.playerStats?.map((player) => (
                 <div
                   key={player.id}
-                  className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${players.includes(player.id) && "bg-(--primary) font-bold"}`}
+                  className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${
+                    players.includes(player.id) && "bg-(--primary) font-bold"
+                  }`}
                   onClick={() => {
                     enterPlayer(player.id);
                   }}
@@ -147,9 +149,9 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
               ))}
               <div
                 className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                onClick={enterNewPlayer}
+                onClick={enterSubstitute}
               >
-                New
+                Sub
               </div>
             </div>
           </div>
@@ -162,7 +164,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
       </form>
 
       {inputPlayer && (
-        <NewPlayerForm
+        <SubstituteForm
           players={players}
           setPlayers={setPlayers}
           setInputPlayer={setInputPlayer}
