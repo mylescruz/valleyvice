@@ -23,6 +23,10 @@ const Header = () => {
     { name: "Info", link: "/info", adminPage: true },
   ];
 
+  const userSignOut = async () => {
+    await signOut({ callbackUrl: "/" });
+  };
+
   return (
     <div className="w-full bg-[var(--tertiary)] p-1 text-start text-[var(--primary)]">
       <div className="flex w-full flex-row items-center">
@@ -52,7 +56,7 @@ const Header = () => {
             )
           )}
           {session && (
-            <Link className={linkStyling} href="/" onClick={() => signOut()}>
+            <Link className={linkStyling} href="/" onClick={userSignOut}>
               Logout
             </Link>
           )}

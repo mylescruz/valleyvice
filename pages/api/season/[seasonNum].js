@@ -3,6 +3,8 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
+import { authOptions } from "../auth/[...nextauth]";
+import { getServerSession } from "next-auth";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -38,10 +40,18 @@ const streamToJSON = (stream) => {
 };
 
 export default async function handler(req, res) {
+  // Authorize server access using NextAuth
+  const session = await getServerSession(req, res, authOptions);
+
   const method = req.method;
   const seasonNum = req.query.seasonNum;
 
   const key = `seasons/s${seasonNum}.json`;
+
+  // If user tries to change the season data without having a session
+  if (method !== "GET" && !session) {
+    return res.status(401).send("Must login to access this information!");
+  }
 
   // Function to get the season data from Amazon S3
   async function getSeasonData() {

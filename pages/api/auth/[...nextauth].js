@@ -35,7 +35,9 @@ export const authOptions = {
     },
     async signIn({ user, account, profile }) {
       if (account.provider === "google") {
-        const allowedAdmins = process.env.ADMINS;
+        const allowedAdmins = process.env.ADMINS.split(",").map((email) =>
+          email.trim()
+        );
         return (
           profile.email.endsWith("@gmail.com") &&
           profile.email_verified &&
