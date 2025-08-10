@@ -7,7 +7,7 @@ export default function Layout({ children }) {
     <InfoProvider>
       <div className="flex flex-col min-h-screen">
         <Header />
-        <main className="m-0 flex-1">{children}</main>
+        <main className="mt-4 flex-1">{children}</main>
         <Footer />
       </div>
     </InfoProvider>
