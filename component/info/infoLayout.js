@@ -13,7 +13,16 @@ const emptySeason = {
   year: "",
   division: "",
   league: "The Loot x Valley JCC",
-  players: [],
+  players: [
+    {
+      id: "vvSubs",
+      name: "Subs",
+      number: "0",
+      height: "N/A",
+      position: "N/A",
+      imageSrc: "default.jpg",
+    },
+  ],
 };
 
 const InfoLayout = () => {

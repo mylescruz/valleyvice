@@ -4,10 +4,10 @@ import { createContext } from "react";
 export const InfoContext = createContext({});
 
 export const InfoProvider = ({ children }) => {
-  const { info, infoLoading } = useInfo();
+  const { info, infoLoading, putInfo } = useInfo();
 
   return (
-    <InfoContext.Provider value={{ info, infoLoading }}>
+    <InfoContext.Provider value={{ info, infoLoading, putInfo }}>
       {children}
     </InfoContext.Provider>
   );

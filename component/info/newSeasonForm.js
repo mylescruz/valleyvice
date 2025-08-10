@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
 import { InfoContext } from "@/contexts/InfoContext";
 import LoadingIndicator from "../layout/loadingIndicator";
+import useRoster from "@/hooks/useRoster";
+import useSeason from "@/hooks/useSeason";
 
 const seasonsOfYear = ["Winter", "Spring", "Summer", "Fall"];
 
@@ -16,10 +18,14 @@ const NewSeasonForm = ({
   emptySeason,
   setInputNewSeason,
 }) => {
-  const { info, infoLoading } = useContext(InfoContext);
+  const { info, infoLoading, putInfo } = useContext(InfoContext);
+
+  const { postRoster } = useRoster(info.currentSeason);
+  const { postSeason } = useSeason(info.currentSeason);
 
   const [inputPlayer, setInputPlayer] = useState(false);
   const [roster, setRoster] = useState(info.currentPlayers);
+  const [savingSeason, setSavingSeason] = useState(false);
 
   const handleInput = (e) => {
     const input = e.target.value;
@@ -65,15 +71,30 @@ const NewSeasonForm = ({
     setInputPlayer(true);
   };
 
-  const saveNewSeason = (e) => {
+  const saveNewSeason = async (e) => {
     e.preventDefault();
 
-    newSeason.id = "s" + newSeason.seasonNumber;
-    console.log(newSeason);
+    try {
+      setSavingSeason(true);
 
-    setNewSeason(emptySeason);
+      const seasonInfo = { ...newSeason, id: `s${newSeason.seasonNumber}` };
 
-    setInputNewSeason(false);
+      await postRoster(seasonInfo);
+      await postSeason(seasonInfo);
+      await putInfo(seasonInfo);
+
+      setNewSeason(emptySeason);
+
+      setInputNewSeason(false);
+    } catch (error) {
+      console.error("New season error: ", error);
+      window.alert(
+        "Error saving the new season. Check the console for the error"
+      );
+      return;
+    } finally {
+      setSavingSeason(false);
+    }
   };
 
   const cancelNewSeason = () => {
@@ -184,7 +205,7 @@ const NewSeasonForm = ({
               </div>
               <div className="mt-2 text-center">
                 <button
-                  className={`${buttonStyling} bg-gray-300`}
+                  className={`${buttonStyling} bg-gray-500`}
                   onClick={cancelNewSeason}
                 >
                   Cancel
@@ -208,6 +229,15 @@ const NewSeasonForm = ({
             setNewSeason={setNewSeason}
             setInputPlayer={setInputPlayer}
           />
+        )}
+
+        {savingSeason && (
+          <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-[rgba(255,255,255,0.2)] z-50 flex flex-col justify-center items-center">
+            <div className="w-2/5 bg-(--background) p-4 rounded-lg flex flex-col justify-center items-center">
+              <h1 className="text-xl text-center">Saving New Season</h1>
+              <LoadingIndicator />
+            </div>
+          </div>
         )}
       </div>
     );

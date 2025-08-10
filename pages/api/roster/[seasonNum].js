@@ -70,6 +70,35 @@ export default async function handler(req, res) {
       console.error(`${method} roster request failed: ${error}`);
       res.status(500).send("Error retrieving roster data");
     }
+  } else if (method === "POST") {
+    try {
+      const seasonInfo = req?.body;
+
+      const roster = await getRosterData();
+
+      // Define the new season
+      const seasonId = `s${seasonInfo.seasonNumber}`;
+
+      // Add new season roster to the current roster
+      const updatedRoster = { ...roster, [seasonId]: seasonInfo.players };
+
+      // Set the file parameters for the updated roster file
+      const rosterParams = {
+        Bucket: BUCKET,
+        Key: key,
+        Body: JSON.stringify(updatedRoster, null, 2),
+        ContentType: "application/json",
+      };
+
+      // Save the updated roster file into S3
+      await S3.send(new PutObjectCommand(rosterParams));
+
+      // Send the updated roster object back to the client
+      res.status(200).json(updatedRoster);
+    } catch (error) {
+      console.error(`${method} roster request failed: ${error}`);
+      res.status(500).send("Error adding new roster");
+    }
   } else if (method === "PUT") {
     try {
       const updatedRoster = req?.body;

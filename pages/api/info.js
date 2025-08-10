@@ -1,4 +1,8 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -62,6 +66,49 @@ export default async function handler(req, res) {
     } catch (error) {
       console.error(`${method} info request failed: ${error}`);
       res.status(500).send("Error retrieving info data");
+    }
+  } else if (method === "PUT") {
+    try {
+      // Get the updated info from the request
+      const updatedInfo = req?.body;
+
+      const info = await getInfoData();
+
+      // Remove subs from the current players
+      const currentPlayers = updatedInfo.players.filter(
+        (player) => player.id !== "vvSubs"
+      );
+
+      // Update the current info with the new info
+      const newInfo = {
+        ...info,
+        currentSeason: updatedInfo.seasonNumber,
+        currentPlayers: currentPlayers,
+        seasonsPlayed: [
+          {
+            id: `s${updatedInfo.seasonNumber}`,
+            seasonNumber: updatedInfo.seasonNumber,
+          },
+          ...info.seasonsPlayed,
+        ],
+      };
+
+      // Set the file parameters for the updated info file
+      const newInfoParams = {
+        Bucket: BUCKET,
+        Key: key,
+        Body: JSON.stringify(newInfo, null, 2),
+        ContentType: "application/json",
+      };
+
+      // Save the updated info file into S3
+      await S3.send(new PutObjectCommand(newInfoParams));
+
+      // Send the new info object back to the client
+      res.status(200).json(newInfo);
+    } catch (error) {
+      console.error(`${method} info request failed: ${error}`);
+      res.status(500).send("Error updating info data");
     }
   } else {
     res.status(405).send(`Method ${method} not allowed`);
