@@ -57,10 +57,13 @@ const Header = () => {
               />
             )}
           </div>
-          <div className="flex-1 justify-items-center" onClick={closeMenu}>
+          <div
+            className="flex-1 items-center justify-center justify-items-center"
+            onClick={closeMenu}
+          >
             <Logo />
           </div>
-          <div className="flex-1 sm:hidden"></div>
+          <div className="flex-1"></div>
         </div>
         <div className="hidden sm:flex sm:w-full sm:items-center">
           <div className="m-4">

@@ -1,6 +1,7 @@
 import { faBasketball } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { signIn, useSession } from "next-auth/react";
+import Link from "next/link";
 
 const footerTextStyling = "mx-4 my-2 text-sm lg:mx-8 lg:text-lg";
 const iconStyling =
@@ -16,7 +17,9 @@ const Footer = () => {
           <FontAwesomeIcon icon={faBasketball} className={iconStyling} />
         </p>
       )}
-      <p className={footerTextStyling}>© Valley Vice 2025</p>
+      <Link href="https://www.mylescruz.com/" target="_blank">
+        <p className={footerTextStyling}>© Myles Cruz 2025</p>
+      </Link>
     </div>
   );
 };
