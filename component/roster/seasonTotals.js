@@ -2,7 +2,6 @@ import seasonSorter from "@/helpers/seasonSorter";
 import SeasonTotalsRows from "./seasonTotalsRows";
 
 const SeasonTotals = ({ player }) => {
-  const playerStats = player.totalStats;
   const totalCellsStyle = "w-1/19 p-1 text-center";
 
   return (
@@ -36,9 +35,9 @@ const SeasonTotals = ({ player }) => {
             </tr>
           </thead>
           <tbody>
-            {seasonSorter(player.statsPerSeason)?.map((season) => (
+            {player.seasons.map((season, index) => (
               <SeasonTotalsRows
-                key={season.id}
+                key={index}
                 season={season}
                 totalCellsStyle={totalCellsStyle}
               />
@@ -47,34 +46,24 @@ const SeasonTotals = ({ player }) => {
           <tfoot className="border-t-1 border-white">
             <tr>
               <td className={totalCellsStyle}>Totals</td>
-              <td className={totalCellsStyle}>{playerStats?.gp}</td>
-              <td className={totalCellsStyle}>
-                {playerStats?.pm2 * 2 +
-                  playerStats?.pm3 * 3 +
-                  (playerStats?.ft ? playerStats?.ft : 0)}
-              </td>
-              <td className={totalCellsStyle}>{playerStats?.pm2}</td>
-              <td className={totalCellsStyle}>{playerStats?.pa2}</td>
-              <td className={totalCellsStyle}>
-                {((playerStats?.pm2 / playerStats?.pa2) * 100).toFixed(0)}%
-              </td>
-              <td className={totalCellsStyle}>{playerStats?.pm3}</td>
-              <td className={totalCellsStyle}>{playerStats?.pa3}</td>
-              <td className={totalCellsStyle}>
-                {((playerStats?.pm3 / playerStats?.pa3) * 100).toFixed(0)}%
-              </td>
-              <td className={totalCellsStyle}>{playerStats?.ft}</td>
-              <td className={totalCellsStyle}>{playerStats?.fta}</td>
-              <td className={totalCellsStyle}>
-                {((playerStats?.ft / playerStats?.fta) * 100).toFixed(0)}%
-              </td>
-              <td className={totalCellsStyle}>{playerStats?.reb}</td>
-              <td className={totalCellsStyle}>{playerStats?.ast}</td>
-              <td className={totalCellsStyle}>{playerStats?.stl}</td>
-              <td className={totalCellsStyle}>{playerStats?.blk}</td>
-              <td className={totalCellsStyle}>{playerStats?.to}</td>
-              <td className={totalCellsStyle}>{playerStats?.pf}</td>
-              <td className={totalCellsStyle}>{playerStats?.ckd}</td>
+              <td className={totalCellsStyle}>{player.totalStats.gp}</td>
+              <td className={totalCellsStyle}>{player.totalStats.pts}</td>
+              <td className={totalCellsStyle}>{player.totalStats.pm2}</td>
+              <td className={totalCellsStyle}>{player.totalStats.pa2}</td>
+              <td className={totalCellsStyle}>{player.totalStats.p2avg}%</td>
+              <td className={totalCellsStyle}>{player.totalStats.pm3}</td>
+              <td className={totalCellsStyle}>{player.totalStats.pa3}</td>
+              <td className={totalCellsStyle}>{player.totalStats.p3avg}%</td>
+              <td className={totalCellsStyle}>{player.totalStats.ftm}</td>
+              <td className={totalCellsStyle}>{player.totalStats.fta}</td>
+              <td className={totalCellsStyle}>{player.totalStats.ftavg}%</td>
+              <td className={totalCellsStyle}>{player.totalStats.reb}</td>
+              <td className={totalCellsStyle}>{player.totalStats.ast}</td>
+              <td className={totalCellsStyle}>{player.totalStats.stl}</td>
+              <td className={totalCellsStyle}>{player.totalStats.blk}</td>
+              <td className={totalCellsStyle}>{player.totalStats.to}</td>
+              <td className={totalCellsStyle}>{player.totalStats.pf}</td>
+              <td className={totalCellsStyle}>{player.totalStats.ckd}</td>
             </tr>
           </tfoot>
         </table>

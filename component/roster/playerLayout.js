@@ -15,22 +15,6 @@ const averagesValueStyling = "font-bold";
 const PlayerLayout = ({ playerId }) => {
   const { player, playerLoading } = usePlayer(playerId);
 
-  let playerAverages = {};
-
-  if (!playerLoading && player) {
-    playerAverages = {
-      ppg: (
-        (player.totalStats?.pm2 * 2 +
-          player.totalStats?.pm3 * 3 +
-          player.totalStats?.ft) /
-        player.totalStats?.gp
-      ).toFixed(2),
-      reb: (player.totalStats?.reb / player.totalStats?.gp).toFixed(2),
-      ast: (player.totalStats?.ast / player.totalStats?.gp).toFixed(2),
-      stl: (player.totalStats?.stl / player.totalStats?.gp).toFixed(2),
-    };
-  }
-
   if (playerLoading) {
     return <LoadingIndicator />;
   } else if (player) {
@@ -69,32 +53,38 @@ const PlayerLayout = ({ playerId }) => {
             <div className="mb-4 flex flex-row flex-wrap justify-evenly border-2 border-(--primary) w-full rounded-lg px-2 p-1 md:w-2/3 md:mx-auto lg:w-1/2 xl:w-1/3">
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>PPG</p>
-                <p className={averagesValueStyling}>{playerAverages.ppg}</p>
+                <p className={averagesValueStyling}>
+                  {player.averageStats.ppg}
+                </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>REB</p>
-                <p className={averagesValueStyling}>{playerAverages.reb}</p>
+                <p className={averagesValueStyling}>
+                  {player.averageStats.reb}
+                </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>AST</p>
-                <p className={averagesValueStyling}>{playerAverages.ast}</p>
+                <p className={averagesValueStyling}>
+                  {player.averageStats.ast}
+                </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>STL</p>
-                <p className={averagesValueStyling}>{playerAverages.stl}</p>
+                <p className={averagesValueStyling}>
+                  {player.averageStats.stl}
+                </p>
+              </div>
+              <div className={averagesContainer}>
+                <p className={averagesTitleStyling}>FG%</p>
+                <p className={averagesValueStyling}>
+                  {player.averageStats.fgavg}%
+                </p>
               </div>
             </div>
           </div>
-          <SeasonAverages
-            player={player}
-            playerId={player.id}
-            seasonsPlayed={player.seasonsPlayed}
-          />
-          <SeasonTotals
-            player={player}
-            playerId={player.id}
-            seasonsPlayed={player.seasonsPlayed}
-          />
+          <SeasonAverages player={player} />
+          <SeasonTotals player={player} />
         </div>
       </div>
     );
