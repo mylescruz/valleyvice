@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../auth/[...nextauth]";
+import clientPromise from "@/lib/mongodb";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -43,9 +44,9 @@ export default async function handler(req, res) {
   // Authorize server access using NextAuth
   const session = await getServerSession(req, res, authOptions);
 
-  const method = req.method;
-  const seasonNum = req.query.seasonNum;
-  const seasonId = `s${seasonNum}`;
+  const method = req?.method;
+  const seasonNumber = parseInt(req?.query?.seasonNumber);
+  const seasonId = `s${seasonNumber}`;
 
   const key = "roster/roster.json";
 
@@ -54,28 +55,33 @@ export default async function handler(req, res) {
     return res.status(401).send("Must login to access this information!");
   }
 
-  // Function to get the roster data from Amazon S3
-  async function getRosterData() {
-    const rosterParams = {
-      Bucket: BUCKET,
-      Key: key,
-    };
+  // Configure MongoDB
+  const client = await clientPromise;
+  const db = client.db(process.env.MONGO_DB);
+  const seasonsCol = db.collection("seasons");
 
+  // Get the roster data from MongoDB
+  async function getRosterData(seasonNumber) {
     try {
-      const rosterData = await S3.send(new GetObjectCommand(rosterParams));
-      return await streamToJSON(rosterData.Body);
+      const season = await seasonsCol.findOne({ seasonNumber: seasonNumber });
+
+      const roster = season.roster.sort(
+        (player1, player2) => player1.number - player2.number
+      );
+
+      return roster;
     } catch (error) {
-      console.error("Error retrieving the roster data from S3: ", error);
+      console.error("Error retrieving the roster data from MongoDB: ", error);
       return null;
     }
   }
 
   if (method === "GET") {
     try {
-      const roster = await getRosterData();
+      const roster = await getRosterData(seasonNumber);
 
-      // Get the roster for the selected season
-      res.status(200).json(roster[seasonId]);
+      // Send the given season's roster to the client
+      res.status(200).json(roster);
     } catch (error) {
       console.error(`${method} roster request failed: ${error}`);
       res.status(500).send("Error retrieving roster data");
