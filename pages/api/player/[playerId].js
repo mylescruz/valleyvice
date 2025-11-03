@@ -19,32 +19,12 @@ const S3 = new S3Client({
 // Define the S3 bucket
 const BUCKET = process.env.BUCKET_NAME;
 
-// Function to convert a stream object into a JSON object
-const streamToJSON = (stream) => {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("end", () => {
-      try {
-        const body = Buffer.concat(chunks).toString("utf-8");
-        const data = JSON.parse(body);
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    stream.on("error", (err) => {
-      reject(err);
-    });
-  });
-};
-
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
   const session = await getServerSession(req, res, authOptions);
 
   const method = req.method;
+  const playerId = req.query?.playerId;
 
   // If user tries to change a player's stats without having a session
   if (method !== "GET" && !session) {
@@ -56,8 +36,6 @@ export default async function handler(req, res) {
   const db = client.db(process.env.MONGO_DB);
   const playersCol = db.collection("players");
 
-  const playerId = req.query.playerId;
-
   const key = `roster/${playerId}.json`;
 
   // Function to get the player data from Amazon S3
@@ -65,141 +43,118 @@ export default async function handler(req, res) {
     try {
       const player = await playersCol.findOne({ playerId: playerId });
 
+      // Define player's total stats
       let totalStats = {
-        gp: 0,
-        pts: 0,
-        pm2: 0,
-        pa2: 0,
-        p2avg: 0,
-        pm3: 0,
-        pa3: 0,
-        p3avg: 0,
-        fgm: 0,
-        fga: 0,
-        fgavg: 0,
-        ftm: 0,
-        fta: 0,
-        ftavg: 0,
-        reb: 0,
-        ast: 0,
-        stl: 0,
-        blk: 0,
-        to: 0,
-        pf: 0,
-        ckd: 0,
+        gamesPlayed: 0,
+        points: 0,
+        twoPointsMade: 0,
+        twoPointsAttempted: 0,
+        threePointsMade: 0,
+        threePointsAttempted: 0,
+        freeThrowsMade: 0,
+        freeThrowsAttempted: 0,
+        rebounds: 0,
+        assists: 0,
+        steals: 0,
+        blocks: 0,
+        turnovers: 0,
+        personalFouls: 0,
+        cooked: 0,
       };
 
       const seasons = player.seasons.map((season) => {
-        totalStats.gp += season.gamesPlayed;
-        totalStats.pts += season.points;
-        totalStats.pm2 += season.twoPointsMade;
-        totalStats.pa2 += season.twoPointsAttempted;
-        totalStats.pm3 += season.threePointsMade;
-        totalStats.pa3 += season.threePointsAttempted;
-        totalStats.fgm += season.fieldGoalsMade;
-        totalStats.fga += season.fieldGoalsAttempted;
-        totalStats.ftm += season.freeThrowsMade;
-        totalStats.fta += season.freeThrowsAttempted;
-        totalStats.reb += season.rebounds;
-        totalStats.ast += season.assists;
-        totalStats.stl += season.steals;
-        totalStats.blk += season.blocks;
-        totalStats.to += season.turnovers;
-        totalStats.pf += season.personalFouls;
-        totalStats.ckd += season.cooked;
+        Object.keys(totalStats).map((key) => {
+          totalStats[key] += season[key];
+        });
 
         return {
-          seasonNumber: season.seasonNumber,
-          gp: season.gamesPlayed,
-          pts: season.points,
-          pm2: season.twoPointsMade,
-          pa2: season.twoPointsAttempted,
-          p2avg:
+          ...season,
+          twoPointPercentage:
             season.twoPointsAttempted === 0
               ? 0
               : (
                   (season.twoPointsMade / season.twoPointsAttempted) *
                   100
                 ).toFixed(0),
-          pm3: season.threePointsMade,
-          pa3: season.threePointsAttempted,
-          p3avg:
+          threePointPercentage:
             season.threePointsAttempted === 0
               ? 0
               : (
                   (season.threePointsMade / season.threePointsAttempted) *
                   100
                 ).toFixed(0),
-          fgm: season.fieldGoalsMade,
-          fga: season.fieldGoalsAttempted,
-          fgavg:
-            season.fieldGoalsAttempted === 0
-              ? 0
-              : (
-                  (season.fieldGoalsMade / season.fieldGoalsAttempted) *
-                  100
-                ).toFixed(0),
-          ftm: season.freeThrowsMade,
-          fta: season.freeThrowsAttempted,
-          ftavg:
+          freeThrowPercentage:
             season.freeThrowsAttempted === 0
               ? 0
               : (
                   (season.freeThrowsMade / season.freeThrowsAttempted) *
                   100
                 ).toFixed(0),
-          reb: season.rebounds,
-          ast: season.assists,
-          stl: season.steals,
-          blk: season.blocks,
-          to: season.turnovers,
-          pf: season.personalFouls,
-          ckd: season.cooked,
           averageStats: {
             seasonNumber: season.seasonNumber,
-            gp: season.gamesPlayed,
-            ppg: (season.points / season.gamesPlayed).toFixed(2),
-            pm2: (season.twoPointsMade / season.gamesPlayed).toFixed(2),
-            pa2: (season.twoPointsAttempted / season.gamesPlayed).toFixed(2),
-            pm3: (season.threePointsMade / season.gamesPlayed).toFixed(2),
-            pa3: (season.threePointsAttempted / season.gamesPlayed).toFixed(2),
-            fgm: (season.fieldGoalsMade / season.gamesPlayed).toFixed(2),
-            fga: (season.fieldGoalsAttempted / season.gamesPlayed).toFixed(2),
-            ftm: (season.freeThrowsMade / season.gamesPlayed).toFixed(2),
-            fta: (season.freeThrowsAttempted / season.gamesPlayed).toFixed(2),
-            reb: (season.rebounds / season.gamesPlayed).toFixed(2),
-            ast: (season.assists / season.gamesPlayed).toFixed(2),
-            stl: (season.steals / season.gamesPlayed).toFixed(2),
-            blk: (season.blocks / season.gamesPlayed).toFixed(2),
-            to: (season.turnovers / season.gamesPlayed).toFixed(2),
-            pf: (season.personalFouls / season.gamesPlayed).toFixed(2),
-            ckd: (season.cooked / season.gamesPlayed).toFixed(2),
+            gamesPlayed: season.gamesPlayed,
+            points: (season.points / season.gamesPlayed).toFixed(2),
+            twoPointsMade: (season.twoPointsMade / season.gamesPlayed).toFixed(
+              2
+            ),
+            twoPointsAttempted: (
+              season.twoPointsAttempted / season.gamesPlayed
+            ).toFixed(2),
+            threePointsMade: (
+              season.threePointsMade / season.gamesPlayed
+            ).toFixed(2),
+            threePointsAttempted: (
+              season.threePointsAttempted / season.gamesPlayed
+            ).toFixed(2),
+            freeThrowsMade: (
+              season.freeThrowsMade / season.gamesPlayed
+            ).toFixed(2),
+            freeThrowsAttempted: (
+              season.freeThrowsAttempted / season.gamesPlayed
+            ).toFixed(2),
+            rebounds: (season.rebounds / season.gamesPlayed).toFixed(2),
+            assists: (season.assists / season.gamesPlayed).toFixed(2),
+            steals: (season.steals / season.gamesPlayed).toFixed(2),
+            blocks: (season.blocks / season.gamesPlayed).toFixed(2),
+            turnovers: (season.turnovers / season.gamesPlayed).toFixed(2),
+            personalFouls: (season.personalFouls / season.gamesPlayed).toFixed(
+              2
+            ),
+            cooked: (season.cooked / season.gamesPlayed).toFixed(2),
           },
         };
       });
 
       const averageStats = {
-        gp: totalStats.gp,
-        ppg: (totalStats.pts / totalStats.gp).toFixed(2),
-        pm2: (totalStats.pm2 / totalStats.gp).toFixed(2),
-        pa2: (totalStats.pa2 / totalStats.gp).toFixed(2),
-        p2avg: ((totalStats.pm2 / totalStats.pa2) * 100).toFixed(0),
-        pm3: (totalStats.pm3 / totalStats.gp).toFixed(2),
-        pa3: (totalStats.pa3 / totalStats.gp).toFixed(2),
-        p3avg: ((totalStats.pm3 / totalStats.pa3) * 100).toFixed(0),
-        fgm: (totalStats.fgm / totalStats.gp).toFixed(2),
-        fga: (totalStats.fga / totalStats.gp).toFixed(2),
-        fgavg: ((totalStats.fgm / totalStats.fga) * 100).toFixed(0),
-        ftm: (totalStats.ftm / totalStats.gp).toFixed(2),
-        fta: (totalStats.fta / totalStats.gp).toFixed(2),
-        ftavg: ((totalStats.ftm / totalStats.fta) * 100).toFixed(0),
-        reb: (totalStats.reb / totalStats.gp).toFixed(2),
-        ast: (totalStats.ast / totalStats.gp).toFixed(2),
-        stl: (totalStats.stl / totalStats.gp).toFixed(2),
-        blk: (totalStats.blk / totalStats.gp).toFixed(2),
-        to: (totalStats.to / totalStats.gp).toFixed(2),
-        pf: (totalStats.pf / totalStats.gp).toFixed(2),
-        ckd: (totalStats.ckd / totalStats.gp).toFixed(2),
+        gamesPlayed: totalStats.gamesPlayed,
+        points: (totalStats.points / totalStats.gamesPlayed).toFixed(2),
+        twoPointsMade: (
+          totalStats.twoPointsMade / totalStats.gamesPlayed
+        ).toFixed(2),
+        twoPointsAttempted: (
+          totalStats.twoPointsAttempted / totalStats.gamesPlayed
+        ).toFixed(2),
+        threePointsMade: (
+          totalStats.threePointsMade / totalStats.gamesPlayed
+        ).toFixed(2),
+        threePointsAttempted: (
+          totalStats.threePointsAttempted / totalStats.gamesPlayed
+        ).toFixed(2),
+        freeThrowsMade: (
+          totalStats.freeThrowsMade / totalStats.gamesPlayed
+        ).toFixed(2),
+        freeThrowsAttempted: (
+          totalStats.freeThrowsAttempted / totalStats.gamesPlayed
+        ).toFixed(2),
+        rebounds: (totalStats.rebounds / totalStats.gamesPlayed).toFixed(2),
+        assists: (totalStats.assists / totalStats.gamesPlayed).toFixed(2),
+        steals: (totalStats.steals / totalStats.gamesPlayed).toFixed(2),
+        blocks: (totalStats.blocks / totalStats.gamesPlayed).toFixed(2),
+        turnovers: (totalStats.turnovers / totalStats.gamesPlayed).toFixed(2),
+        personalFouls: (
+          totalStats.personalFouls / totalStats.gamesPlayed
+        ).toFixed(2),
+        cooked: (totalStats.cooked / totalStats.gamesPlayed).toFixed(2),
       };
 
       return {
@@ -207,10 +162,34 @@ export default async function handler(req, res) {
         seasons: seasons,
         totalStats: {
           ...totalStats,
-          p2avg: ((totalStats.pm2 / totalStats.pa3) * 100).toFixed(0),
-          p3avg: ((totalStats.pm3 / totalStats.pa3) * 100).toFixed(0),
-          fgavg: ((totalStats.fgm / totalStats.fga) * 100).toFixed(0),
-          ftavg: ((totalStats.ftm / totalStats.fta) * 100).toFixed(0),
+          twoPointPercentage:
+            totalStats.twoPointsAttempted === 0
+              ? 0
+              : (
+                  (totalStats.twoPointsMade / totalStats.twoPointsAttempted) *
+                  100
+                ).toFixed(0),
+          threePointPercentage:
+            totalStats.threePointsAttempted === 0
+              ? 0
+              : (
+                  (totalStats.threePointsMade /
+                    totalStats.threePointsAttempted) *
+                  100
+                ).toFixed(0),
+          freeThrowPercentage:
+            totalStats.freeThrowsAttempted === 0
+              ? 0
+              : (
+                  (totalStats.freeThrowsMade / totalStats.freeThrowsAttempted) *
+                  100
+                ).toFixed(0),
+          fieldGoalPercentage: (
+            ((totalStats.twoPointsMade + totalStats.threePointsMade) /
+              (totalStats.twoPointsAttempted +
+                totalStats.threePointsAttempted)) *
+            100
+          ).toFixed(0),
         },
         averageStats: averageStats,
       };

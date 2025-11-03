@@ -20,9 +20,9 @@ export default async function handler(req, res) {
   const session = await getServerSession(req, res, authOptions);
 
   const method = req?.method;
-  const seasonNum = parseInt(req?.query?.seasonNum);
+  const seasonNumber = parseInt(req?.query?.seasonNumber);
 
-  const key = `seasons/s${seasonNum}.json`;
+  const key = `seasons/s${seasonNumber}.json`;
 
   // If user tries to change the season data without having a session
   if (method !== "GET" && !session) {
@@ -35,18 +35,18 @@ export default async function handler(req, res) {
   const seasonsCol = db.collection("seasons");
 
   // Function to get the season data from Amazon S3
-  async function getSeasonData(seasonNum) {
+  async function getSeasonData(seasonNumber) {
     try {
       const seasons = await seasonsCol
         .aggregate([
-          { $match: { seasonNumber: seasonNum } },
+          { $match: { seasonNumber: seasonNumber } },
           {
             $lookup: {
               from: "games",
               pipeline: [
-                { $match: { seasonNumber: seasonNum } },
+                { $match: { seasonNumber: seasonNumber } },
                 {
-                  $project: { players: 0, _id: 0 },
+                  $project: { players: 0, playByPlay: 0, _id: 0 },
                 },
                 {
                   $sort: { gameNumber: 1 },
@@ -66,37 +66,19 @@ export default async function handler(req, res) {
               gamesPlayed: {
                 $size: "$games",
               },
-              wins: {
-                $size: {
-                  $filter: {
-                    input: "$games",
-                    as: "game",
-                    cond: { $eq: ["$$game.result", "W"] },
-                  },
-                },
-              },
-              losses: {
-                $size: {
-                  $filter: {
-                    input: "$games",
-                    as: "game",
-                    cond: { $eq: ["$$game.result", "L"] },
-                  },
-                },
-              },
+              wins: 1,
+              losses: 1,
               games: 1,
             },
           },
         ])
         .toArray();
 
-      const season = seasons[0];
-
       if (!seasons.length) {
         throw new Error("Error retrieving the season data from MongoDB");
+      } else {
+        return seasons[0];
       }
-
-      return season;
     } catch (error) {
       throw new Error(error);
     }
@@ -104,12 +86,12 @@ export default async function handler(req, res) {
 
   if (method === "GET") {
     try {
-      const season = await getSeasonData(seasonNum);
+      const season = await getSeasonData(seasonNumber);
 
       res.status(200).json(season);
     } catch (error) {
       console.error(`${method} season request failed: ${error}`);
-      res.status(500).send(`$Error retrieving season ${seasonNum}`);
+      res.status(500).send(`$Error retrieving season ${seasonNumber}`);
     }
   } else if (method === "POST") {
     try {

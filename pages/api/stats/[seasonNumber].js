@@ -18,7 +18,8 @@ export default async function handler(req, res) {
 
     const gamesPlayed = games.length;
 
-    let totalStats = {
+    // Team's total stats
+    let teamTotalStats = {
       points: 0,
       twoPointsMade: 0,
       twoPointsAttempted: 0,
@@ -104,21 +105,21 @@ export default async function handler(req, res) {
             },
           });
 
-          // Add the player's first games stats to the total stats
-          totalStats.points += player.points;
-          totalStats.twoPointsMade += player.twoPointsMade;
-          totalStats.twoPointsAttempted += player.twoPointsAttempted;
-          totalStats.threePointsMade += player.threePointsMade;
-          totalStats.threePointsAttempted += player.threePointsAttempted;
-          totalStats.freeThrowsMade += player.freeThrowsMade;
-          totalStats.freeThrowsAttempted += player.freeThrowsAttempted;
-          totalStats.rebounds += player.rebounds;
-          totalStats.assists += player.assists;
-          totalStats.steals += player.steals;
-          totalStats.blocks += player.blocks;
-          totalStats.turnovers += player.turnovers;
-          totalStats.personalFouls += player.personalFouls;
-          totalStats.cooked += player.cooked;
+          // Add the player's first games stats to the team's total stats
+          teamTotalStats.points += player.points;
+          teamTotalStats.twoPointsMade += player.twoPointsMade;
+          teamTotalStats.twoPointsAttempted += player.twoPointsAttempted;
+          teamTotalStats.threePointsMade += player.threePointsMade;
+          teamTotalStats.threePointsAttempted += player.threePointsAttempted;
+          teamTotalStats.freeThrowsMade += player.freeThrowsMade;
+          teamTotalStats.freeThrowsAttempted += player.freeThrowsAttempted;
+          teamTotalStats.rebounds += player.rebounds;
+          teamTotalStats.assists += player.assists;
+          teamTotalStats.steals += player.steals;
+          teamTotalStats.blocks += player.blocks;
+          teamTotalStats.turnovers += player.turnovers;
+          teamTotalStats.personalFouls += player.personalFouls;
+          teamTotalStats.cooked += player.cooked;
         } else {
           foundPlayer.gamesPlayed += 1;
 
@@ -153,7 +154,7 @@ export default async function handler(req, res) {
                   : "0";
             } else {
               foundPlayer.totalStats[key] += player[key];
-              totalStats[key] += player[key];
+              teamTotalStats[key] += player[key];
             }
           });
 
@@ -210,52 +211,56 @@ export default async function handler(req, res) {
     });
 
     // Update the team's total two point, three point and free throw percentage
-    totalStats.twoPointPercentage =
-      totalStats.twoPointsAttempted !== 0
+    teamTotalStats.twoPointPercentage =
+      teamTotalStats.twoPointsAttempted !== 0
         ? (
-            (totalStats.twoPointsMade / totalStats.twoPointsAttempted) *
+            (teamTotalStats.twoPointsMade / teamTotalStats.twoPointsAttempted) *
             100
           ).toFixed(0)
         : "0";
 
-    totalStats.threePointPercentage =
-      totalStats.threePointsAttempted !== 0
+    teamTotalStats.threePointPercentage =
+      teamTotalStats.threePointsAttempted !== 0
         ? (
-            (totalStats.threePointsMade / totalStats.threePointsAttempted) *
+            (teamTotalStats.threePointsMade /
+              teamTotalStats.threePointsAttempted) *
             100
           ).toFixed(0)
         : "0";
 
-    totalStats.freeThrowPercentage =
-      totalStats.freeThrowsAttempted !== 0
+    teamTotalStats.freeThrowPercentage =
+      teamTotalStats.freeThrowsAttempted !== 0
         ? (
-            (totalStats.freeThrowsMade / totalStats.freeThrowsAttempted) *
+            (teamTotalStats.freeThrowsMade /
+              teamTotalStats.freeThrowsAttempted) *
             100
           ).toFixed(0)
         : "0";
 
     // Update the team's average stats
-    const averageStats = {
-      points: (totalStats.points / gamesPlayed).toFixed(2),
-      twoPointsMade: (totalStats.twoPointsMade / gamesPlayed).toFixed(2),
-      twoPointsAttempted: (totalStats.twoPointsAttempted / gamesPlayed).toFixed(
+    const teamAverageStats = {
+      points: (teamTotalStats.points / gamesPlayed).toFixed(2),
+      twoPointsMade: (teamTotalStats.twoPointsMade / gamesPlayed).toFixed(2),
+      twoPointsAttempted: (
+        teamTotalStats.twoPointsAttempted / gamesPlayed
+      ).toFixed(2),
+      threePointsMade: (teamTotalStats.threePointsMade / gamesPlayed).toFixed(
         2
       ),
-      threePointsMade: (totalStats.threePointsMade / gamesPlayed).toFixed(2),
       threePointsAttempted: (
-        totalStats.threePointsAttempted / gamesPlayed
+        teamTotalStats.threePointsAttempted / gamesPlayed
       ).toFixed(2),
-      freeThrowsMade: (totalStats.freeThrowsMade / gamesPlayed).toFixed(2),
+      freeThrowsMade: (teamTotalStats.freeThrowsMade / gamesPlayed).toFixed(2),
       freeThrowsAttempted: (
-        totalStats.freeThrowsAttempted / gamesPlayed
+        teamTotalStats.freeThrowsAttempted / gamesPlayed
       ).toFixed(2),
-      rebounds: (totalStats.rebounds / gamesPlayed).toFixed(2),
-      assists: (totalStats.assists / gamesPlayed).toFixed(2),
-      steals: (totalStats.steals / gamesPlayed).toFixed(2),
-      blocks: (totalStats.blocks / gamesPlayed).toFixed(2),
-      turnovers: (totalStats.turnovers / gamesPlayed).toFixed(2),
-      personalFouls: (totalStats.personalFouls / gamesPlayed).toFixed(2),
-      cooked: (totalStats.cooked / gamesPlayed).toFixed(2),
+      rebounds: (teamTotalStats.rebounds / gamesPlayed).toFixed(2),
+      assists: (teamTotalStats.assists / gamesPlayed).toFixed(2),
+      steals: (teamTotalStats.steals / gamesPlayed).toFixed(2),
+      blocks: (teamTotalStats.blocks / gamesPlayed).toFixed(2),
+      turnovers: (teamTotalStats.turnovers / gamesPlayed).toFixed(2),
+      personalFouls: (teamTotalStats.personalFouls / gamesPlayed).toFixed(2),
+      cooked: (teamTotalStats.cooked / gamesPlayed).toFixed(2),
     };
 
     return {
@@ -264,8 +269,8 @@ export default async function handler(req, res) {
       ),
       teamStats: {
         gamesPlayed: gamesPlayed,
-        totalStats: totalStats,
-        averageStats: averageStats,
+        totalStats: teamTotalStats,
+        averageStats: teamAverageStats,
       },
     };
   }

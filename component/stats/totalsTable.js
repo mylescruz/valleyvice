@@ -1,4 +1,3 @@
-import useSeason from "@/hooks/useSeason";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
 import useSeasonStats from "@/hooks/useSeasonStats";
@@ -6,7 +5,7 @@ import useSeasonStats from "@/hooks/useSeasonStats";
 const TotalsTable = ({ seasonNumber }) => {
   const { seasonStats, seasonStatsLoading } = useSeasonStats(seasonNumber);
 
-  const totalCellsStyle = "w-1/19 p-1 text-center";
+  const totalCellsStyle = "w-1/20 p-1 text-center";
 
   if (seasonStatsLoading && !seasonStats) {
     return <LoadingIndicator />;
@@ -30,7 +29,7 @@ const TotalsTable = ({ seasonNumber }) => {
                 <th className={totalCellsStyle}>3PM</th>
                 <th className={totalCellsStyle}>3PA</th>
                 <th className={totalCellsStyle}>3P%</th>
-                <th className={totalCellsStyle}>FT</th>
+                <th className={totalCellsStyle}>FTM</th>
                 <th className={totalCellsStyle}>FTA</th>
                 <th className={totalCellsStyle}>FT%</th>
                 <th className={totalCellsStyle}>REB</th>
@@ -106,7 +105,9 @@ const TotalsTable = ({ seasonNumber }) => {
               <tr className="border-t-1 border-white">
                 <td className={totalCellsStyle}>Totals</td>
                 <td className={totalCellsStyle}></td>
-                <td className={totalCellsStyle}></td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.gamesPlayed}
+                </td>
                 <td className={totalCellsStyle}>
                   {seasonStats.teamStats.totalStats.points}
                 </td>

@@ -3,15 +3,14 @@ import { faArrowLeft, faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
-import rosterSorter from "@/helpers/rosterSorter";
 import ErrorLayout from "../layout/errorLayout";
 import useGame from "@/hooks/useGame";
 
 const TOTAL_CELLS_STYLE = "w-1/19 p-1 text-center";
 
-const GameLayout = ({ seasonNum, gameNum }) => {
-  const { game, gameLoading } = useGame(seasonNum, gameNum);
-
+const GameLayout = ({ seasonNumber, gameNumber }) => {
+  const { game, gameLoading } = useGame(seasonNumber, gameNumber);
+  if (game) console.log(game.teamStats);
   if (gameLoading && !game) {
     return <LoadingIndicator />;
   } else if (game) {
@@ -29,9 +28,9 @@ const GameLayout = ({ seasonNum, gameNum }) => {
             <h1 className="text-2xl text-(--primary) text-center font-bold">
               Valley Vice vs {game.opponent}
             </h1>
-            {game.vvScore && game.opponentScore && (
+            {game.valleyViceScore && game.opponentScore && (
               <h2 className="text-xl font-bold text-(--secondary)">
-                {game.result} {game.vvScore} - {game.opponentScore}
+                {game.result} {game.valleyViceScore} - {game.opponentScore}
               </h2>
             )}
             <p>
@@ -56,7 +55,7 @@ const GameLayout = ({ seasonNum, gameNum }) => {
                   <th className={TOTAL_CELLS_STYLE}>3PM</th>
                   <th className={TOTAL_CELLS_STYLE}>3PA</th>
                   <th className={TOTAL_CELLS_STYLE}>3P%</th>
-                  <th className={TOTAL_CELLS_STYLE}>FT</th>
+                  <th className={TOTAL_CELLS_STYLE}>FTM</th>
                   <th className={TOTAL_CELLS_STYLE}>FTA</th>
                   <th className={TOTAL_CELLS_STYLE}>FT%</th>
                   <th className={TOTAL_CELLS_STYLE}>REB</th>
@@ -73,43 +72,15 @@ const GameLayout = ({ seasonNum, gameNum }) => {
                   <tr key={index}>
                     <td className={TOTAL_CELLS_STYLE}>{player.number}</td>
                     <td className={TOTAL_CELLS_STYLE}>{player.name}</td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.points}</td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.twoPointsMade}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.twoPointsAttempted}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.twoPointPercentage}%
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.threePointsMade}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.threePointsAttempted}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.threePointPercentage}%
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.freeThrowsMade}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.freeThrowsAttempted}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.freeThrowPercentage}%
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.rebounds}</td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.assists}</td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.steals}</td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.blocks}</td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.turnovers}</td>
-                    <td className={TOTAL_CELLS_STYLE}>
-                      {player.personalFouls}
-                    </td>
-                    <td className={TOTAL_CELLS_STYLE}>{player.cooked}</td>
+                    {Object.entries(player).map(
+                      ([key, value]) =>
+                        !["playerId", "name", "number"].includes(key) && (
+                          <td key={key} className={TOTAL_CELLS_STYLE}>
+                            {value}
+                            {key.includes("Percentage") && "%"}
+                          </td>
+                        )
+                    )}
                   </tr>
                 ))}
               </tbody>

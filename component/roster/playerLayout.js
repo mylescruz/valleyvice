@@ -1,12 +1,12 @@
 import LoadingIndicator from "../layout/loadingIndicator";
 import Image from "next/image";
-import SeasonTotals from "./seasonTotals";
-import SeasonAverages from "./seasonAverages";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import usePlayer from "@/hooks/usePlayer";
 import ErrorLayout from "../layout/errorLayout";
+import PlayerAverages from "./playerAverages";
+import PlayerTotals from "./playerTotals";
 
 const averagesContainer = "flex flex-col text-center";
 const averagesTitleStyling = "text-xl text-(--secondary) font-bold";
@@ -54,37 +54,37 @@ const PlayerLayout = ({ playerId }) => {
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>PPG</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.ppg}
+                  {player.averageStats.points}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>REB</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.reb}
+                  {player.averageStats.rebounds}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>AST</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.ast}
+                  {player.averageStats.assists}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>STL</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.stl}
+                  {player.averageStats.steals}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>FG%</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.fgavg}%
+                  {player.totalStats.fieldGoalPercentage}%
                 </p>
               </div>
             </div>
           </div>
-          <SeasonAverages player={player} />
-          <SeasonTotals player={player} />
+          <PlayerAverages player={player} />
+          <PlayerTotals player={player} />
         </div>
       </div>
     );

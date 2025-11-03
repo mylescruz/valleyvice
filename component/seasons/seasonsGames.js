@@ -4,13 +4,12 @@ import { faLocationDot } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
 import dateFormatter from "@/helpers/dateFormatter";
-import gameSorter from "@/helpers/gameSorter";
 import ErrorLayout from "../layout/errorLayout";
 
 const SeasonsGames = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
-  console.log(season);
-  if (seasonLoading) {
+
+  if (seasonLoading && !season) {
     return <LoadingIndicator />;
   } else if (season) {
     return (
@@ -19,7 +18,7 @@ const SeasonsGames = ({ seasonNumber }) => {
           <h1 className="text-3xl text-(--primary) font-bold">
             Season {seasonNumber}
           </h1>
-          {season.wins !== 0 && season.losses !== 0 && (
+          {season.wins && season.losses && (
             <p className="text-xl text-(--secondary) font-bold">
               Record: {season.wins} - {season.losses}
             </p>
@@ -41,7 +40,7 @@ const SeasonsGames = ({ seasonNumber }) => {
             >
               <div className="flex flex-row justify-between">
                 <h1 className="font-bold">Game {game.gameNumber}</h1>
-                {game.vvScore && game.opponentScore && (
+                {game.valleyViceScore && game.opponentScore && (
                   <p className="font-bold">
                     <span
                       className={`${
@@ -52,7 +51,7 @@ const SeasonsGames = ({ seasonNumber }) => {
                     >
                       {game.result}
                     </span>{" "}
-                    {game.vvScore} - {game.opponentScore}
+                    {game.valleyViceScore} - {game.opponentScore}
                   </p>
                 )}
               </div>

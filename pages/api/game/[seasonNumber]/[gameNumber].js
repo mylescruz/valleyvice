@@ -33,16 +33,10 @@ export default async function handler(req, res) {
         points: 0,
         twoPointsMade: 0,
         twoPointsAttempted: 0,
-        twoPointPercentage: 0,
         threePointsMade: 0,
         threePointsAttempted: 0,
-        threePointPercentage: 0,
-        fieldGoalsMade: 0,
-        fieldGoalsAttempted: 0,
-        fieldGoalPercentage: 0,
         freeThrowsMade: 0,
         freeThrowsAttempted: 0,
-        freeThrowPercentage: 0,
         rebounds: 0,
         assists: 0,
         steals: 0,
@@ -53,53 +47,12 @@ export default async function handler(req, res) {
       };
 
       // Map through each player to get their shot making percentages
-      const players = game.players
-        .map((player) => {
-          // Add each player's stats to the team's total stats
-          teamStats.points += player.points;
-          teamStats.twoPointsMade += player.twoPointsMade;
-          teamStats.twoPointsAttempted += player.twoPointsAttempted;
-          teamStats.threePointsMade += player.threePointsMade;
-          teamStats.threePointsAttempted += player.threePointsAttempted;
-          teamStats.fieldGoalsMade += player.fieldGoalsMade;
-          teamStats.fieldGoalsAttempted += player.fieldGoalsAttempted;
-          teamStats.freeThrowsMade += player.freeThrowsMade;
-          teamStats.freeThrowsAttempted += player.freeThrowsAttempted;
-          teamStats.freeThrowPercentage += player.freeThrowPercentage;
-          teamStats.rebounds += player.rebounds;
-          teamStats.assists += player.assists;
-          teamStats.steals += player.steals;
-          teamStats.blocks += player.blocks;
-          teamStats.turnovers += player.turnovers;
-          teamStats.personalFouls += player.personalFouls;
-          teamStats.cooked += player.cooked;
-
-          return {
-            ...player,
-            twoPointPercentage:
-              player.twoPointsAttempted !== 0
-                ? (
-                    (player.twoPointsMade / player.twoPointsAttempted) *
-                    100
-                  ).toFixed(0)
-                : "0",
-            threePointPercentage:
-              player.threePointsAttempted !== 0
-                ? (
-                    (player.threePointsMade / player.threePointsAttempted) *
-                    100
-                  ).toFixed(0)
-                : "0",
-            freeThrowPercentage:
-              player.freeThrowsAttempted !== 0
-                ? (
-                    (player.freeThrowsMade / player.freeThrowsAttempted) *
-                    100
-                  ).toFixed(0)
-                : "0",
-          };
-        })
-        .sort((player1, player2) => player1.number - player2.number);
+      game.players.forEach((player) => {
+        // Add each player's stats to the team's total stats
+        Object.keys(teamStats).map((key) => {
+          teamStats[key] += player[key];
+        });
+      });
 
       return {
         ...game,
@@ -127,7 +80,9 @@ export default async function handler(req, res) {
                 ).toFixed(0)
               : "0",
         },
-        players: players,
+        players: game.players.sort(
+          (player1, player2) => player1.number - player2.number
+        ),
       };
     } catch (error) {
       throw new Error(error);

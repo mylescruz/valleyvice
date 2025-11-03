@@ -1,11 +1,10 @@
-import useSeason from "@/hooks/useSeason";
 import ErrorLayout from "../layout/errorLayout";
 import useSeasonStats from "@/hooks/useSeasonStats";
 
 const AverageTable = ({ seasonNumber }) => {
   const { seasonStats, seasonStatsLoading } = useSeasonStats(seasonNumber);
 
-  const averageCellsStyle = "w-1/16 p-1 text-center";
+  const averageCellsStyle = "w-1/17 p-1 text-center";
 
   if (seasonStatsLoading && !seasonStats) {
     return <></>;
@@ -27,7 +26,7 @@ const AverageTable = ({ seasonNumber }) => {
                 <th className={averageCellsStyle}>2PA</th>
                 <th className={averageCellsStyle}>3PM</th>
                 <th className={averageCellsStyle}>3PA</th>
-                <th className={averageCellsStyle}>FT</th>
+                <th className={averageCellsStyle}>FTM</th>
                 <th className={averageCellsStyle}>FTA</th>
                 <th className={averageCellsStyle}>REB</th>
                 <th className={averageCellsStyle}>AST</th>
@@ -93,7 +92,9 @@ const AverageTable = ({ seasonNumber }) => {
               <tr className="border-t-1 border-white">
                 <td className={averageCellsStyle}>Totals</td>
                 <td className={averageCellsStyle}></td>
-                <td className={averageCellsStyle}></td>
+                <td className={averageCellsStyle}>
+                  {seasonStats.teamStats.gamesPlayed}
+                </td>
                 {Object.entries(seasonStats.teamStats.averageStats).map(
                   ([key, value]) => (
                     <td key={key} className={averageCellsStyle}>

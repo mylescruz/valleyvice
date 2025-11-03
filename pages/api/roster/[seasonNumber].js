@@ -19,27 +19,6 @@ const S3 = new S3Client({
 // Define the S3 bucket
 const BUCKET = process.env.BUCKET_NAME;
 
-// Function to convert a stream object into a JSON object
-const streamToJSON = (stream) => {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("end", () => {
-      try {
-        const body = Buffer.concat(chunks).toString("utf-8");
-        const data = JSON.parse(body);
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    stream.on("error", (err) => {
-      reject(err);
-    });
-  });
-};
-
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
   const session = await getServerSession(req, res, authOptions);
