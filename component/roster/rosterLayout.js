@@ -6,7 +6,7 @@ import ErrorLayout from "../layout/errorLayout";
 
 const RosterLayout = () => {
   const { info, infoLoading } = useContext(InfoContext);
-  const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
+  const [seasonNumber, setSeasonNumber] = useState(null);
 
   useEffect(() => {
     if (!infoLoading && info) {
@@ -18,9 +18,9 @@ const RosterLayout = () => {
     setSeasonNumber(e.target.value);
   };
 
-  if (infoLoading) {
+  if (infoLoading && !info && !seasonNumber) {
     return <LoadingIndicator />;
-  } else if (info) {
+  } else if (info && seasonNumber) {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
