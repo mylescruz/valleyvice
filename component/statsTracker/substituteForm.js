@@ -8,39 +8,26 @@ const SubstituteForm = ({
   setGame,
 }) => {
   const [substitutePlayer, setSubstitutePlayer] = useState({
-    id: "vvSubs",
+    playerId: "",
     name: "",
     number: "",
-    pm2: 0,
-    pa2: 0,
-    pm3: 0,
-    pa3: 0,
-    ft: 0,
-    fta: 0,
-    reb: 0,
-    ast: 0,
-    stl: 0,
-    blk: 0,
-    to: 0,
-    pf: 0,
-    ckd: 0,
+    twoPointsMade: 0,
+    twoPointsAttempted: 0,
+    threePointsMade: 0,
+    threePointsAttempted: 0,
+    freeThrowsMade: 0,
+    freeThrowsAttempted: 0,
+    rebounds: 0,
+    assists: 0,
+    steals: 0,
+    blocks: 0,
+    turnovers: 0,
+    personalFouls: 0,
+    cooked: 0,
   });
 
   const handleInput = (e) => {
     setSubstitutePlayer({ ...substitutePlayer, [e.target.id]: e.target.value });
-  };
-
-  const handleNumInput = (e) => {
-    const input = e.target.value;
-
-    if (input === "") {
-      setSubstitutePlayer({ ...substitutePlayer, [e.target.id]: input });
-    } else {
-      setSubstitutePlayer({
-        ...substitutePlayer,
-        [e.target.id]: parseInt(input),
-      });
-    }
   };
 
   const closeEnterPlayer = () => {
@@ -50,8 +37,17 @@ const SubstituteForm = ({
   const submitPlayer = (e) => {
     e.preventDefault();
 
-    setPlayers([...players, substitutePlayer.id]);
-    setGame({ ...game, playerStats: [...game.playerStats, substitutePlayer] });
+    // Define the substitute's playerId
+    const substitutePlayerId = `${substitutePlayer.name}${substitutePlayer.number}`;
+
+    setPlayers([...players, substitutePlayerId]);
+    setGame({
+      ...game,
+      players: [
+        ...game.players,
+        { ...substitutePlayer, playerId: substitutePlayerId },
+      ],
+    });
 
     closeEnterPlayer();
   };
@@ -83,7 +79,7 @@ const SubstituteForm = ({
             <input
               id="number"
               type="number"
-              onChange={handleNumInput}
+              onChange={handleInput}
               className={gameDetailsInput}
               value={substitutePlayer.number}
             />

@@ -63,7 +63,7 @@ const InfoLayout = () => {
             </thead>
             <tbody>
               {info.currentRoster.map((player) => (
-                <tr key={player.playedId}>
+                <tr key={player.playerId}>
                   <td className={playerCellsStyle}>{player.number}</td>
                   <td className={playerCellsStyle}>{player.name}</td>
                   <td className={playerCellsStyle}>{player.height}</td>

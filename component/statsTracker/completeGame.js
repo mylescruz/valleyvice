@@ -1,29 +1,27 @@
-import usePlayerStats from "@/hooks/usePlayersStats";
-import useSeason from "@/hooks/useSeason";
-import { useState } from "react";
+import useGames from "@/hooks/useGames";
+
+const gameDetailsInputGroup = "flex flex-col my-1.5";
+const gameDetailsInput =
+  "border-2 border-(--secondary) rounded-lg py-1 px-2 lg:mr-2";
+const buttonStyling =
+  "font-bold rounded-lg mx-2 px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
 
 const CompleteGame = ({
   game,
   setGame,
+  emptyGame,
   setGameFinished,
-  trackedGame,
-  deleteTrackedGame,
   setEnterGameInfo,
 }) => {
-  const { season, putSeason } = useSeason(game.seasonNumber);
-  const { putPlayersStats } = usePlayerStats(game.seasonNumber);
-  const [gameScores, setGameScores] = useState({
-    opponentScore: 0,
-    totalScore: 0,
-  });
+  const { postGame } = useGames();
 
   const handleInput = (e) => {
     const input = e.target.value;
 
     if (input === "") {
-      setGameScores({ ...gameScores, [e.target.id]: input });
+      setGame({ ...game, [e.target.id]: input });
     } else {
-      setGameScores({ ...gameScores, [e.target.id]: parseInt(input) });
+      setGame({ ...game, [e.target.id]: parseInt(input) });
     }
   };
 
@@ -33,48 +31,9 @@ const CompleteGame = ({
 
   const submitGame = async () => {
     try {
-      const finalGame = {
-        ...game,
-        opponentScore: gameScores.opponentScore,
-        totalScore: gameScores.totalScore,
-        result: gameScores.totalScore > gameScores.opponentScore ? "W" : "L",
-      };
+      await postGame(game);
 
-      const updatedPlayerStats = season.playerTotalStats.map((player) => {
-        game.playerStats.forEach((pyr) => {
-          if (player.id === pyr.id) {
-            player.gp += 1;
-            player.pm2 += pyr.pm2;
-            player.pa2 += pyr.pa2;
-            player.pm3 += pyr.pm3;
-            player.pa3 += pyr.pa3;
-            player.ft += pyr.ft;
-            player.fta += pyr.fta;
-            player.reb += pyr.reb;
-            player.ast += pyr.ast;
-            player.stl += pyr.stl;
-            player.blk += pyr.blk;
-            player.to += pyr.to;
-            player.pf += pyr.pf;
-            player.ckd += pyr.ckd;
-          }
-        });
-
-        return player;
-      });
-
-      const updatedSeason = {
-        ...season,
-        playerTotalStats: updatedPlayerStats,
-        games: [...season.games, finalGame],
-        wins: finalGame.result === "W" ? season.wins + 1 : season.wins,
-        losses: finalGame.result === "L" ? season.losses + 1 : season.losses,
-      };
-
-      await putSeason(updatedSeason);
-      await putPlayersStats(finalGame.playerStats);
-      await deleteTrackedGame();
-      setGame(trackedGame);
+      setGame(emptyGame);
 
       closeComplete();
       setEnterGameInfo(true);
@@ -86,12 +45,6 @@ const CompleteGame = ({
       return;
     }
   };
-
-  const gameDetailsInputGroup = "flex flex-col my-1.5";
-  const gameDetailsInput =
-    "border-2 border-(--secondary) rounded-lg py-1 px-2 lg:mr-2";
-  const buttonStyling =
-    "font-bold rounded-lg mx-2 px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
 
   return (
     <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-[rgba(255,255,255,0.2)] z-50 flex flex-col justify-center items-center">
@@ -106,7 +59,7 @@ const CompleteGame = ({
               type="number"
               onChange={handleInput}
               className={gameDetailsInput}
-              value={gameScores.totalScore}
+              value={game.teamStats.points}
             />
           </div>
           <div className={gameDetailsInputGroup}>
@@ -116,7 +69,7 @@ const CompleteGame = ({
               type="number"
               onChange={handleInput}
               className={gameDetailsInput}
-              value={gameScores.opponentScore}
+              value={game.opponentScore}
             />
           </div>
         </form>

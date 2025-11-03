@@ -69,6 +69,7 @@ export default async function handler(req, res) {
       return {
         team: "Valey Vice",
         currentSeason: seasonNumber,
+        lastGameNumberPlayed: currentSeason.gamesPlayed,
         currentRoster: roster,
         seasonsPlayed: seasonsPlayed,
         totalGames: totalGames,

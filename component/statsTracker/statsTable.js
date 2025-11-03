@@ -1,6 +1,4 @@
-import rosterSorter from "@/helpers/rosterSorter";
-
-const StatsTable = ({ playerStats, teamStats }) => {
+const StatsTable = ({ players, teamStats }) => {
   const playerCellsStyle = "w-1/19 p-1 text-center";
   return (
     <table>
@@ -15,7 +13,7 @@ const StatsTable = ({ playerStats, teamStats }) => {
           <th className={playerCellsStyle}>3PM</th>
           <th className={playerCellsStyle}>3PA</th>
           <th className={playerCellsStyle}>3P%</th>
-          <th className={playerCellsStyle}>FT</th>
+          <th className={playerCellsStyle}>FTM</th>
           <th className={playerCellsStyle}>FTA</th>
           <th className={playerCellsStyle}>FT%</th>
           <th className={playerCellsStyle}>REB</th>
@@ -28,41 +26,48 @@ const StatsTable = ({ playerStats, teamStats }) => {
         </tr>
       </thead>
       <tbody>
-        {rosterSorter(playerStats)?.map((player) => (
+        {players.map((player) => (
           <tr key={player.id}>
             <td className={playerCellsStyle}>{player.number}</td>
             <td className={playerCellsStyle}>{player.name}</td>
+            <td className={playerCellsStyle}>{player.points}</td>
+            <td className={playerCellsStyle}>{player.twoPointsMade}</td>
+            <td className={playerCellsStyle}>{player.twoPointsAttempted}</td>
             <td className={playerCellsStyle}>
-              {player.pm2 * 2 + player.pm3 * 3 + player.ft}
-            </td>
-            <td className={playerCellsStyle}>{player.pm2}</td>
-            <td className={playerCellsStyle}>{player.pa2}</td>
-            <td className={playerCellsStyle}>
-              {player.pa2 === 0
+              {player.twoPointsAttempted === 0
                 ? `0%`
-                : `${((player.pm2 / player.pa2) * 100).toFixed(0)}%`}
+                : `${(
+                    (player.twoPointsMade / player.twoPointsAttempted) *
+                    100
+                  ).toFixed(0)}%`}
             </td>
-            <td className={playerCellsStyle}>{player.pm3}</td>
-            <td className={playerCellsStyle}>{player.pa3}</td>
+            <td className={playerCellsStyle}>{player.threePointsMade}</td>
+            <td className={playerCellsStyle}>{player.threePointsAttempted}</td>
             <td className={playerCellsStyle}>
-              {player.pa3 === 0
+              {player.threePointsAttempted === 0
                 ? `0%`
-                : `${((player.pm3 / player.pa3) * 100).toFixed(0)}%`}
+                : `${(
+                    (player.threePointsMade / player.threePointsAttempted) *
+                    100
+                  ).toFixed(0)}%`}
             </td>
-            <td className={playerCellsStyle}>{player.ft}</td>
-            <td className={playerCellsStyle}>{player.fta}</td>
+            <td className={playerCellsStyle}>{player.freeThrowsMade}</td>
+            <td className={playerCellsStyle}>{player.freeThrowsAttempted}</td>
             <td className={playerCellsStyle}>
-              {player.fta === 0
+              {player.freeThrowsAttempted === 0
                 ? `0%`
-                : `${((player.ft / player.fta) * 100).toFixed(0)}%`}
+                : `${(
+                    (player.freeThrowsMade / player.freeThrowsAttempted) *
+                    100
+                  ).toFixed(0)}%`}
             </td>
-            <td className={playerCellsStyle}>{player.reb}</td>
-            <td className={playerCellsStyle}>{player.ast}</td>
-            <td className={playerCellsStyle}>{player.stl}</td>
-            <td className={playerCellsStyle}>{player.blk}</td>
-            <td className={playerCellsStyle}>{player.to}</td>
-            <td className={playerCellsStyle}>{player.pf}</td>
-            <td className={playerCellsStyle}>{player.ckd}</td>
+            <td className={playerCellsStyle}>{player.rebounds}</td>
+            <td className={playerCellsStyle}>{player.assists}</td>
+            <td className={playerCellsStyle}>{player.steals}</td>
+            <td className={playerCellsStyle}>{player.blocks}</td>
+            <td className={playerCellsStyle}>{player.turnovers}</td>
+            <td className={playerCellsStyle}>{player.personalFouls}</td>
+            <td className={playerCellsStyle}>{player.cooked}</td>
           </tr>
         ))}
       </tbody>
@@ -70,39 +75,44 @@ const StatsTable = ({ playerStats, teamStats }) => {
         <tr className="border-t-1 broder-white">
           <td className={playerCellsStyle}>Totals</td>
           <td className={playerCellsStyle}></td>
+          <td className={playerCellsStyle}>{teamStats.points}</td>
+          <td className={playerCellsStyle}>{teamStats.twoPointsMade}</td>
+          <td className={playerCellsStyle}>{teamStats.twoPointsAttempted}</td>
           <td className={playerCellsStyle}>
-            {teamStats
-              ? teamStats.pm2 * 2 + teamStats.pm3 * 3 + teamStats.ft
-              : 0}
-          </td>
-          <td className={playerCellsStyle}>{teamStats?.pm2}</td>
-          <td className={playerCellsStyle}>{teamStats?.pa2}</td>
-          <td className={playerCellsStyle}>
-            {teamStats?.pa2 === 0
+            {teamStats.twoPointsAttempted === 0
               ? `0%`
-              : `${((teamStats?.pm2 / teamStats?.pa2) * 100).toFixed(0)}%`}
+              : `${(
+                  (teamStats.twoPointsMade / teamStats.twoPointsAttempted) *
+                  100
+                ).toFixed(0)}%`}
           </td>
-          <td className={playerCellsStyle}>{teamStats?.pm3}</td>
-          <td className={playerCellsStyle}>{teamStats?.pa3}</td>
+          <td className={playerCellsStyle}>{teamStats.threePointsMade}</td>
+          <td className={playerCellsStyle}>{teamStats.threePointsAttempted}</td>
           <td className={playerCellsStyle}>
-            {teamStats?.pa3 === 0
+            {teamStats.threePointsAttempted === 0
               ? `0%`
-              : `${((teamStats?.pm3 / teamStats?.pa3) * 100).toFixed(0)}%`}
+              : `${(
+                  (teamStats.threePointsMade / teamStats.threePointsAttempted) *
+                  100
+                ).toFixed(0)}%`}
           </td>
-          <td className={playerCellsStyle}>{teamStats?.ft}</td>
-          <td className={playerCellsStyle}>{teamStats?.fta}</td>
+          <td className={playerCellsStyle}>{teamStats.freeThrowsMade}</td>
+          <td className={playerCellsStyle}>{teamStats.freeThrowsAttempted}</td>
           <td className={playerCellsStyle}>
-            {teamStats?.fta === 0
+            {teamStats.freeThrowsAttempted === 0
               ? `0%`
-              : `${((teamStats?.ft / teamStats?.fta) * 100).toFixed(0)}%`}
+              : `${(
+                  (teamStats.freeThrowsMade / teamStats.freeThrowsAttempted) *
+                  100
+                ).toFixed(0)}%`}
           </td>
-          <td className={playerCellsStyle}>{teamStats?.reb}</td>
-          <td className={playerCellsStyle}>{teamStats?.ast}</td>
-          <td className={playerCellsStyle}>{teamStats?.stl}</td>
-          <td className={playerCellsStyle}>{teamStats?.blk}</td>
-          <td className={playerCellsStyle}>{teamStats?.to}</td>
-          <td className={playerCellsStyle}>{teamStats?.pf}</td>
-          <td className={playerCellsStyle}>{teamStats?.ckd}</td>
+          <td className={playerCellsStyle}>{teamStats.rebounds}</td>
+          <td className={playerCellsStyle}>{teamStats.assists}</td>
+          <td className={playerCellsStyle}>{teamStats.steals}</td>
+          <td className={playerCellsStyle}>{teamStats.blocks}</td>
+          <td className={playerCellsStyle}>{teamStats.turnovers}</td>
+          <td className={playerCellsStyle}>{teamStats.personalFouls}</td>
+          <td className={playerCellsStyle}>{teamStats.cooked}</td>
         </tr>
       </tfoot>
     </table>

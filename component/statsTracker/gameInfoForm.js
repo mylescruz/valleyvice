@@ -8,7 +8,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
   const [inputPlayer, setInputPlayer] = useState(false);
   const [gameInfo, setGameInfo] = useState({
     seasonNumber: info.currentSeason,
-    gameNumber: "",
+    gameNumber: info.lastGameNumberPlayed + 1,
     date: "",
     location: "",
     opponent: "",
@@ -40,21 +40,20 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
   const completeGameInfo = (e) => {
     e.preventDefault();
 
-    const updatedPlayerStats = game.playerStats.filter((player) => {
-      if (players.includes(player.id)) {
+    const updatedPlayers = game.players.filter((player) => {
+      if (players.includes(player.playerId)) {
         return player;
       }
     });
 
     setGame({
       ...game,
-      id: `s${gameInfo.seasonNumber}g${gameInfo.gameNumber}`,
       seasonNumber: gameInfo.seasonNumber,
       gameNumber: gameInfo.gameNumber,
       date: gameInfo.date,
       location: gameInfo.location,
       opponent: gameInfo.opponent,
-      playerStats: updatedPlayerStats,
+      players: updatedPlayers,
     });
 
     setEnterGameInfo(false);
@@ -136,14 +135,15 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
           <div className="flex flex-col items-center mt-1.5">
             <p>Who played this game?</p>
             <div className="flex flex-row flex-wrap justify-center lg:w-3/4 xl:w-4/5">
-              {game?.playerStats?.map((player) => (
+              {game.players.map((player) => (
                 <div
-                  key={player.id}
+                  key={player.playerId}
                   className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${
-                    players.includes(player.id) && "bg-(--primary) font-bold"
+                    players.includes(player.playerId) &&
+                    "bg-(--primary) font-bold"
                   }`}
                   onClick={() => {
-                    enterPlayer(player.id);
+                    enterPlayer(player.playerId);
                   }}
                 >
                   {player.name}

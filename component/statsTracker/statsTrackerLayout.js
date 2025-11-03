@@ -1,77 +1,64 @@
-import {
-  faArrowRotateLeft,
-  faFloppyDisk,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowRotateLeft } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useContext, useEffect, useState } from "react";
 import StatsTable from "./statsTable";
 import LoadingIndicator from "../layout/loadingIndicator";
-import useTrackedGame from "@/hooks/useTrackedGame";
 import CompleteGame from "./completeGame";
 import GameInfoForm from "./gameInfoForm";
 import { InfoContext } from "@/contexts/InfoContext";
-import useRoster from "@/hooks/useRoster";
 import dateFormatter from "@/helpers/dateFormatter";
 
 const emptyGame = {
-  id: "",
   seasonNumber: "",
   gameNumber: "",
   date: "",
   location: "",
   opponent: "",
-  totalScore: "",
+  valleyViceScore: "",
   opponentScore: "",
   result: "",
   teamStats: {
-    pm2: 0,
-    pa2: 0,
-    pm3: 0,
-    pa3: 0,
-    ft: 0,
-    fta: 0,
-    reb: 0,
-    ast: 0,
-    stl: 0,
-    blk: 0,
-    to: 0,
-    pf: 0,
-    ckd: 0,
+    points: 0,
+    twoPointsMade: 0,
+    twoPointsAttempted: 0,
+    threePointsMade: 0,
+    threePointsAttempted: 0,
+    freeThrowsMade: 0,
+    freeThrowsAttempted: 0,
+    rebounds: 0,
+    assists: 0,
+    steals: 0,
+    blocks: 0,
+    turnovers: 0,
+    personalFouls: 0,
+    cooked: 0,
   },
-  playerStats: [],
-  statsRecorded: [],
+  players: [],
+  playByPlay: [],
   saved: false,
 };
 
 const stats = [
-  { name: "2PM", value: "pm2" },
-  { name: "2PA", value: "pa2" },
-  { name: "3PM", value: "pm3" },
-  { name: "3PA", value: "pa3" },
-  { name: "FT", value: "ft" },
-  { name: "FTA", value: "fta" },
-  { name: "REB", value: "reb" },
-  { name: "AST", value: "ast" },
-  { name: "STL", value: "stl" },
-  { name: "BLK", value: "blk" },
-  { name: "TO", value: "to" },
-  { name: "PF", value: "pf" },
-  { name: "CKD", value: "ckd" },
+  { name: "2PM", value: "twoPointsMade" },
+  { name: "2PA", value: "twoPointsAttempted" },
+  { name: "3PM", value: "threePointsMade" },
+  { name: "3PA", value: "threePointsAttempted" },
+  { name: "FTM", value: "freeThrowsMade" },
+  { name: "FTA", value: "freeThrowsAttempted" },
+  { name: "REB", value: "rebounds" },
+  { name: "AST", value: "assists" },
+  { name: "STL", value: "steals" },
+  { name: "BLK", value: "blocks" },
+  { name: "TO", value: "turnovers" },
+  { name: "PF", value: "personalFouls" },
+  { name: "CKD", value: "cooked" },
 ];
 
 const StatsTrackerLayout = () => {
   const { info, infoLoading } = useContext(InfoContext);
-  const { roster, rosterLoading } = useRoster(info.currentSeason);
-
-  const {
-    trackedGame,
-    trackedGameLoading,
-    postTrackedGame,
-    deleteTrackedGame,
-  } = useTrackedGame();
 
   const [game, setGame] = useState(emptyGame);
-  const [enterGameInfo, setEnterGameInfo] = useState(false);
+  const [enterGameInfo, setEnterGameInfo] = useState(true);
   const [chooseStat, setChooseStat] = useState(true);
   const [choosePlayer, setChoosePlayer] = useState(false);
   const [chooseAssist, setChooseAssist] = useState(false);
@@ -81,41 +68,35 @@ const StatsTrackerLayout = () => {
 
   // Set the current roster to determine who is playing
   useEffect(() => {
-    if (roster && !trackedGame) {
-      const currentRoster = roster
-        .filter((player) => player.id !== "vvSubs")
+    if (!infoLoading && info) {
+      const currentRoster = info.currentRoster
+        .filter((player) => player.playerId !== "vvSubs")
         .map((player) => {
           return {
-            id: player.id,
+            playerId: player.playerId,
             name: player.name,
             number: player.number,
-            pm2: 0,
-            pa2: 0,
-            pm3: 0,
-            pa3: 0,
-            ft: 0,
-            fta: 0,
-            reb: 0,
-            ast: 0,
-            stl: 0,
-            blk: 0,
-            to: 0,
-            pf: 0,
-            ckd: 0,
+            points: 0,
+            twoPointsMade: 0,
+            twoPointsAttempted: 0,
+            threePointsMade: 0,
+            threePointsAttempted: 0,
+            freeThrowsMade: 0,
+            freeThrowsAttempted: 0,
+            rebounds: 0,
+            assists: 0,
+            steals: 0,
+            blocks: 0,
+            turnovers: 0,
+            personalFouls: 0,
+            cooked: 0,
           };
-        });
+        })
+        .sort((player1, player2) => player1.number - player2.number);
 
-      setGame({ ...emptyGame, playerStats: currentRoster });
+      setGame({ ...emptyGame, players: currentRoster });
     }
-  }, [roster, trackedGame]);
-
-  // If there is already a saved game, set the game to the tracked game
-  useEffect(() => {
-    if (trackedGame) {
-      setGame(trackedGame);
-      setEnterGameInfo(!trackedGame.saved);
-    }
-  }, [trackedGame]);
+  }, [info, infoLoading]);
 
   const selectStat = (stat) => {
     setChooseStat(false);
@@ -124,7 +105,10 @@ const StatsTrackerLayout = () => {
   };
 
   const selectAssister = (playerId) => {
-    if (statSelected === "pm2" || statSelected === "pm3") {
+    if (
+      statSelected === "twoPointsMade" ||
+      statSelected === "threePointsMade"
+    ) {
       setChoosePlayer(false);
       setChooseAssist(true);
     } else {
@@ -133,14 +117,15 @@ const StatsTrackerLayout = () => {
     }
   };
 
+  // If someone assisted the made shot, include their stat
   const addAssist = (playerId) => {
     addStat(shotMaker);
 
-    if (playerId !== "") {
-      const updatedStats = game.playerStats.map((player) => {
-        if (player.id === playerId) {
-          player.ast += 1;
-          game.teamStats.ast += 1;
+    if (!playerId) {
+      const updatedStats = game.players.map((player) => {
+        if (player.playerId === playerId) {
+          player.assists += 1;
+          game.teamStats.assists += 1;
         }
 
         return player;
@@ -148,11 +133,11 @@ const StatsTrackerLayout = () => {
 
       setGame({
         ...game,
-        playerStats: updatedStats,
-        statsRecorded: [
-          ...game.statsRecorded,
+        players: updatedStats,
+        playByPlay: [
+          ...game.playByPlay,
           { playerId: shotMaker, stat: statSelected },
-          { playerId: playerId, stat: "ast" },
+          { playerId: playerId, stat: "assists" },
         ],
       });
     }
@@ -162,26 +147,45 @@ const StatsTrackerLayout = () => {
     setChooseStat(true);
   };
 
+  // Add the stat recorded
   const addStat = (playerId) => {
-    const updatedStats = game.playerStats.map((player) => {
-      if (player.id === playerId) {
-        if (statSelected === "pm2") {
+    const updatedStats = game.players.map((player) => {
+      if (player.playerId === playerId) {
+        if (statSelected === "twoPointsMade") {
+          // Update the player's individual stats
           player[statSelected] += 1;
-          player.pa2 += 1;
+          player.twoPointsAttempted += 1;
+          player.points += 2;
+
+          // Update the team's stats
           game.teamStats[statSelected] += 1;
-          game.teamStats.pa2 += 1;
-        } else if (statSelected === "pm3") {
+          game.teamStats.twoPointsAttempted += 1;
+          game.teamStats.points += 2;
+        } else if (statSelected === "threePointsMade") {
+          // Update the player's individual stats
           player[statSelected] += 1;
-          player.pa3 += 1;
+          player.threePointsAttempted += 1;
+          player.points += 3;
+
+          // Update the team's stats
           game.teamStats[statSelected] += 1;
-          game.teamStats.pa3 += 1;
-        } else if (statSelected === "ft") {
+          game.teamStats.threePointsAttempted += 1;
+          game.teamStats.points += 3;
+        } else if (statSelected === "freeThrowsMade") {
+          // Update the player's individual stats
           player[statSelected] += 1;
-          player.fta += 1;
+          player.freeThrowsAttempted += 1;
+          player.points += 1;
+
+          // Update the team's stats
           game.teamStats[statSelected] += 1;
-          game.teamStats.fta += 1;
+          game.teamStats.freeThrowsAttempted += 1;
+          game.teamStats.points += 1;
         } else {
+          // Update the player's individual stats
           player[statSelected] += 1;
+
+          // Update the team's stats
           game.teamStats[statSelected] += 1;
         }
       }
@@ -192,9 +196,9 @@ const StatsTrackerLayout = () => {
     setStatSelected("");
     setGame({
       ...game,
-      playerStats: updatedStats,
-      statsRecorded: [
-        ...game.statsRecorded,
+      players: updatedStats,
+      playByPlay: [
+        ...game.playByPlay,
         { playerId: playerId, stat: statSelected },
       ],
       saved: false,
@@ -202,33 +206,52 @@ const StatsTrackerLayout = () => {
     setChooseStat(true);
   };
 
+  // Remove the last stat recorded
   const undoStat = () => {
-    const statsRecordedLength = game.statsRecorded.length;
-    if (statsRecordedLength === 0) {
+    const playByPlayLength = game.playByPlay.length;
+    if (playByPlayLength === 0) {
       return;
     }
 
-    const lastStat = game.statsRecorded[statsRecordedLength - 1];
+    const lastStat = game.playByPlay[playByPlayLength - 1];
 
-    const updatedStats = game.playerStats.map((player) => {
-      if (player.id === lastStat.playerId) {
-        if (lastStat.stat === "pm2") {
+    const updatedStats = game.players.map((player) => {
+      if (player.playerId === lastStat.playerId) {
+        if (lastStat.stat === "twoPointsMade") {
+          // Update the player's individual stats
           player[lastStat.stat] -= 1;
-          player.pa2 -= 1;
+          player.twoPointsAttempted -= 1;
+          player.points -= 2;
+
+          // Update the team's stats
           game.teamStats[lastStat.stat] -= 1;
-          game.teamStats.pa2 -= 1;
-        } else if (lastStat.stat === "pm3") {
+          game.teamStats.twoPointsAttempted -= 1;
+          game.teamStats.points -= 2;
+        } else if (lastStat.stat === "threePointsMade") {
+          // Update the player's individual stats
           player[lastStat.stat] -= 1;
-          player.pa3 -= 1;
+          player.threePointsAttempted -= 1;
+          player.points -= 3;
+
+          // Update the team's stats
           game.teamStats[lastStat.stat] -= 1;
-          game.teamStats.pa3 -= 1;
-        } else if (lastStat.stat === "ft") {
+          game.teamStats.threePointsAttempted -= 1;
+          game.teamStats.points -= 3;
+        } else if (lastStat.stat === "freeThrowsMade") {
+          // Update the player's individual stats
           player[lastStat.stat] -= 1;
-          player.fta -= 1;
+          player.freeThrowsAttempted -= 1;
+          player.points -= 1;
+
+          // Update the team's stats
           game.teamStats[lastStat.stat] -= 1;
-          game.teamStats.fta -= 1;
+          game.teamStats.freeThrowsAttempted -= 1;
+          game.teamStats.points -= 1;
         } else {
+          // Update the player's individual stats
           player[lastStat.stat] -= 1;
+
+          // Update the team's stats
           game.teamStats[lastStat.stat] -= 1;
         }
       }
@@ -238,18 +261,9 @@ const StatsTrackerLayout = () => {
 
     setGame({
       ...game,
-      playerStats: updatedStats,
-      statsRecorded: game.statsRecorded.slice(0, -1),
+      players: updatedStats,
+      playByPlay: game.playByPlay.slice(0, -1),
     });
-  };
-
-  const saveGame = async () => {
-    game.saved = true;
-    setGame({
-      ...game,
-      saved: true,
-    });
-    await postTrackedGame(game);
   };
 
   const completeGame = () => {
@@ -261,7 +275,7 @@ const StatsTrackerLayout = () => {
   const bubbleStyling =
     "border-2 border-(--secondary) w-[70px] aspect-square rounded-full flex flex-col items-center justify-center m-2 font-bold hover:bg-(--primary) hover:cursor-pointer";
 
-  if (infoLoading || rosterLoading || trackedGameLoading) {
+  if (infoLoading && !info) {
     return <LoadingIndicator />;
   } else {
     return (
@@ -314,13 +328,13 @@ const StatsTrackerLayout = () => {
                       Choose a player
                     </h2>
                     <div className="flex flex-row flex-wrap justify-center">
-                      {game.playerStats.map((player) => (
+                      {game.players.map((player) => (
                         <div
-                          key={player.id}
+                          key={player.playerId}
                           className={bubbleStyling}
                           onClick={() => {
-                            setShotMaker(player.id);
-                            selectAssister(player.id);
+                            setShotMaker(player.playerId);
+                            selectAssister(player.playerId);
                           }}
                         >
                           {player.name}
@@ -335,17 +349,17 @@ const StatsTrackerLayout = () => {
                     <div className="flex flex-row flex-wrap justify-center">
                       <div
                         className={bubbleStyling}
-                        onClick={() => addAssist("")}
+                        onClick={() => addAssist(null)}
                       >
                         None
                       </div>
-                      {game.playerStats
-                        .filter((player) => player.id !== shotMaker)
+                      {game.players
+                        .filter((player) => player.playerId !== shotMaker)
                         .map((player) => (
                           <div
-                            key={player.id}
+                            key={player.playerId}
                             className={bubbleStyling}
-                            onClick={() => addAssist(player.id)}
+                            onClick={() => addAssist(player.playerId)}
                           >
                             {player.name}
                           </div>
@@ -363,25 +377,17 @@ const StatsTrackerLayout = () => {
                       <FontAwesomeIcon
                         icon={faArrowRotateLeft}
                         className={`${
-                          game.statsRecorded?.length === 0
+                          game.playByPlay.length === 0
                             ? "text-gray-500"
                             : "text-lg hover:text-(--primary) hover:cursor-pointer"
                         }`}
                         onClick={undoStat}
                       />
-                      <div className="flex flex-row">
-                        {game.saved && <p className="text-sm mr-4">Saved</p>}
-                        <FontAwesomeIcon
-                          icon={faFloppyDisk}
-                          className="text-lg hover:text-(--primary) hover:cursor-pointer"
-                          onClick={saveGame}
-                        />
-                      </div>
                     </div>
                   </div>
 
                   <StatsTable
-                    playerStats={game.playerStats}
+                    players={game.players}
                     teamStats={game.teamStats}
                   />
                 </div>
@@ -400,9 +406,8 @@ const StatsTrackerLayout = () => {
           <CompleteGame
             game={game}
             setGame={setGame}
+            emptyGame={emptyGame}
             setGameFinished={setGameFinished}
-            trackedGame={trackedGame}
-            deleteTrackedGame={deleteTrackedGame}
             setEnterGameInfo={setEnterGameInfo}
           />
         )}
