@@ -33,8 +33,8 @@ const SeasonsLayout = () => {
               value={seasonNumber}
             >
               {info.seasonsPlayed.map((season) => (
-                <option key={season.id} value={season.seasonNumber}>
-                  {season.seasonNumber}
+                <option key={season} value={season}>
+                  {season}
                 </option>
               ))}
             </select>

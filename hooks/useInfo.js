@@ -7,7 +7,7 @@ const useInfo = () => {
   useEffect(() => {
     const getInfo = async () => {
       try {
-        const response = await fetch(`/api/info`);
+        const response = await fetch("/api/info");
 
         if (response.ok) {
           const result = await response.json();

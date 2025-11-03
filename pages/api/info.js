@@ -5,6 +5,7 @@ import {
 } from "@aws-sdk/client-s3";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
+import clientPromise from "@/lib/mongodb";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -18,32 +19,16 @@ const S3 = new S3Client({
 // Define the S3 bucket
 const BUCKET = process.env.BUCKET_NAME;
 
-// Function to convert a stream object into a JSON object
-const streamToJSON = (stream) => {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("end", () => {
-      try {
-        const body = Buffer.concat(chunks).toString("utf-8");
-        const data = JSON.parse(body);
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    stream.on("error", (err) => {
-      reject(err);
-    });
-  });
-};
-
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
   const session = await getServerSession(req, res, authOptions);
 
-  const method = req.method;
+  const method = req?.method;
+
+  // Configure MongoDB
+  const client = await clientPromise;
+  const db = client.db(process.env.MONGO_DB);
+  const seasonCol = db.collection("seasons");
 
   const key = "valleyvice-info.json";
 
@@ -52,16 +37,44 @@ export default async function handler(req, res) {
     return res.status(401).send("Must login to access this information!");
   }
 
-  // Function to get the info data from Amazon S3
+  // Function to get the team's info from MongoDB
   async function getInfoData() {
-    const infoParams = {
-      Bucket: BUCKET,
-      Key: key,
-    };
-
     try {
-      const infoData = await S3.send(new GetObjectCommand(infoParams));
-      return await streamToJSON(infoData.Body);
+      // Get all seasons sorted from most to least recent
+      const seasons = await seasonCol
+        .find({}, { seasonNumber: 1, roster: 1 })
+        .sort({ seasonNumber: -1 })
+        .toArray();
+      const currentSeason = seasons[0];
+
+      // Get the details of the current season
+      const seasonNumber = currentSeason.seasonNumber;
+      const roster = currentSeason.roster.sort(
+        (player1, player2) => player1.number - player2.number
+      );
+
+      // Get the totals for all seasons
+      let seasonsPlayed = [];
+      let totalGames = 0;
+      let totalWins = 0;
+      let totalLosses = 0;
+
+      seasons.forEach((season) => {
+        seasonsPlayed.push(season.seasonNumber);
+        totalGames += season.gamesPlayed;
+        totalWins += season.wins ?? 0;
+        totalLosses += season.losses ?? 0;
+      });
+
+      return {
+        team: "Valey Vice",
+        currentSeason: seasonNumber,
+        currentRoster: roster,
+        seasonsPlayed: seasonsPlayed,
+        totalGames: totalGames,
+        totalWins: totalWins,
+        totalLosses: totalLosses,
+      };
     } catch (error) {
       console.error("Error retrieving the info data from S3: ", error);
       return null;
@@ -72,6 +85,7 @@ export default async function handler(req, res) {
     try {
       const info = await getInfoData();
 
+      // Send the team's info back to the client
       res.status(200).json(info);
     } catch (error) {
       console.error(`${method} info request failed: ${error}`);

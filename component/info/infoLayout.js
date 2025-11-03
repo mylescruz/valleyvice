@@ -5,6 +5,7 @@ import NewSeasonForm from "./newSeasonForm";
 
 const buttonStyling =
   "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
+const playerCellsStyle = "w-1/4 p-1 text-center";
 
 const emptySeason = {
   id: "",
@@ -28,6 +29,8 @@ const emptySeason = {
 const InfoLayout = () => {
   const { info, infoLoading } = useContext(InfoContext);
 
+  if (info) console.log(info);
+
   const [inputNewSeason, setInputNewSeason] = useState(false);
   const [newSeason, setNewSeason] = useState(emptySeason);
 
@@ -45,6 +48,36 @@ const InfoLayout = () => {
         </h1>
         <div className="w-full flex flex-col sm:w-11/12 text-center">
           <p className="text-xl mb-4">Current Season: {info.currentSeason}</p>
+        </div>
+
+        <div className="w-full flex flex-col items-center sm:w-11/12 text-center my-4">
+          <p className="text-xl">Current Roster </p>
+          <table className="w-full sm:w-1/3 md:w-1/2">
+            <thead className="border-b-1 border-white">
+              <tr>
+                <th className={playerCellsStyle}>#</th>
+                <th className={playerCellsStyle}>Name</th>
+                <th className={playerCellsStyle}>Height</th>
+                <th className={playerCellsStyle}>Position</th>
+              </tr>
+            </thead>
+            <tbody>
+              {info.currentRoster.map((player) => (
+                <tr key={player.playedId}>
+                  <td className={playerCellsStyle}>{player.number}</td>
+                  <td className={playerCellsStyle}>{player.name}</td>
+                  <td className={playerCellsStyle}>{player.height}</td>
+                  <td className={playerCellsStyle}>{player.position}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="w-full flex flex-col items-center sm:w-11/12 text-center my-4">
+          <p>Games Played: {info.totalGames}</p>
+          <p>Wins: {info.totalWins}</p>
+          <p>Losses: {info.totalLosses}</p>
         </div>
 
         <p>Season over?</p>
