@@ -7,7 +7,7 @@ import ErrorLayout from "../layout/errorLayout";
 
 const StatsLayout = () => {
   const { info, infoLoading } = useContext(InfoContext);
-  const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
+  const [seasonNumber, setSeasonNumber] = useState(info?.currentSeason);
 
   useEffect(() => {
     if (!infoLoading && info) {
@@ -19,7 +19,7 @@ const StatsLayout = () => {
     setSeasonNumber(e.target.value);
   };
 
-  if (infoLoading) {
+  if (infoLoading && !info) {
     return <LoadingIndicator />;
   } else if (info) {
     return (

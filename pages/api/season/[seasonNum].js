@@ -1,10 +1,7 @@
-import {
-  GetObjectCommand,
-  PutObjectCommand,
-  S3Client,
-} from "@aws-sdk/client-s3";
+import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
+import clientPromise from "@/lib/mongodb";
 
 // Configure Amazon S3
 const S3 = new S3Client({
@@ -18,33 +15,12 @@ const S3 = new S3Client({
 // Define the S3 bucket
 const BUCKET = process.env.BUCKET_NAME;
 
-// Function to convert a stream object into a JSON object
-const streamToJSON = (stream) => {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    stream.on("data", (chunk) => chunks.push(chunk));
-    stream.on("end", () => {
-      try {
-        const body = Buffer.concat(chunks).toString("utf-8");
-        const data = JSON.parse(body);
-        resolve(data);
-      } catch (error) {
-        reject(error);
-      }
-    });
-
-    stream.on("error", (err) => {
-      reject(err);
-    });
-  });
-};
-
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
   const session = await getServerSession(req, res, authOptions);
 
-  const method = req.method;
-  const seasonNum = req.query.seasonNum;
+  const method = req?.method;
+  const seasonNum = parseInt(req?.query?.seasonNum);
 
   const key = `seasons/s${seasonNum}.json`;
 
@@ -53,30 +29,87 @@ export default async function handler(req, res) {
     return res.status(401).send("Must login to access this information!");
   }
 
-  // Function to get the season data from Amazon S3
-  async function getSeasonData() {
-    const seasonParams = {
-      Bucket: BUCKET,
-      Key: key,
-    };
+  // Configure MongoDB
+  const client = await clientPromise;
+  const db = client.db(process.env.MONGO_DB);
+  const seasonsCol = db.collection("seasons");
 
+  // Function to get the season data from Amazon S3
+  async function getSeasonData(seasonNum) {
     try {
-      const seasonData = await S3.send(new GetObjectCommand(seasonParams));
-      return await streamToJSON(seasonData.Body);
+      const seasons = await seasonsCol
+        .aggregate([
+          { $match: { seasonNumber: seasonNum } },
+          {
+            $lookup: {
+              from: "games",
+              pipeline: [
+                { $match: { seasonNumber: seasonNum } },
+                {
+                  $project: { players: 0, _id: 0 },
+                },
+                {
+                  $sort: { gameNumber: 1 },
+                },
+              ],
+              as: "games",
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              seasonNumber: 1,
+              season: 1,
+              year: 1,
+              division: 1,
+              league: 1,
+              gamesPlayed: {
+                $size: "$games",
+              },
+              wins: {
+                $size: {
+                  $filter: {
+                    input: "$games",
+                    as: "game",
+                    cond: { $eq: ["$$game.result", "W"] },
+                  },
+                },
+              },
+              losses: {
+                $size: {
+                  $filter: {
+                    input: "$games",
+                    as: "game",
+                    cond: { $eq: ["$$game.result", "L"] },
+                  },
+                },
+              },
+              games: 1,
+            },
+          },
+        ])
+        .toArray();
+
+      const season = seasons[0];
+
+      if (!seasons.length) {
+        throw new Error("Error retrieving the season data from MongoDB");
+      }
+
+      return season;
     } catch (error) {
-      console.error("Error retrieving the season data from S3: ", error);
-      return null;
+      throw new Error(error);
     }
   }
 
   if (method === "GET") {
     try {
-      const season = await getSeasonData();
+      const season = await getSeasonData(seasonNum);
 
       res.status(200).json(season);
     } catch (error) {
       console.error(`${method} season request failed: ${error}`);
-      res.status(500).send("Error retrieving season data");
+      res.status(500).send(`$Error retrieving season ${seasonNum}`);
     }
   } else if (method === "POST") {
     try {

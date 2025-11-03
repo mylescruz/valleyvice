@@ -9,7 +9,7 @@ import ErrorLayout from "../layout/errorLayout";
 
 const SeasonsGames = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
-
+  console.log(season);
   if (seasonLoading) {
     return <LoadingIndicator />;
   } else if (season) {
@@ -19,7 +19,7 @@ const SeasonsGames = ({ seasonNumber }) => {
           <h1 className="text-3xl text-(--primary) font-bold">
             Season {seasonNumber}
           </h1>
-          {season.wins && (
+          {season.wins !== 0 && season.losses !== 0 && (
             <p className="text-xl text-(--secondary) font-bold">
               Record: {season.wins} - {season.losses}
             </p>
@@ -33,22 +33,26 @@ const SeasonsGames = ({ seasonNumber }) => {
         </div>
         <h2 className="text-2xl text-(--primary) font-bold">Games</h2>
         <div className="flex flex-col items-center sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {gameSorter(season.games).map((game) => (
+          {season.games.map((game, index) => (
             <Link
-              key={game.id}
+              key={index}
               href={`/games/${seasonNumber}/${game.gameNumber}`}
               className="border-2 border-(--secondary) w-full my-4 rounded-lg px-2 p-1 flex flex-col sm:w-11/12"
             >
               <div className="flex flex-row justify-between">
                 <h1 className="font-bold">Game {game.gameNumber}</h1>
-                {game.result !== "" && (
+                {game.vvScore && game.opponentScore && (
                   <p className="font-bold">
                     <span
-                      className={`${game.result === "W" ? "text-(--primary)" : "text-(--secondary)"}`}
+                      className={`${
+                        game.result === "W"
+                          ? "text-(--primary)"
+                          : "text-(--secondary)"
+                      }`}
                     >
                       {game.result}
                     </span>{" "}
-                    {game.totalScore} - {game.opponentScore}
+                    {game.vvScore} - {game.opponentScore}
                   </p>
                 )}
               </div>

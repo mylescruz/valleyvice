@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 const useSeason = (seasonNumber) => {
-  const [season, setSeason] = useState({});
+  const [season, setSeason] = useState(null);
   const [seasonLoading, setSeasonLoading] = useState(true);
 
   useEffect(() => {

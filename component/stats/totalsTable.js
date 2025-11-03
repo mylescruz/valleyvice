@@ -1,51 +1,16 @@
 import useSeason from "@/hooks/useSeason";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
+import useSeasonStats from "@/hooks/useSeasonStats";
 
 const TotalsTable = ({ seasonNumber }) => {
-  const { season, seasonLoading } = useSeason(seasonNumber);
+  const { seasonStats, seasonStatsLoading } = useSeasonStats(seasonNumber);
 
-  const noStats = 0;
   const totalCellsStyle = "w-1/19 p-1 text-center";
 
-  const teamTotals = season.playerTotalStats?.reduce(
-    (sum, player) => {
-      sum.pm2 += player.pm2 ? player.pm2 : noStats;
-      sum.pa2 += player.pa2 ? player.pa2 : noStats;
-      sum.pm3 += player.pm3 ? player.pm3 : noStats;
-      sum.pa3 += player.pa3 ? player.pa3 : noStats;
-      sum.ft += player.ft ? player.ft : noStats;
-      sum.fta += player.fta ? player.fta : noStats;
-      sum.reb += player.reb ? player.reb : noStats;
-      sum.ast += player.ast ? player.ast : noStats;
-      sum.stl += player.stl ? player.stl : noStats;
-      sum.blk += player.blk ? player.blk : noStats;
-      sum.to += player.to ? player.to : noStats;
-      sum.pf += player.pf ? player.pf : noStats;
-      sum.ckd += player.ckd ? player.ckd : noStats;
-
-      return sum;
-    },
-    {
-      pm2: 0,
-      pa2: 0,
-      pm3: 0,
-      pa3: 0,
-      ft: 0,
-      fta: 0,
-      reb: 0,
-      ast: 0,
-      stl: 0,
-      blk: 0,
-      to: 0,
-      pf: 0,
-      ckd: 0,
-    }
-  );
-
-  if (seasonLoading) {
+  if (seasonStatsLoading && !seasonStats) {
     return <LoadingIndicator />;
-  } else if (season) {
+  } else if (seasonStats) {
     return (
       <>
         <h1 className="text-3xl text-(--primary) text-center font-bold">
@@ -55,6 +20,7 @@ const TotalsTable = ({ seasonNumber }) => {
           <table>
             <thead className="border-b-1 border-white">
               <tr>
+                <th className={totalCellsStyle}>#</th>
                 <th className={totalCellsStyle}>PLR</th>
                 <th className={totalCellsStyle}>GP</th>
                 <th className={totalCellsStyle}>PTS</th>
@@ -77,68 +43,61 @@ const TotalsTable = ({ seasonNumber }) => {
               </tr>
             </thead>
             <tbody>
-              {season.playerTotalStats.map((player) => (
-                <tr key={player.id}>
+              {seasonStats.players.map((player, index) => (
+                <tr key={index}>
+                  <td className={totalCellsStyle}>{player.number}</td>
                   <td className={totalCellsStyle}>{player.name}</td>
-                  <td className={totalCellsStyle}>{player.gp}</td>
+                  <td className={totalCellsStyle}>{player.gamesPlayed}</td>
                   <td className={totalCellsStyle}>
-                    {player.pm2 * 2 +
-                      player.pm3 * 3 +
-                      (player.ft ? player.ft : noStats)}
+                    {player.totalStats.points}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pm2 ? player.pm2 : noStats}
+                    {player.totalStats.twoPointsMade}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pa2 ? player.pa2 : noStats}
+                    {player.totalStats.twoPointsAttempted}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pa2 === 0 || !player.pa2
-                      ? `0%`
-                      : `${((player.pm2 / player.pa2) * 100).toFixed(0)}%`}
+                    {player.totalStats.twoPointPercentage}%
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pm3 ? player.pm3 : noStats}
+                    {player.totalStats.threePointsMade}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pa3 ? player.pa3 : noStats}
+                    {player.totalStats.threePointsAttempted}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pa3 === 0 || !player.pa3
-                      ? `0%`
-                      : `${((player.pm3 / player.pa3) * 100).toFixed(0)}%`}
+                    {player.totalStats.threePointPercentage}%
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.ft ? player.ft : noStats}
+                    {player.totalStats.freeThrowsMade}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.fta ? player.fta : noStats}
+                    {player.totalStats.freeThrowsAttempted}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.fta === 0 || !player.fta
-                      ? `0%`
-                      : `${((player.ft / player.fta) * 100).toFixed(0)}%`}
+                    {player.totalStats.freeThrowPercentage}%
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.reb ? player.reb : noStats}
+                    {player.totalStats.rebounds}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.ast ? player.ast : noStats}
+                    {player.totalStats.assists}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.stl ? player.stl : noStats}
+                    {player.totalStats.steals}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.blk ? player.blk : noStats}
+                    {player.totalStats.blocks}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.to ? player.to : noStats}
+                    {player.totalStats.turnovers}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.pf ? player.pf : noStats}
+                    {player.totalStats.personalFouls}
                   </td>
                   <td className={totalCellsStyle}>
-                    {player.ckd ? player.ckd : noStats}
+                    {player.totalStats.cooked}
                   </td>
                 </tr>
               ))}
@@ -147,37 +106,58 @@ const TotalsTable = ({ seasonNumber }) => {
               <tr className="border-t-1 border-white">
                 <td className={totalCellsStyle}>Totals</td>
                 <td className={totalCellsStyle}></td>
+                <td className={totalCellsStyle}></td>
                 <td className={totalCellsStyle}>
-                  {teamTotals.pm2 * 2 + teamTotals.pm3 * 3 + teamTotals.ft}
+                  {seasonStats.teamStats.totalStats.points}
                 </td>
-                <td className={totalCellsStyle}>{teamTotals.pm2}</td>
-                <td className={totalCellsStyle}>{teamTotals.pa2}</td>
                 <td className={totalCellsStyle}>
-                  {teamTotals.pa2 === 0
-                    ? `0%`
-                    : `${((teamTotals.pm2 / teamTotals.pa2) * 100).toFixed(0)}%`}
+                  {seasonStats.teamStats.totalStats.twoPointsMade}
                 </td>
-                <td className={totalCellsStyle}>{teamTotals.pm3}</td>
-                <td className={totalCellsStyle}>{teamTotals.pa3}</td>
                 <td className={totalCellsStyle}>
-                  {teamTotals.pa3 === 0
-                    ? `0%`
-                    : `${((teamTotals.pm3 / teamTotals.pa3) * 100).toFixed(0)}%`}
+                  {seasonStats.teamStats.totalStats.twoPointsAttempted}
                 </td>
-                <td className={totalCellsStyle}>{teamTotals.ft}</td>
-                <td className={totalCellsStyle}>{teamTotals.fta}</td>
                 <td className={totalCellsStyle}>
-                  {teamTotals.fta === 0
-                    ? `0%`
-                    : `${((teamTotals.ft / teamTotals.fta) * 100).toFixed(0)}%`}
+                  {seasonStats.teamStats.totalStats.twoPointPercentage}%
                 </td>
-                <td className={totalCellsStyle}>{teamTotals.reb}</td>
-                <td className={totalCellsStyle}>{teamTotals.ast}</td>
-                <td className={totalCellsStyle}>{teamTotals.stl}</td>
-                <td className={totalCellsStyle}>{teamTotals.blk}</td>
-                <td className={totalCellsStyle}>{teamTotals.to}</td>
-                <td className={totalCellsStyle}>{teamTotals.pf}</td>
-                <td className={totalCellsStyle}>{teamTotals.ckd}</td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.threePointsMade}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.threePointsAttempted}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.threePointPercentage}%
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.freeThrowsMade}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.freeThrowsAttempted}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.freeThrowPercentage}%
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.rebounds}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.assists}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.steals}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.blocks}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.turnovers}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.personalFouls}
+                </td>
+                <td className={totalCellsStyle}>
+                  {seasonStats.teamStats.totalStats.cooked}
+                </td>
               </tr>
             </tfoot>
           </table>
