@@ -1,19 +1,6 @@
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { authOptions } from "../auth/[...nextauth]";
 import { getServerSession } from "next-auth";
 import clientPromise from "@/lib/mongodb";
-
-// Configure Amazon S3
-const S3 = new S3Client({
-  region: process.env.AWS_REGION,
-  credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  },
-});
-
-// Define the S3 bucket
-const BUCKET = process.env.BUCKET_NAME;
 
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
@@ -21,8 +8,6 @@ export default async function handler(req, res) {
 
   const method = req?.method;
   const seasonNumber = parseInt(req?.query?.seasonNumber);
-
-  const key = `seasons/s${seasonNumber}.json`;
 
   // If user tries to change the season data without having a session
   if (method !== "GET" && !session) {
@@ -34,7 +19,7 @@ export default async function handler(req, res) {
   const db = client.db(process.env.MONGO_DB);
   const seasonsCol = db.collection("seasons");
 
-  // Function to get the season data from Amazon S3
+  // Function to get the season data from MongoDB
   async function getSeasonData(seasonNumber) {
     try {
       const seasons = await seasonsCol
@@ -44,7 +29,12 @@ export default async function handler(req, res) {
             $lookup: {
               from: "games",
               pipeline: [
-                { $match: { seasonNumber: seasonNumber } },
+                {
+                  $match: {
+                    seasonNumber: seasonNumber,
+                    currentlyTracking: { $exists: false },
+                  },
+                },
                 {
                   $project: { players: 0, playByPlay: 0, _id: 0 },
                 },
@@ -95,80 +85,54 @@ export default async function handler(req, res) {
     }
   } else if (method === "POST") {
     try {
-      const seasonInfo = req?.body;
+      const newSeason = req?.body;
 
-      // Create the player's total stats array
-      const playerTotalStats = seasonInfo.players.map((player) => {
+      // Create the player array to track individual stats
+      const players = newSeason.players.map((player) => {
         return {
-          id: player.id,
+          playerId: player.id,
           name: player.name,
           number: player.number,
-          gp: 0,
-          pm2: 0,
-          pa2: 0,
-          pm3: 0,
-          pa3: 0,
-          ft: 0,
-          fta: 0,
-          reb: 0,
-          ast: 0,
-          stl: 0,
-          blk: 0,
-          to: 0,
-          pf: 0,
-          ckd: 0,
+          gamesPlayed: 0,
+          twoPointsMade: 0,
+          twoPointsAttempted: 0,
+          twoPointPercentage: 0,
+          threePointsMade: 0,
+          threePointsAttempted: 0,
+          freeThrowsMade: 0,
+          freeThrowsAttempted: 0,
+          rebounds: 0,
+          assists: 0,
+          steals: 0,
+          blocks: 0,
+          turnovers: 0,
+          personalFouls: 0,
+          cooked: 0,
         };
       });
 
       // Create the new season object
-      const newSeason = {
-        id: `s${seasonInfo.seasonNumber}`,
-        seasonNumber: seasonInfo.seasonNumber,
-        season: seasonInfo.season,
-        year: seasonInfo.year,
-        league: seasonInfo.league,
-        division: seasonInfo.division,
+      const season = {
+        seasonNumber: newSeason.seasonNumber,
+        season: newSeason.season,
+        year: newSeason.year,
+        league: newSeason.league,
+        division: newSeason.division,
+        gamesPlayed: 0,
         wins: 0,
         losses: 0,
-        playerTotalStats: playerTotalStats,
-        games: [],
+        roster: players,
       };
 
-      // Set the file parameters for the new season file
-      const newSeasonParams = {
-        Bucket: BUCKET,
-        Key: key,
-        Body: JSON.stringify(newSeason, null, 2),
-        ContentType: "application/json",
-      };
-
-      // Save the new season file into S3
-      await S3.send(new PutObjectCommand(newSeasonParams));
+      // Add the new season to MongoDB
+      const postSeasonResult = await seasonsCol.insertOne(season);
+      console.log(postSeasonResult);
 
       // Send the new season object back to the client
       res.status(200).json(newSeason);
     } catch (error) {
       console.error(`${method} season request failed: ${error}`);
       res.status(500).send("Error adding new season");
-    }
-  } else if (method === "PUT") {
-    try {
-      const updatedSeason = req?.body;
-
-      // Save the updated season into the season file
-      const seasonParams = {
-        Bucket: BUCKET,
-        Key: key,
-        Body: JSON.stringify(updatedSeason, null, 2),
-        ContentType: "application/json",
-      };
-
-      await S3.send(new PutObjectCommand(seasonParams));
-
-      res.status(200).json(updatedSeason);
-    } catch (error) {
-      console.error(`${method} season request failed: ${error}`);
-      res.status(500).send("Error updating season data");
     }
   } else {
     res.status(405).send(`Method ${method} not allowed`);

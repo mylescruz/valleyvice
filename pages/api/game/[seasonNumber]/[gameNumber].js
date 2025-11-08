@@ -1,19 +1,9 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "../../auth/[...nextauth]";
 import clientPromise from "@/lib/mongodb";
 
 export default async function handler(req, res) {
-  // Authorize server access using NextAuth
-  const session = await getServerSession(req, res, authOptions);
-
   const method = req?.method;
   const seasonNumber = parseInt(req?.query?.seasonNumber);
   const gameNumber = parseInt(req?.query?.gameNumber);
-
-  // If user tries to change the season data without having a session
-  if (method !== "GET" && !session) {
-    return res.status(401).send("Must login to access this information!");
-  }
 
   // Configure MongoDB
   const client = await clientPromise;

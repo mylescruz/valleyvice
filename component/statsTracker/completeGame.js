@@ -12,6 +12,7 @@ const CompleteGame = ({
   emptyGame,
   setGameFinished,
   setEnterGameInfo,
+  deleteTrackedGame,
 }) => {
   const { postGame } = useGames();
 
@@ -31,7 +32,11 @@ const CompleteGame = ({
 
   const submitGame = async () => {
     try {
+      // Post the new game to MongoDB
       await postGame(game);
+
+      // Delete the tracked game from MongoDB
+      await deleteTrackedGame();
 
       setGame(emptyGame);
 
@@ -53,13 +58,14 @@ const CompleteGame = ({
         <p>Enter final scores of the game</p>
         <form className="w-full flex flex-col sm:flex-row sm:justify-between">
           <div className={gameDetailsInputGroup}>
-            <label htmlFor="totalScore">Valley Vice</label>
+            <label htmlFor="valleyViceScore">Valley Vice</label>
             <input
-              id="totalScore"
+              id="valleyViceScore"
               type="number"
               onChange={handleInput}
               className={gameDetailsInput}
-              value={game.teamStats.points}
+              value={game.valleyViceScore}
+              required
             />
           </div>
           <div className={gameDetailsInputGroup}>
@@ -70,6 +76,7 @@ const CompleteGame = ({
               onChange={handleInput}
               className={gameDetailsInput}
               value={game.opponentScore}
+              required
             />
           </div>
         </form>

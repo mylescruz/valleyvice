@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
 import { InfoContext } from "@/contexts/InfoContext";
 import LoadingIndicator from "../layout/loadingIndicator";
@@ -18,14 +18,20 @@ const NewSeasonForm = ({
   emptySeason,
   setInputNewSeason,
 }) => {
-  const { info, infoLoading, putInfo } = useContext(InfoContext);
+  const { info, infoLoading } = useContext(InfoContext);
 
-  const { postRoster } = useRoster(info.currentSeason);
   const { postSeason } = useSeason(info.currentSeason);
 
   const [inputPlayer, setInputPlayer] = useState(false);
-  const [roster, setRoster] = useState(info.currentPlayers);
+  const [roster, setRoster] = useState(null);
   const [savingSeason, setSavingSeason] = useState(false);
+
+  // Set roster
+  useEffect(() => {
+    if (!infoLoading && info) {
+      setRoster(info.currentPlayers);
+    }
+  }, [infoLoading, info]);
 
   const handleInput = (e) => {
     const input = e.target.value;
@@ -77,11 +83,7 @@ const NewSeasonForm = ({
     try {
       setSavingSeason(true);
 
-      const seasonInfo = { ...newSeason, id: `s${newSeason.seasonNumber}` };
-
-      await postRoster(seasonInfo);
-      await postSeason(seasonInfo);
-      await putInfo(seasonInfo);
+      await postSeason(newSeason);
 
       setNewSeason(emptySeason);
 
@@ -102,7 +104,7 @@ const NewSeasonForm = ({
     setInputNewSeason(false);
   };
 
-  if (infoLoading) {
+  if (infoLoading && !info) {
     return <LoadingIndicator />;
   } else {
     return (
@@ -181,14 +183,15 @@ const NewSeasonForm = ({
                   <div className="flex flex-row flex-wrap justify-center lg:w-3/4 xl:w-4/5">
                     {roster.map((player) => (
                       <div
-                        key={player.id}
+                        key={player.playerId}
                         className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${
                           newSeason.players
-                            .map((player) => player.id)
-                            .includes(player.id) && "bg-(--primary) font-bold"
+                            .map((player) => player.playerId)
+                            .includes(player.playerId) &&
+                          "bg-(--primary) font-bold"
                         }`}
                         onClick={() => {
-                          handlePlayers(player.id);
+                          handlePlayers(player.playerId);
                         }}
                       >
                         {player.name}

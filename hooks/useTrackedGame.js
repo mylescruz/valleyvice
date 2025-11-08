@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 const useTrackedGame = () => {
-  const [trackedGame, setTrackedGame] = useState({});
+  const [trackedGame, setTrackedGame] = useState(null);
   const [trackedGameLoading, setTrackedGameLoading] = useState(true);
 
   useEffect(() => {
@@ -17,7 +17,7 @@ const useTrackedGame = () => {
           throw new Error(result);
         }
       } catch (error) {
-        setTrackedGame(null);
+        setTrackedGame(undefined);
         console.error(error);
       } finally {
         setTrackedGameLoading(false);
@@ -63,10 +63,7 @@ const useTrackedGame = () => {
         },
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        setTrackedGame(result);
-      } else {
+      if (!response.ok) {
         const result = await response.text();
         throw new Error(result);
       }

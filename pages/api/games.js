@@ -25,13 +25,60 @@ export default async function handler(req, res) {
       const game = req?.body;
 
       // Add the new game to MongoDB
-      let { teamStats, saved, ...finalGame } = game;
+      let { teamStats, currentlyTracking, ...finalGame } = game;
 
       finalGame.valleyViceScore = teamStats.points;
       finalGame.result =
         finalGame.valleyViceScore > finalGame.opponentScore ? "W" : "L";
 
-      const insertGameResult = await gamesCol.insertOne(finalGame);
+      const updatedPlayers = finalGame.players.map((player) => {
+        const twoPointPercentage =
+          player.twoPointsAttempted !== 0
+            ? Math.round(
+                (player.twoPointsMade / player.twoPointsAttempted) * 100
+              )
+            : 0;
+        const threePointPercentage =
+          player.threePointsAttempted !== 0
+            ? Math.round(
+                (player.threePointsMade / player.threePointsAttempted) * 100
+              )
+            : 0;
+        const freeThrowPercentage =
+          player.freeThrowsAttempted !== 0
+            ? Math.round(
+                (player.freeThrowsMade / player.freeThrowsAttempted) * 100
+              )
+            : 0;
+
+        return {
+          playerId: player.playerId,
+          name: player.name,
+          number: player.number,
+          points: player.points,
+          twoPointsMade: player.twoPointsMade,
+          twoPointsAttempted: player.twoPointsAttempted,
+          twoPointPercentage: twoPointPercentage,
+          threePointsMade: player.threePointsMade,
+          threePointsAttempted: player.threePointsAttempted,
+          threePointPercentage: threePointPercentage,
+          freeThrowsMade: player.freeThrowsMade,
+          freeThrowsAttempted: player.freeThrowsAttempted,
+          freeThrowPercentage: freeThrowPercentage,
+          rebounds: player.rebounds,
+          assists: player.assists,
+          steals: player.steals,
+          blocks: player.blocks,
+          turnovers: player.turnovers,
+          personalFouls: player.personalFouls,
+          cooked: player.cooked,
+        };
+      });
+
+      const insertGameResult = await gamesCol.insertOne({
+        ...finalGame,
+        players: updatedPlayers,
+      });
       console.log(insertGameResult);
 
       // Update the season with the results of the new game
@@ -41,9 +88,9 @@ export default async function handler(req, res) {
         },
       };
 
-      if (result === "W") {
+      if (finalGame.result === "W") {
         updateStatement.$inc.wins = 1;
-      } else if (result === "L") {
+      } else if (finalGame.result === "L") {
         updateStatement.$inc.losses = 1;
       }
 

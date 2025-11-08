@@ -29,8 +29,6 @@ const emptySeason = {
 const InfoLayout = () => {
   const { info, infoLoading } = useContext(InfoContext);
 
-  if (info) console.log(info);
-
   const [inputNewSeason, setInputNewSeason] = useState(false);
   const [newSeason, setNewSeason] = useState(emptySeason);
 

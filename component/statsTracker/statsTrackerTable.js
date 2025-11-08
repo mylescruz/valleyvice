@@ -1,4 +1,4 @@
-const StatsTable = ({ players, teamStats }) => {
+const StatsTrackerTable = ({ game }) => {
   const playerCellsStyle = "w-1/19 p-1 text-center";
   return (
     <table>
@@ -26,8 +26,8 @@ const StatsTable = ({ players, teamStats }) => {
         </tr>
       </thead>
       <tbody>
-        {players.map((player) => (
-          <tr key={player.id}>
+        {game.players.map((player) => (
+          <tr key={player.playerId}>
             <td className={playerCellsStyle}>{player.number}</td>
             <td className={playerCellsStyle}>{player.name}</td>
             <td className={playerCellsStyle}>{player.points}</td>
@@ -75,48 +75,57 @@ const StatsTable = ({ players, teamStats }) => {
         <tr className="border-t-1 broder-white">
           <td className={playerCellsStyle}>Totals</td>
           <td className={playerCellsStyle}></td>
-          <td className={playerCellsStyle}>{teamStats.points}</td>
-          <td className={playerCellsStyle}>{teamStats.twoPointsMade}</td>
-          <td className={playerCellsStyle}>{teamStats.twoPointsAttempted}</td>
+          <td className={playerCellsStyle}>{game.teamStats.points}</td>
+          <td className={playerCellsStyle}>{game.teamStats.twoPointsMade}</td>
           <td className={playerCellsStyle}>
-            {teamStats.twoPointsAttempted === 0
+            {game.teamStats.twoPointsAttempted}
+          </td>
+          <td className={playerCellsStyle}>
+            {game.teamStats.twoPointsAttempted === 0
               ? `0%`
               : `${(
-                  (teamStats.twoPointsMade / teamStats.twoPointsAttempted) *
+                  (game.teamStats.twoPointsMade /
+                    game.teamStats.twoPointsAttempted) *
                   100
                 ).toFixed(0)}%`}
           </td>
-          <td className={playerCellsStyle}>{teamStats.threePointsMade}</td>
-          <td className={playerCellsStyle}>{teamStats.threePointsAttempted}</td>
+          <td className={playerCellsStyle}>{game.teamStats.threePointsMade}</td>
           <td className={playerCellsStyle}>
-            {teamStats.threePointsAttempted === 0
+            {game.teamStats.threePointsAttempted}
+          </td>
+          <td className={playerCellsStyle}>
+            {game.teamStats.threePointsAttempted === 0
               ? `0%`
               : `${(
-                  (teamStats.threePointsMade / teamStats.threePointsAttempted) *
+                  (game.teamStats.threePointsMade /
+                    game.teamStats.threePointsAttempted) *
                   100
                 ).toFixed(0)}%`}
           </td>
-          <td className={playerCellsStyle}>{teamStats.freeThrowsMade}</td>
-          <td className={playerCellsStyle}>{teamStats.freeThrowsAttempted}</td>
+          <td className={playerCellsStyle}>{game.teamStats.freeThrowsMade}</td>
           <td className={playerCellsStyle}>
-            {teamStats.freeThrowsAttempted === 0
+            {game.teamStats.freeThrowsAttempted}
+          </td>
+          <td className={playerCellsStyle}>
+            {game.teamStats.freeThrowsAttempted === 0
               ? `0%`
               : `${(
-                  (teamStats.freeThrowsMade / teamStats.freeThrowsAttempted) *
+                  (game.teamStats.freeThrowsMade /
+                    game.teamStats.freeThrowsAttempted) *
                   100
                 ).toFixed(0)}%`}
           </td>
-          <td className={playerCellsStyle}>{teamStats.rebounds}</td>
-          <td className={playerCellsStyle}>{teamStats.assists}</td>
-          <td className={playerCellsStyle}>{teamStats.steals}</td>
-          <td className={playerCellsStyle}>{teamStats.blocks}</td>
-          <td className={playerCellsStyle}>{teamStats.turnovers}</td>
-          <td className={playerCellsStyle}>{teamStats.personalFouls}</td>
-          <td className={playerCellsStyle}>{teamStats.cooked}</td>
+          <td className={playerCellsStyle}>{game.teamStats.rebounds}</td>
+          <td className={playerCellsStyle}>{game.teamStats.assists}</td>
+          <td className={playerCellsStyle}>{game.teamStats.steals}</td>
+          <td className={playerCellsStyle}>{game.teamStats.blocks}</td>
+          <td className={playerCellsStyle}>{game.teamStats.turnovers}</td>
+          <td className={playerCellsStyle}>{game.teamStats.personalFouls}</td>
+          <td className={playerCellsStyle}>{game.teamStats.cooked}</td>
         </tr>
       </tfoot>
     </table>
   );
 };
 
-export default StatsTable;
+export default StatsTrackerTable;

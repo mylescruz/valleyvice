@@ -12,7 +12,12 @@ export default async function handler(req, res) {
   // Function to get all the stats for given season
   async function getSeasonStats(seasonNumber) {
     // Get stats from MongoDB based on the seasonNumber
-    const games = await gamesCol.find({ seasonNumber: seasonNumber }).toArray();
+    const games = await gamesCol
+      .find({
+        seasonNumber: seasonNumber,
+        currentlyTracking: { $exists: false },
+      })
+      .toArray();
 
     const players = [];
 

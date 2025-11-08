@@ -11,6 +11,7 @@ const TOTAL_CELLS_STYLE = "w-1/19 p-1 text-center";
 const GameLayout = ({ seasonNumber, gameNumber }) => {
   const { game, gameLoading } = useGame(seasonNumber, gameNumber);
 
+  if (game) console.log(game);
   if (gameLoading && !game) {
     return <LoadingIndicator />;
   } else if (game) {

@@ -1,66 +1,108 @@
-import { useContext, useState } from "react";
-import SubstituteForm from "./substituteForm";
+import { useContext, useEffect, useState } from "react";
+import NewPlayerForm from "./newPlayerForm";
 import { InfoContext } from "@/contexts/InfoContext";
+import ChooseSubs from "./chooseSubs";
 
 const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
-  const { info } = useContext(InfoContext);
-  const [players, setPlayers] = useState([]);
+  const { info, infoLoading } = useContext(InfoContext);
+  const [availablePlayers, setAvailablePlayers] = useState([]);
+  const [chooseSubs, setChooseSubs] = useState(false);
   const [inputPlayer, setInputPlayer] = useState(false);
-  const [gameInfo, setGameInfo] = useState({
-    seasonNumber: info.currentSeason,
-    gameNumber: info.lastGameNumberPlayed + 1,
-    date: "",
-    location: "",
-    opponent: "",
-  });
+
+  // Set the available players from the current roster
+  useEffect(() => {
+    if (!infoLoading && info) {
+      const currentRoster = info.currentRoster
+        .filter((player) => player.playerId !== "vvSubs")
+        .map((player) => {
+          return {
+            playerId: player.playerId,
+            name: player.name,
+            number: player.number,
+          };
+        })
+        .sort((player1, player2) => player1.number - player2.number);
+
+      setAvailablePlayers(currentRoster);
+    }
+  }, [info, infoLoading]);
 
   const handleInput = (e) => {
-    setGameInfo({ ...gameInfo, [e.target.id]: e.target.value });
+    setGame({ ...game, [e.target.id]: e.target.value });
   };
 
   const handleNumInput = (e) => {
     const input = e.target.value;
 
     if (input === "") {
-      setGameInfo({ ...gameInfo, [e.target.id]: input });
+      setGame({ ...game, [e.target.id]: input });
     } else {
-      setGameInfo({ ...gameInfo, [e.target.id]: parseInt(input) });
+      setGame({ ...game, [e.target.id]: parseInt(input) });
     }
   };
 
-  const enterPlayer = (playerId) => {
-    if (players.includes(playerId)) {
-      const updatedPlayers = players.filter((player) => player !== playerId);
-      setPlayers(updatedPlayers);
+  // Adds or remove a player to the roster for the game
+  const managePlayers = (playerId) => {
+    // Add the selected player to the game's roster if they're not already there
+    if (!game.players.some((player) => player.playerId === playerId)) {
+      const addedPlayer = availablePlayers.find(
+        (player) => player.playerId === playerId
+      );
+      setGame({ ...game, players: [...game.players, addedPlayer] });
     } else {
-      setPlayers([...players, playerId]);
+      // Remove the player from the game roster if they are already there
+      const updatedPlayers = game.players.filter(
+        (player) => player.playerId !== playerId
+      );
+      setGame({ ...game, players: updatedPlayers });
     }
   };
 
+  // Update the selected players for the game
   const completeGameInfo = (e) => {
     e.preventDefault();
 
-    const updatedPlayers = game.players.filter((player) => {
-      if (players.includes(player.playerId)) {
-        return player;
-      }
-    });
+    const updatedPlayers = game.players
+      .map((player) => {
+        return {
+          ...player,
+          points: 0,
+          twoPointsMade: 0,
+          twoPointsAttempted: 0,
+          threePointsMade: 0,
+          threePointsAttempted: 0,
+          freeThrowsMade: 0,
+          freeThrowsAttempted: 0,
+          rebounds: 0,
+          assists: 0,
+          steals: 0,
+          blocks: 0,
+          turnovers: 0,
+          personalFouls: 0,
+          cooked: 0,
+        };
+      })
+      .sort((player1, player2) => player1.number - player2.number);
 
-    setGame({
-      ...game,
-      seasonNumber: gameInfo.seasonNumber,
-      gameNumber: gameInfo.gameNumber,
-      date: gameInfo.date,
-      location: gameInfo.location,
-      opponent: gameInfo.opponent,
-      players: updatedPlayers,
-    });
+    setGame({ ...game, players: updatedPlayers });
 
     setEnterGameInfo(false);
   };
 
-  const enterSubstitute = () => {
+  const enterNewPlayer = () => {
     setInputPlayer(true);
+  };
+
+  const closeEnterNewPlayer = () => {
+    setInputPlayer(false);
+  };
+
+  const enterSubstitute = () => {
+    setChooseSubs(true);
+  };
+
+  const closeChooseSubs = () => {
+    setChooseSubs(false);
   };
 
   const gameDetailsInputGroup = "flex flex-col my-1.5 mx-2";
@@ -70,6 +112,9 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
 
   return (
     <div className="flex flex-col items-center">
+      <h1 className="text-3xl font-bold text-(--primary) text-center">
+        Enter Game Info
+      </h1>
       <form
         className="w-full my-4 flex flex-col items-center sm:w-4/5 lg:w-2/3 xl:w-1/2"
         onSubmit={completeGameInfo}
@@ -83,7 +128,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
                 type="number"
                 onChange={handleNumInput}
                 className={gameDetailsInput}
-                value={gameInfo.seasonNumber}
+                value={game.seasonNumber}
                 required
               />
             </div>
@@ -94,7 +139,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
                 type="number"
                 onChange={handleNumInput}
                 className={gameDetailsInput}
-                value={gameInfo.gameNumber}
+                value={game.gameNumber}
                 required
               />
             </div>
@@ -105,7 +150,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
                 type="date"
                 onChange={handleInput}
                 className={gameDetailsInput}
-                value={gameInfo.date}
+                value={game.date}
                 required
               />
             </div>
@@ -116,7 +161,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
                 type="text"
                 onChange={handleInput}
                 className={gameDetailsInput}
-                value={gameInfo.location}
+                value={game.location}
                 required
               />
             </div>
@@ -127,7 +172,7 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
                 type="text"
                 onChange={handleInput}
                 className={gameDetailsInput}
-                value={gameInfo.opponent}
+                value={game.opponent}
                 required
               />
             </div>
@@ -135,15 +180,15 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
           <div className="flex flex-col items-center mt-1.5">
             <p>Who played this game?</p>
             <div className="flex flex-row flex-wrap justify-center lg:w-3/4 xl:w-4/5">
-              {game.players.map((player) => (
+              {availablePlayers.map((player) => (
                 <div
                   key={player.playerId}
                   className={`border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold ${
-                    players.includes(player.playerId) &&
+                    game.players.some((p) => p.playerId === player.playerId) &&
                     "bg-(--primary) font-bold"
                   }`}
                   onClick={() => {
-                    enterPlayer(player.playerId);
+                    managePlayers(player.playerId);
                   }}
                 >
                   {player.name}
@@ -155,6 +200,12 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
               >
                 Subs?
               </div>
+              <div
+                className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
+                onClick={enterNewPlayer}
+              >
+                New?
+              </div>
             </div>
           </div>
         </div>
@@ -165,13 +216,22 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
         </div>
       </form>
 
-      {inputPlayer && (
-        <SubstituteForm
-          players={players}
-          setPlayers={setPlayers}
-          setInputPlayer={setInputPlayer}
+      {chooseSubs && (
+        <ChooseSubs
           game={game}
           setGame={setGame}
+          availablePlayers={availablePlayers}
+          setAvailablePlayers={setAvailablePlayers}
+          closeChooseSubs={closeChooseSubs}
+        />
+      )}
+      {inputPlayer && (
+        <NewPlayerForm
+          game={game}
+          setGame={setGame}
+          availablePlayers={availablePlayers}
+          setAvailablePlayers={setAvailablePlayers}
+          closeEnterNewPlayer={closeEnterNewPlayer}
         />
       )}
     </div>

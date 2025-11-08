@@ -27,15 +27,15 @@ const useSeason = (seasonNumber) => {
     getSeason();
   }, [seasonNumber]);
 
-  const postSeason = useCallback(async (seasonInfo) => {
+  const postSeason = useCallback(async (newSeason) => {
     try {
-      const response = await fetch(`/api/season/${seasonInfo.seasonNumber}`, {
+      const response = await fetch(`/api/season/${newSeason.seasonNumber}`, {
         method: "POST",
         headers: {
           Accept: "application.json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(seasonInfo),
+        body: JSON.stringify(newSeason),
       });
 
       if (response.ok) {
@@ -53,33 +53,7 @@ const useSeason = (seasonNumber) => {
     }
   }, []);
 
-  const putSeason = useCallback(async (season) => {
-    try {
-      const response = await fetch(`/api/season/${season.seasonNumber}`, {
-        method: "PUT",
-        headers: {
-          Accept: "application.json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(season),
-      });
-
-      if (response.ok) {
-        const result = await response.json();
-        setSeason(result);
-      } else {
-        const result = await response.text();
-        throw new Error(result);
-      }
-    } catch (error) {
-      setSeason(null);
-      console.error(error);
-    } finally {
-      setSeasonLoading(false);
-    }
-  }, []);
-
-  return { season, seasonLoading, postSeason, putSeason };
+  return { season, seasonLoading, postSeason };
 };
 
 export default useSeason;
