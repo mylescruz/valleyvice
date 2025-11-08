@@ -61,26 +61,27 @@ export default async function handler(req, res) {
         });
       });
 
+      let allPlays = null;
       // Format the play-by-play with full stat phrases
-      const quarters =
-        Object.entries(game.playByPlay).length === 1
-          ? game.playByPlay.allQuarters
-          : Object.values(game.playByPlay).map((value) => value);
+      if (game.playByPlay) {
+        const quarters =
+          Object.entries(game.playByPlay).length === 1
+            ? game.playByPlay.allQuarters
+            : Object.values(game.playByPlay).map((value) => value);
 
-      let allPlays;
+        if (quarters.length === 4) {
+          allPlays = quarters.map((quarter) => {
+            const playsInQuarter = quarter.map((play) => {
+              return `${play.playerName} ${statsLegend[play.stat]}`;
+            });
 
-      if (quarters.length === 4) {
-        allPlays = quarters.map((quarter) => {
-          const playsInQuarter = quarter.map((play) => {
+            return playsInQuarter;
+          });
+        } else {
+          allPlays = quarters.map((play) => {
             return `${play.playerName} ${statsLegend[play.stat]}`;
           });
-
-          return playsInQuarter;
-        });
-      } else {
-        allPlays = quarters.map((play) => {
-          return `${play.playerName} ${statsLegend[play.stat]}`;
-        });
+        }
       }
 
       return {

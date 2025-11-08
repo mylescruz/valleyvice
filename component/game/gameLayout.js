@@ -138,7 +138,7 @@ const GameLayout = ({ seasonNumber, gameNumber }) => {
           </div>
         </div>
 
-        <PlayByPlay playByPlay={game.playByPlay} />
+        {game.playByPlay && <PlayByPlay playByPlay={game.playByPlay} />}
       </div>
     );
   } else {

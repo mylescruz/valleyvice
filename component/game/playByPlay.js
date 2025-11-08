@@ -4,10 +4,12 @@ const PlayByPlay = ({ playByPlay }) => {
   const [plays, setPlays] = useState(
     playByPlay.length === 4 ? playByPlay[0] : playByPlay
   );
+  const [quarterNum, setQuarterNum] = useState(0);
 
   const quartersLegend = ["1st", "2nd", "3rd", "4th"];
 
   const chooseQuarter = (quarterIndex) => {
+    setQuarterNum(quarterIndex);
     setPlays(playByPlay[quarterIndex]);
   };
 
@@ -24,7 +26,12 @@ const PlayByPlay = ({ playByPlay }) => {
       {playByPlay.length === 4 && (
         <div className="flex flex-row justify-evenly">
           {quartersLegend.map((quarter, index) => (
-            <div key={index} className={quarterStyling}>
+            <div
+              key={index}
+              className={
+                quarterNum === index ? selectedQuarterStyling : quarterStyling
+              }
+            >
               <p className="text-sm" onClick={() => chooseQuarter(index)}>
                 {quarter} <span className="hidden md:inline">Quarter</span>
               </p>
