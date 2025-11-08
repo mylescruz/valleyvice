@@ -49,7 +49,7 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
     setChoosePlayer(true);
   };
 
-  const selectAssister = (playerId) => {
+  const selectAssister = (player) => {
     if (
       statSelected === "twoPointsMade" ||
       statSelected === "threePointsMade"
@@ -58,19 +58,19 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
       setChooseAssist(true);
     } else {
       setChoosePlayer(false);
-      addStat(playerId);
+      addStat(player);
     }
   };
 
   // If someone assisted the made shot, include their stat
-  const addAssist = (playerId) => {
+  const addAssist = (selectedPlayer) => {
     addStat(shotMaker);
 
-    if (playerId) {
+    if (selectedPlayer) {
       const teamStats = game.teamStats;
 
       const updatedStats = game.players.map((player) => {
-        if (player.playerId === playerId) {
+        if (player.playerId === selectedPlayer.playerId) {
           player.assists += 1;
           teamStats.assists += 1;
         }
@@ -82,8 +82,16 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
         ...game.playByPlay,
         [quarter]: [
           ...game.playByPlay[quarter],
-          { playerId: shotMaker, stat: statSelected },
-          { playerId: playerId, stat: "assists" },
+          {
+            playerId: shotMaker.playerId,
+            playerName: shotMaker.name,
+            stat: statSelected,
+          },
+          {
+            playerId: selectedPlayer.playerId,
+            playerName: selectedPlayer.name,
+            stat: "assists",
+          },
         ],
       };
 
@@ -101,11 +109,11 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
   };
 
   // Add the stat recorded
-  const addStat = (playerId) => {
+  const addStat = (selectedPlayer) => {
     const teamStats = game.teamStats;
 
     const updatedStats = game.players.map((player) => {
-      if (player.playerId === playerId) {
+      if (player.playerId === selectedPlayer.playerId) {
         if (statSelected === "twoPointsMade") {
           // Update the player's individual stats
           player[statSelected] += 1;
@@ -152,7 +160,11 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
       ...game.playByPlay,
       [quarter]: [
         ...game.playByPlay[quarter],
-        { playerId: playerId, stat: statSelected },
+        {
+          playerId: selectedPlayer.playerId,
+          playerName: selectedPlayer.name,
+          stat: statSelected,
+        },
       ],
     };
 
@@ -304,8 +316,8 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
                 key={player.playerId}
                 className={bubbleStyling}
                 onClick={() => {
-                  setShotMaker(player.playerId);
-                  selectAssister(player.playerId);
+                  setShotMaker(player);
+                  selectAssister(player);
                 }}
               >
                 {player.name}
@@ -322,12 +334,12 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
               None
             </div>
             {game.players
-              .filter((player) => player.playerId !== shotMaker)
+              .filter((player) => player.playerId !== shotMaker.playerId)
               .map((player) => (
                 <div
                   key={player.playerId}
                   className={bubbleStyling}
-                  onClick={() => addAssist(player.playerId)}
+                  onClick={() => addAssist(player)}
                 >
                   {player.name}
                 </div>

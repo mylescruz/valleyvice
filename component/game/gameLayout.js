@@ -5,13 +5,13 @@ import Link from "next/link";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
 import useGame from "@/hooks/useGame";
+import PlayByPlay from "./playByPlay";
 
 const TOTAL_CELLS_STYLE = "w-1/19 p-1 text-center";
 
 const GameLayout = ({ seasonNumber, gameNumber }) => {
   const { game, gameLoading } = useGame(seasonNumber, gameNumber);
 
-  if (game) console.log(game);
   if (gameLoading && !game) {
     return <LoadingIndicator />;
   } else if (game) {
@@ -137,6 +137,8 @@ const GameLayout = ({ seasonNumber, gameNumber }) => {
             </table>
           </div>
         </div>
+
+        <PlayByPlay playByPlay={game.playByPlay} />
       </div>
     );
   } else {

@@ -1,5 +1,22 @@
 import clientPromise from "@/lib/mongodb";
 
+// Legend to update the playByPlay
+const statsLegend = {
+  twoPointsMade: "made a two point shot",
+  twoPointsAttempted: "missed a two point shot",
+  threePointsMade: "made a three point shot",
+  threePointsAttempted: "missed a three point shot",
+  freeThrowsMade: "made a free throw",
+  freeThrowsAttempted: "missed a free throw",
+  rebounds: "got a rebound",
+  assists: "assisted",
+  steals: "stole the ball",
+  blocks: "blocked a shot",
+  turnovers: "turned the ball over",
+  personalFouls: "committed a foul",
+  cooked: "got cooked!",
+};
+
 export default async function handler(req, res) {
   const method = req?.method;
   const seasonNumber = parseInt(req?.query?.seasonNumber);
@@ -44,6 +61,28 @@ export default async function handler(req, res) {
         });
       });
 
+      // Format the play-by-play with full stat phrases
+      const quarters =
+        Object.entries(game.playByPlay).length === 1
+          ? game.playByPlay.allQuarters
+          : Object.values(game.playByPlay).map((value) => value);
+
+      let allPlays;
+
+      if (quarters.length === 4) {
+        allPlays = quarters.map((quarter) => {
+          const playsInQuarter = quarter.map((play) => {
+            return `${play.playerName} ${statsLegend[play.stat]}`;
+          });
+
+          return playsInQuarter;
+        });
+      } else {
+        allPlays = quarters.map((play) => {
+          return `${play.playerName} ${statsLegend[play.stat]}`;
+        });
+      }
+
       return {
         ...game,
         teamStats: {
@@ -73,6 +112,7 @@ export default async function handler(req, res) {
         players: game.players.sort(
           (player1, player2) => player1.number - player2.number
         ),
+        playByPlay: allPlays,
       };
     } catch (error) {
       throw new Error(error);
