@@ -8,7 +8,7 @@ const AverageTable = ({ seasonNumber }) => {
 
   if (seasonStatsLoading && !seasonStats) {
     return <></>;
-  } else if (seasonStats) {
+  } else {
     return (
       <>
         <h1 className="text-3xl text-(--primary) text-center font-bold mt-8">
@@ -108,8 +108,6 @@ const AverageTable = ({ seasonNumber }) => {
         </div>
       </>
     );
-  } else {
-    return <ErrorLayout />;
   }
 };
 

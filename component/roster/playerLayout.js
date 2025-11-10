@@ -54,25 +54,25 @@ const PlayerLayout = ({ playerId }) => {
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>PPG</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.points}
+                  {player.averageStats.points.toFixed(2)}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>REB</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.rebounds}
+                  {player.averageStats.rebounds.toFixed(2)}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>AST</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.assists}
+                  {player.averageStats.assists.toFixed(2)}
                 </p>
               </div>
               <div className={averagesContainer}>
                 <p className={averagesTitleStyling}>STL</p>
                 <p className={averagesValueStyling}>
-                  {player.averageStats.steals}
+                  {player.averageStats.steals.toFixed(2)}
                 </p>
               </div>
               <div className={averagesContainer}>

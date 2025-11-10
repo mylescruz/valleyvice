@@ -46,46 +46,46 @@ const PlayerAverages = ({ player }) => {
                 {player.averageStats.gamesPlayed}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.points}
+                {player.averageStats.points.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.twoPointsMade}
+                {player.averageStats.twoPointsMade.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.twoPointsAttempted}
+                {player.averageStats.twoPointsAttempted.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.threePointsMade}
+                {player.averageStats.threePointsMade.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.threePointsAttempted}
+                {player.averageStats.threePointsAttempted.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.freeThrowsMade}
+                {player.averageStats.freeThrowsMade.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.freeThrowsAttempted}
+                {player.averageStats.freeThrowsAttempted.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.rebounds}
+                {player.averageStats.rebounds.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.assists}
+                {player.averageStats.assists.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.steals}
+                {player.averageStats.steals.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.blocks}
+                {player.averageStats.blocks.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.turnovers}
+                {player.averageStats.turnovers.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.personalFouls}
+                {player.averageStats.personalFouls.toFixed(2)}
               </td>
               <td className={averageCellsStyle}>
-                {player.averageStats.cooked}
+                {player.averageStats.cooked.toFixed(2)}
               </td>
             </tr>
           </tfoot>

@@ -3,20 +3,26 @@ const PlayerAveragesRow = ({ season, averageCellsStyle }) => {
     <tr>
       <td className={averageCellsStyle}>{season.seasonNumber}</td>
       <td className={averageCellsStyle}>{season.gamesPlayed}</td>
-      <td className={averageCellsStyle}>{season.points}</td>
-      <td className={averageCellsStyle}>{season.twoPointsMade}</td>
-      <td className={averageCellsStyle}>{season.twoPointsAttempted}</td>
-      <td className={averageCellsStyle}>{season.threePointsMade}</td>
-      <td className={averageCellsStyle}>{season.threePointsAttempted}</td>
-      <td className={averageCellsStyle}>{season.freeThrowsMade}</td>
-      <td className={averageCellsStyle}>{season.freeThrowsAttempted}</td>
-      <td className={averageCellsStyle}>{season.rebounds}</td>
-      <td className={averageCellsStyle}>{season.assists}</td>
-      <td className={averageCellsStyle}>{season.steals}</td>
-      <td className={averageCellsStyle}>{season.blocks}</td>
-      <td className={averageCellsStyle}>{season.turnovers}</td>
-      <td className={averageCellsStyle}>{season.personalFouls}</td>
-      <td className={averageCellsStyle}>{season.cooked}</td>
+      <td className={averageCellsStyle}>{season.points.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.twoPointsMade.toFixed(2)}</td>
+      <td className={averageCellsStyle}>
+        {season.twoPointsAttempted.toFixed(2)}
+      </td>
+      <td className={averageCellsStyle}>{season.threePointsMade.toFixed(2)}</td>
+      <td className={averageCellsStyle}>
+        {season.threePointsAttempted.toFixed(2)}
+      </td>
+      <td className={averageCellsStyle}>{season.freeThrowsMade.toFixed(2)}</td>
+      <td className={averageCellsStyle}>
+        {season.freeThrowsAttempted.toFixed(2)}
+      </td>
+      <td className={averageCellsStyle}>{season.rebounds.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.assists.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.steals.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.blocks.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.turnovers.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.personalFouls.toFixed(2)}</td>
+      <td className={averageCellsStyle}>{season.cooked.toFixed(2)}</td>
     </tr>
   );
 };
