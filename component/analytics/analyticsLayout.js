@@ -16,7 +16,7 @@ const AnalyticsLayout = () => {
           <div className="flex flex-col items-center my-4">
             <h1 className="text-center">Average Leaders</h1>
             <AverageLeadersChart
-              avgLeaders={analytics.allTimeLeaders.avgLeaders}
+              avgLeaders={analytics.allTimeLeaders.averageLeaders}
             />
           </div>
           <div className="flex flex-col items-center my-4">

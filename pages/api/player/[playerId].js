@@ -40,92 +40,48 @@ export default async function handler(req, res) {
 
         return {
           ...season,
-          twoPointPercentage:
-            season.twoPointsAttempted === 0
-              ? 0
-              : (
-                  (season.twoPointsMade / season.twoPointsAttempted) *
-                  100
-                ).toFixed(0),
-          threePointPercentage:
-            season.threePointsAttempted === 0
-              ? 0
-              : (
-                  (season.threePointsMade / season.threePointsAttempted) *
-                  100
-                ).toFixed(0),
-          freeThrowPercentage:
-            season.freeThrowsAttempted === 0
-              ? 0
-              : (
-                  (season.freeThrowsMade / season.freeThrowsAttempted) *
-                  100
-                ).toFixed(0),
           averageStats: {
             seasonNumber: season.seasonNumber,
             gamesPlayed: season.gamesPlayed,
-            points: (season.points / season.gamesPlayed).toFixed(2),
-            twoPointsMade: (season.twoPointsMade / season.gamesPlayed).toFixed(
-              2
-            ),
-            twoPointsAttempted: (
-              season.twoPointsAttempted / season.gamesPlayed
-            ).toFixed(2),
-            threePointsMade: (
-              season.threePointsMade / season.gamesPlayed
-            ).toFixed(2),
-            threePointsAttempted: (
-              season.threePointsAttempted / season.gamesPlayed
-            ).toFixed(2),
-            freeThrowsMade: (
-              season.freeThrowsMade / season.gamesPlayed
-            ).toFixed(2),
-            freeThrowsAttempted: (
-              season.freeThrowsAttempted / season.gamesPlayed
-            ).toFixed(2),
-            rebounds: (season.rebounds / season.gamesPlayed).toFixed(2),
-            assists: (season.assists / season.gamesPlayed).toFixed(2),
-            steals: (season.steals / season.gamesPlayed).toFixed(2),
-            blocks: (season.blocks / season.gamesPlayed).toFixed(2),
-            turnovers: (season.turnovers / season.gamesPlayed).toFixed(2),
-            personalFouls: (season.personalFouls / season.gamesPlayed).toFixed(
-              2
-            ),
-            cooked: (season.cooked / season.gamesPlayed).toFixed(2),
+            points: season.points / season.gamesPlayed,
+            twoPointsMade: season.twoPointsMade / season.gamesPlayed,
+            twoPointsAttempted: season.twoPointsAttempted / season.gamesPlayed,
+            threePointsMade: season.threePointsMade / season.gamesPlayed,
+            threePointsAttempted:
+              season.threePointsAttempted / season.gamesPlayed,
+            freeThrowsMade: season.freeThrowsMade / season.gamesPlayed,
+            freeThrowsAttempted:
+              season.freeThrowsAttempted / season.gamesPlayed,
+            rebounds: season.rebounds / season.gamesPlayed,
+            assists: season.assists / season.gamesPlayed,
+            steals: season.steals / season.gamesPlayed,
+            blocks: season.blocks / season.gamesPlayed,
+            turnovers: season.turnovers / season.gamesPlayed,
+            personalFouls: season.personalFouls / season.gamesPlayed,
+            cooked: season.cooked / season.gamesPlayed,
           },
         };
       });
 
       const averageStats = {
         gamesPlayed: totalStats.gamesPlayed,
-        points: (totalStats.points / totalStats.gamesPlayed).toFixed(2),
-        twoPointsMade: (
-          totalStats.twoPointsMade / totalStats.gamesPlayed
-        ).toFixed(2),
-        twoPointsAttempted: (
-          totalStats.twoPointsAttempted / totalStats.gamesPlayed
-        ).toFixed(2),
-        threePointsMade: (
-          totalStats.threePointsMade / totalStats.gamesPlayed
-        ).toFixed(2),
-        threePointsAttempted: (
-          totalStats.threePointsAttempted / totalStats.gamesPlayed
-        ).toFixed(2),
-        freeThrowsMade: (
-          totalStats.freeThrowsMade / totalStats.gamesPlayed
-        ).toFixed(2),
-        freeThrowsAttempted: (
-          totalStats.freeThrowsAttempted / totalStats.gamesPlayed
-        ).toFixed(2),
-        rebounds: (totalStats.rebounds / totalStats.gamesPlayed).toFixed(2),
-        assists: (totalStats.assists / totalStats.gamesPlayed).toFixed(2),
-        steals: (totalStats.steals / totalStats.gamesPlayed).toFixed(2),
-        blocks: (totalStats.blocks / totalStats.gamesPlayed).toFixed(2),
-        turnovers: (totalStats.turnovers / totalStats.gamesPlayed).toFixed(2),
-        personalFouls: (
-          totalStats.personalFouls / totalStats.gamesPlayed
-        ).toFixed(2),
-        cooked: (totalStats.cooked / totalStats.gamesPlayed).toFixed(2),
+        points: totalStats.points / totalStats.gamesPlayed,
+        twoPointsMade: totalStats.twoPointsMade / totalStats.gamesPlayed,
+        twoPointsAttempted:
+          totalStats.twoPointsAttempted / totalStats.gamesPlayed,
+        threePointsMade: totalStats.threePointsMade / totalStats.gamesPlayed,
+        threePointsAttempted:
+          totalStats.threePointsAttempted / totalStats.gamesPlayed,
+        freeThrowsMade: totalStats.freeThrowsMade / totalStats.gamesPlayed,
+        freeThrowsAttempted:
+          totalStats.freeThrowsAttempted / totalStats.gamesPlayed,
+        rebounds: totalStats.rebounds / totalStats.gamesPlayed,
+        assists: totalStats.assists / totalStats.gamesPlayed,
+        steals: totalStats.steals / totalStats.gamesPlayed,
+        blocks: totalStats.blocks / totalStats.gamesPlayed,
+        turnovers: totalStats.turnovers / totalStats.gamesPlayed,
+        personalFouls: totalStats.personalFouls / totalStats.gamesPlayed,
+        cooked: totalStats.cooked / totalStats.gamesPlayed,
       };
 
       return {
@@ -136,31 +92,31 @@ export default async function handler(req, res) {
           twoPointPercentage:
             totalStats.twoPointsAttempted === 0
               ? 0
-              : (
+              : Math.round(
                   (totalStats.twoPointsMade / totalStats.twoPointsAttempted) *
-                  100
-                ).toFixed(0),
+                    100
+                ),
           threePointPercentage:
             totalStats.threePointsAttempted === 0
               ? 0
-              : (
+              : Math.round(
                   (totalStats.threePointsMade /
                     totalStats.threePointsAttempted) *
-                  100
-                ).toFixed(0),
+                    100
+                ),
           freeThrowPercentage:
             totalStats.freeThrowsAttempted === 0
               ? 0
-              : (
+              : Math.round(
                   (totalStats.freeThrowsMade / totalStats.freeThrowsAttempted) *
-                  100
-                ).toFixed(0),
-          fieldGoalPercentage: (
+                    100
+                ),
+          fieldGoalPercentage: Math.round(
             ((totalStats.twoPointsMade + totalStats.threePointsMade) /
               (totalStats.twoPointsAttempted +
                 totalStats.threePointsAttempted)) *
-            100
-          ).toFixed(0),
+              100
+          ),
         },
         averageStats: averageStats,
       };
