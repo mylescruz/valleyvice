@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 import clientPromise from "@/lib/mongodb";
 import { authOptions } from "./auth/[...nextauth]";
+import { updateSeasonStats } from "@/lib/updateSeasonStats";
 
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
@@ -229,6 +230,9 @@ export default async function handler(req, res) {
           }
         })
       );
+
+      // Update the player's stats for the given season
+      await updateSeasonStats(finalGame.seasonNumber);
 
       // Send retrieved game back to the client
       res.status(200).json(game);
