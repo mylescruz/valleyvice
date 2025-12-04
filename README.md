@@ -1,40 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Valley Vice – Basketball Stats Tracker
 
-## Getting Started
+🔗 **Live App:** https://valleyvice.vercel.app/  
+📁 **GitHub:** https://github.com/mylescruz/valleyvice
 
-First, run the development server:
+A full-stack basketball statistics tracking platform built with **Next.js**, **NextAuth.js**, **MongoDB**, and **Tailwind CSS**.  
+Designed to manage 20 seasons of data for a men’s recreational basketball team, including player stats, game logs, analytics, play-by-play tracking, and roster management.
 
-```bash
+---
+
+## 🚀 Features
+
+### 📈 **Stats Page**
+- View each player's **total** and **average** stats for the selected season  
+- Stats recalculated on the backend every time a game is recorded  
+- Dropdown selector to switch between 20 seasons of data  
+
+---
+
+### 📅 **Seasons Page**
+- Displays games for the selected season with:
+  - Game number  
+  - Opponent  
+  - Location  
+  - Date  
+  - Win/Loss indicator  
+  - Final score  
+- Click any game to open the full game detail page
+
+---
+
+### 🏀 **Game Page**
+- Shows game-specific stats for each participating player  
+- Displays:
+  - 2PT made  
+  - 3PT made  
+  - Assists  
+  - Rebounds  
+  - Steals  
+  - Other tracked metrics  
+- Shot percentages  
+- **Play-by-play** timeline if available (built from stat tracking order)
+
+---
+
+### 👥 **Roster Page**
+- Season-specific roster view  
+- Player cards showing:
+  - Image  
+  - Name  
+  - Jersey number  
+  - Height  
+  - Position  
+
+---
+
+### 🧍 **Player Page**
+- View individual player history across seasons  
+- **Per-Season Totals Table**  
+- **Per-Season Averages Table**  
+- Total / career averages displayed at bottom  
+
+---
+
+### 📊 **Analytics Page**
+Aggregated data visualizations including:
+- All-time average stat leaders  
+- All-time total stat leaders  
+- Win/loss record vs. top 10 most frequent opponents  
+
+---
+
+### ⛹️ **Live Stats Tracker (Admin Only)**
+A real-time stat tracking interface used during games:
+- Game setup form (season, game number, opponent, date, location)  
+- Select active players from roster  
+- Add new subs or temporary players  
+- Track by quarter (used to build play-by-play later)  
+- Choose stat → choose player  
+- **Undo** last recorded stat  
+- **Save Draft** to return later  
+- **Complete Game** finalizes:
+  - Game record  
+  - Season totals  
+  - Player totals  
+  - Player averages  
+  - Analytics collections (for fast reads)
+
+---
+
+## 🔐 Authentication
+- Implemented using **NextAuth.js**  
+- **Google (Gmail) provider**  
+- Only authenticated **admin users** can access stat tracking features  
+- Protected routes validate sessions before loading data  
+
+---
+
+## 🛠 Tech Stack
+
+### **Frontend**
+- Next.js  
+- Tailwind CSS  
+- Recharts  
+
+### **Backend**
+- Next.js API Routes  
+- MongoDB (players, seasons, games, stats, play-by-play, analytics collections)
+
+---
+
+## 🧪 Local Development Setup
+
+### 1. Install dependencies
+npm install
+
+### 2. Environment Variables
+
+Create a .env.local file:
+
+MONGODB_URI=your_mongodb_uri
+
+MONGODB_DB=your_mongodb_db
+
+NEXTAUTH_SECRET=your_nextauth_secret
+
+NEXTAUTH_URL=http://localhost:3000
+
+GOOGLE_CLIENT_ID=your_google_client_id
+
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+
+### 3. Run the dev server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
-
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
