@@ -22,7 +22,7 @@ const Header = () => {
     { name: "Roster", link: "/roster", adminPage: false },
     { name: "Analytics", link: "/analytics", adminPage: false },
     { name: "Tracker", link: "/tracker", adminPage: true },
-    { name: "Info", link: "/info", adminPage: true },
+    { name: "Team Info", link: "/info", adminPage: true },
   ];
 
   const userSignOut = async () => {
@@ -81,7 +81,7 @@ const Header = () => {
                     {page.name}
                   </Link>
                 )
-              )
+              ),
             )}
             {session && (
               <Link className={linkStyling} href="/" onClick={userSignOut}>
@@ -115,7 +115,7 @@ const Header = () => {
                   {page.name}
                 </Link>
               )
-            )
+            ),
           )}
           {session && (
             <Link className={mobileLinkStyling} href="/" onClick={userSignOut}>
