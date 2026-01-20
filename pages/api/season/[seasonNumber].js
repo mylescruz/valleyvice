@@ -90,7 +90,7 @@ export default async function handler(req, res) {
       // Create the player array to track individual stats
       const players = newSeason.players.map((player) => {
         return {
-          playerId: player.id,
+          playerId: player.playerId,
           name: player.name,
           number: player.number,
           gamesPlayed: 0,

@@ -16,7 +16,7 @@ const emptySeason = {
   league: "The Loot x Valley JCC",
   players: [
     {
-      id: "vvSubs",
+      playerId: "vvSubs",
       name: "Subs",
       number: "0",
       height: "N/A",
@@ -35,6 +35,10 @@ const InfoLayout = () => {
   const finishSeason = () => {
     setInputNewSeason(true);
   };
+
+  if (info) {
+    console.log(info);
+  }
 
   if (infoLoading) {
     return <LoadingIndicator />;

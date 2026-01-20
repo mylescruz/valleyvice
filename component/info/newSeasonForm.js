@@ -22,7 +22,7 @@ const NewSeasonForm = ({
   const { postSeason } = useSeason(info.currentSeason);
 
   const [inputPlayer, setInputPlayer] = useState(false);
-  const [roster, setRoster] = useState(info.currentPlayers);
+  const [roster, setRoster] = useState(info.currentRoster);
   const [savingSeason, setSavingSeason] = useState(false);
 
   const handleInput = (e) => {
@@ -42,16 +42,16 @@ const NewSeasonForm = ({
   };
 
   const handlePlayers = (playerId) => {
-    const foundPlayer = roster.find((player) => player.id === playerId);
+    const foundPlayer = roster.find((player) => player.playerId === playerId);
 
     if (foundPlayer) {
       const playerAdded = newSeason.players.find(
-        (player) => player.id === playerId,
+        (player) => player.playerId === playerId,
       );
 
       if (playerAdded) {
         const updatedPlayers = newSeason.players.filter(
-          (player) => player.id !== playerId,
+          (player) => player.playerId !== playerId,
         );
         setNewSeason({ ...newSeason, players: updatedPlayers });
       } else {

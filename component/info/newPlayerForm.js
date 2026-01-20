@@ -3,7 +3,7 @@ import { useState } from "react";
 const basketballPositions = ["Guard", "Forward", "Center"];
 
 const emptyPlayer = {
-  id: "",
+  playerId: "",
   name: "",
   number: "",
   height: "",
@@ -36,12 +36,15 @@ const NewPlayerForm = ({
   const submitPlayer = (e) => {
     e.preventDefault();
 
-    setRoster([...roster, { ...newPlayer, id: newPlayer.name + newPlayer.id }]);
+    setRoster([
+      ...roster,
+      { ...newPlayer, playerId: newPlayer.name + newPlayer.playerId },
+    ]);
     setNewSeason({
       ...newSeason,
       players: [
         ...newSeason.players,
-        { ...newPlayer, id: newPlayer.name + newPlayer.id },
+        { ...newPlayer, playerId: newPlayer.name + newPlayer.playerId },
       ],
     });
 
