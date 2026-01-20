@@ -95,7 +95,7 @@ export default async function handler(req, res) {
           number: player.number,
           height: player.height,
           position: player.position,
-          imgSrc: player.imgSrc,
+          imageSrc: player.imageSrc,
           imageAlt: `${player.name} Roster Picture`,
         };
       });
