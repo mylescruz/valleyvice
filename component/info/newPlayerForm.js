@@ -38,13 +38,19 @@ const NewPlayerForm = ({
 
     setRoster([
       ...roster,
-      { ...newPlayer, playerId: newPlayer.name + newPlayer.playerId },
+      {
+        ...newPlayer,
+        playerId: newPlayer.name.toLowerCase() + newPlayer.number,
+      },
     ]);
     setNewSeason({
       ...newSeason,
       players: [
         ...newSeason.players,
-        { ...newPlayer, playerId: newPlayer.name + newPlayer.playerId },
+        {
+          ...newPlayer,
+          playerId: newPlayer.name.toLowerCase() + newPlayer.number,
+        },
       ],
     });
 

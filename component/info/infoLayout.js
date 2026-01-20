@@ -8,7 +8,6 @@ const buttonStyling =
 const playerCellsStyle = "w-1/4 p-1 text-center";
 
 const emptySeason = {
-  id: "",
   seasonNumber: "",
   season: "Winter",
   year: "",
@@ -35,10 +34,6 @@ const InfoLayout = () => {
   const finishSeason = () => {
     setInputNewSeason(true);
   };
-
-  if (info) {
-    console.log(info);
-  }
 
   if (infoLoading) {
     return <LoadingIndicator />;
