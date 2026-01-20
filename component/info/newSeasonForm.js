@@ -99,7 +99,7 @@ const NewSeasonForm = ({
   return (
     <div className="flex flex-col items-center">
       <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-[rgba(255,255,255,0.2)] z-50 flex flex-col justify-center items-center">
-        <div className="w-2/3 bg-(--background) p-4 rounded-lg flex flex-col items-center">
+        <div className="w-11/12 my-4 md:w-2/3 bg-(--background) p-4 rounded-lg flex flex-col items-center overflow-y-auto">
           <form
             className="w-full my-4 flex flex-col items-center px-8"
             onSubmit={saveNewSeason}
