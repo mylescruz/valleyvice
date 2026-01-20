@@ -379,6 +379,20 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
         </div>
 
         <StatsTrackerTable game={game} />
+
+        <h2 className="mt-4 text-center text-(--primary) text-2xl font-bold">
+          Play By Play
+        </h2>
+        <h4 className="text-center text-(--primary) font-bold">
+          {quarter.toUpperCase()}
+        </h4>
+        <div className="max-h-75 overflow-y-scroll scrollbar-hide border-2 border-(--secondary) w-full my-4 rounded-lg px-3 pt-1 pb-4">
+          {game.playByPlay[quarter].map((play, index) => (
+            <p key={index} className="my-1 py-1 border-b-1 border-(--primary)">
+              {play.playerName} - {play.stat}
+            </p>
+          ))}
+        </div>
       </div>
 
       <div className="flex flex-col items-end">
