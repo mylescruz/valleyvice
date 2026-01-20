@@ -18,11 +18,13 @@ const SeasonsGames = ({ seasonNumber }) => {
           <h1 className="text-3xl text-(--primary) font-bold">
             Season {seasonNumber}
           </h1>
-          {season.wins && season.losses && (
-            <p className="text-xl text-(--secondary) font-bold">
-              Record: {season.wins} - {season.losses}
-            </p>
-          )}
+          <p className="text-xl text-(--secondary) font-bold">
+            {(season.wins || season.losses) && (
+              <span>
+                Record: {season.wins} - {season.losses}
+              </span>
+            )}
+          </p>
           <p className="font-bold">
             {season.season} {season.year}
           </p>

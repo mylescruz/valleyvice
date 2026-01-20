@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db(process.env.MONGO_DB);
   const seasonsCol = db.collection("seasons");
-  const seasonStatsCol = db.collection.collection("seasonStats");
+  const seasonStatsCol = db.collection("seasonStats");
 
   // Function to get the season data from MongoDB
   async function getSeasonData(seasonNumber) {
