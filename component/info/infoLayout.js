@@ -38,6 +38,14 @@ const InfoLayout = () => {
 
   if (infoLoading) {
     return <LoadingIndicator />;
+  } else if (!info) {
+    return (
+      <div className="text-center">
+        <p className="text-red-600 font-bold">
+          Error loading team info! Please try again later!
+        </p>
+      </div>
+    );
   } else {
     return (
       <div className="flex flex-col items-center">
