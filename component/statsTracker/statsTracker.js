@@ -23,6 +23,22 @@ const statsLegend = [
   { name: "CKD", value: "cooked" },
 ];
 
+const statsMap = {
+  twoPointsMade: "made a two point shot",
+  twoPointsAttempted: "attempted a two point shot",
+  threePointsMade: "made a three pointer",
+  threePointsAttempted: "attempted a three pointer",
+  freeThrowsMade: "made a free throw",
+  freeThrowsAttempted: "attempted a free throw",
+  rebounds: "grabbed a rebound",
+  assists: "assisted the shot",
+  steals: "stole the ball",
+  blocks: "blocked a shot",
+  turnovers: "turned the ball over",
+  personalFouls: "committed a foul",
+  cooked: "got cooked!",
+};
+
 const screenOptions = {
   stats: "stats",
   players: "players",
@@ -398,13 +414,13 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
         <h2 className="mt-4 text-center text-(--primary) text-2xl font-bold">
           Play By Play
         </h2>
-        <h4 className="text-center text-(--primary) font-bold">
-          {quarter.toUpperCase()}
-        </h4>
         <div className="max-h-75 overflow-y-scroll scrollbar-hide border-2 border-(--secondary) w-full my-4 rounded-lg px-3 pt-1 pb-4">
-          {game.playByPlay[quarter].map((play, index) => (
+          <h4 className="text-center text-(--primary) font-bold">
+            {quarter.toUpperCase()}
+          </h4>
+          {[...game.playByPlay[quarter]].reverse().map((play, index) => (
             <p key={index} className="my-1 py-1 border-b-1 border-(--primary)">
-              {play.playerName} - {play.stat}
+              {play.playerName} {statsMap[play.stat]}
             </p>
           ))}
         </div>
