@@ -23,11 +23,15 @@ const statsLegend = [
   { name: "CKD", value: "cooked" },
 ];
 
+const screenOptions = {
+  stats: "stats",
+  players: "players",
+  assists: "assists",
+};
+
 const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
   const [quarter, setQuarter] = useState("quarter1");
-  const [chooseStat, setChooseStat] = useState(true);
-  const [choosePlayer, setChoosePlayer] = useState(false);
-  const [chooseAssist, setChooseAssist] = useState(false);
+  const [screen, setScreen] = useState(screenOptions.stats);
   const [shotMaker, setShotMaker] = useState("");
   const [statSelected, setStatSelected] = useState("");
 
@@ -44,9 +48,8 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
   };
 
   const selectStat = (stat) => {
-    setChooseStat(false);
     setStatSelected(stat);
-    setChoosePlayer(true);
+    setScreen(screenOptions.players);
   };
 
   const selectAssister = (player) => {
@@ -54,11 +57,10 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
       statSelected === "twoPointsMade" ||
       statSelected === "threePointsMade"
     ) {
-      setChoosePlayer(false);
-      setChooseAssist(true);
+      setScreen(screenOptions.assists);
     } else {
-      setChoosePlayer(false);
       addStat(player);
+      setScreen(screenOptions.stats);
     }
   };
 
@@ -67,8 +69,6 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
     addStat(shotMaker, assister);
 
     setShotMaker("");
-    setChooseAssist(false);
-    setChooseStat(true);
   };
 
   // Add the stat recorded
@@ -166,7 +166,7 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
       playByPlay: updatedPlayByPlay,
       currentlyTracking: false,
     });
-    setChooseStat(true);
+    setScreen(screenOptions.stats);
   };
 
   // Remove the last stat recorded
@@ -293,7 +293,7 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
           </div>
         ))}
       </div>
-      {chooseStat && (
+      {screen === screenOptions.stats && (
         <>
           <h2 className="text-center my-2 text-lg">Choose a stat</h2>
           <div className="flex flex-row flex-wrap justify-center">
@@ -309,7 +309,7 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
           </div>
         </>
       )}
-      {choosePlayer && (
+      {screen === screenOptions.players && (
         <>
           <h2 className="text-center my-2 text-lg">Choose a player</h2>
           <div className="flex flex-row flex-wrap justify-center">
@@ -328,7 +328,7 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
           </div>
         </>
       )}
-      {chooseAssist && (
+      {screen === screenOptions.assists && (
         <>
           <h2 className="text-center my-2 text-lg">Who assisted?</h2>
           <div className="flex flex-row flex-wrap justify-center">
