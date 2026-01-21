@@ -63,45 +63,8 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
   };
 
   // If someone assisted the made shot, include their stat
-  const addAssist = (selectedPlayer) => {
-    addStat(shotMaker);
-
-    if (selectedPlayer) {
-      const teamStats = game.teamStats;
-
-      const updatedStats = game.players.map((player) => {
-        if (player.playerId === selectedPlayer.playerId) {
-          player.assists += 1;
-          teamStats.assists += 1;
-        }
-
-        return player;
-      });
-
-      const playByPlay = {
-        ...game.playByPlay,
-        [quarter]: [
-          ...game.playByPlay[quarter],
-          {
-            playerId: shotMaker.playerId,
-            playerName: shotMaker.name,
-            stat: statSelected,
-          },
-          {
-            playerId: selectedPlayer.playerId,
-            playerName: selectedPlayer.name,
-            stat: "assists",
-          },
-        ],
-      };
-
-      setGame({
-        ...game,
-        players: updatedStats,
-        teamStats: teamStats,
-        playByPlay: playByPlay,
-      });
-    }
+  const addAssist = (assister) => {
+    addStat(shotMaker, assister);
 
     setShotMaker("");
     setChooseAssist(false);
@@ -109,54 +72,69 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
   };
 
   // Add the stat recorded
-  const addStat = (selectedPlayer) => {
-    const teamStats = game.teamStats;
-
-    const updatedStats = game.players.map((player) => {
-      if (player.playerId === selectedPlayer.playerId) {
-        if (statSelected === "twoPointsMade") {
-          // Update the player's individual stats
-          player[statSelected] += 1;
-          player.twoPointsAttempted += 1;
-          player.points += 2;
-
-          // Update the team's stats
-          teamStats[statSelected] += 1;
-          teamStats.twoPointsAttempted += 1;
-          teamStats.points += 2;
-        } else if (statSelected === "threePointsMade") {
-          // Update the player's individual stats
-          player[statSelected] += 1;
-          player.threePointsAttempted += 1;
-          player.points += 3;
-
-          // Update the team's stats
-          teamStats[statSelected] += 1;
-          teamStats.threePointsAttempted += 1;
-          teamStats.points += 3;
-        } else if (statSelected === "freeThrowsMade") {
-          // Update the player's individual stats
-          player[statSelected] += 1;
-          player.freeThrowsAttempted += 1;
-          player.points += 1;
-
-          // Update the team's stats
-          teamStats[statSelected] += 1;
-          teamStats.freeThrowsAttempted += 1;
-          teamStats.points += 1;
-        } else {
-          // Update the player's individual stats
-          player[statSelected] += 1;
-
-          // Update the team's stats
-          teamStats[statSelected] += 1;
-        }
+  const addStat = (selectedPlayer, assister = null) => {
+    // Update the player's individual stats
+    const updatedPlayerStats = game.players.map((player) => {
+      if (assister && assister.playerId === player.playerId) {
+        return {
+          ...player,
+          assists: player.assists + 1,
+        };
+      } else if (player.playerId !== selectedPlayer.playerId) {
+        return player;
       }
 
-      return player;
+      switch (statSelected) {
+        case "twoPointsMade":
+          return {
+            ...player,
+            twoPointsMade: player.twoPointsMade + 1,
+            twoPointsAttempted: player.twoPointsAttempted + 1,
+            points: player.points + 2,
+          };
+        case "threePointsMade":
+          return {
+            ...player,
+            threePointsMade: player.threePointsMade + 1,
+            threePointsAttempted: player.threePointsAttempted + 1,
+            points: player.points + 3,
+          };
+        case "freeThrowsMade":
+          return {
+            ...player,
+            freeThrowsMade: player.freeThrowsMade + 1,
+            freeThrowsAttempted: player.freeThrowsAttempted + 1,
+            points: player.points + 1,
+          };
+        default:
+          return {
+            ...player,
+            [statSelected]: player[statSelected] + 1,
+          };
+      }
     });
 
-    const playByPlay = {
+    // Update the team's total stats
+    const updatedTeamStats = { ...game.teamStats };
+
+    switch (statSelected) {
+      case "twoPointsMade":
+        updatedTeamStats.twoPointsMade += 1;
+        updatedTeamStats.twoPointsAttempted += 1;
+        updatedTeamStats.points += 2;
+      case "threePointsMade":
+        updatedTeamStats.threePointsMade += 1;
+        updatedTeamStats.threePointsAttempted += 1;
+        updatedTeamStats.points += 3;
+      case "freeThrowsMade":
+        updatedTeamStats.freeThrowsMade += 1;
+        updatedTeamStats.freeThrowsAttempted += 1;
+        updatedTeamStats.points += 1;
+      default:
+        updatedTeamStats[statSelected] += 1;
+    }
+
+    const updatedPlayByPlay = {
       ...game.playByPlay,
       [quarter]: [
         ...game.playByPlay[quarter],
@@ -168,12 +146,24 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
       ],
     };
 
+    if (assister) {
+      updatedTeamStats.assists += 1;
+      updatedPlayByPlay[quarter] = [
+        ...updatedPlayByPlay[quarter],
+        {
+          playerId: assister.playerId,
+          playerName: assister.name,
+          stat: "assists",
+        },
+      ];
+    }
+
     setStatSelected("");
     setGame({
       ...game,
-      players: updatedStats,
-      teamStats: teamStats,
-      playByPlay: playByPlay,
+      players: updatedPlayerStats,
+      teamStats: updatedTeamStats,
+      playByPlay: updatedPlayByPlay,
       currentlyTracking: false,
     });
     setChooseStat(true);
@@ -188,56 +178,68 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
     }
 
     const lastStat = game.playByPlay[quarter][playByPlayLength - 1];
-    const teamStats = game.teamStats;
 
-    const updatedStats = game.players.map((player) => {
-      if (player.playerId === lastStat.playerId) {
-        if (lastStat.stat === "twoPointsMade") {
-          // Update the player's individual stats
-          player[lastStat.stat] -= 1;
-          player.twoPointsAttempted -= 1;
-          player.points -= 2;
-
-          // Update the team's stats
-          teamStats[lastStat.stat] -= 1;
-          teamStats.twoPointsAttempted -= 1;
-          teamStats.points -= 2;
-        } else if (lastStat.stat === "threePointsMade") {
-          // Update the player's individual stats
-          player[lastStat.stat] -= 1;
-          player.threePointsAttempted -= 1;
-          player.points -= 3;
-
-          // Update the team's stats
-          teamStats[lastStat.stat] -= 1;
-          teamStats.threePointsAttempted -= 1;
-          teamStats.points -= 3;
-        } else if (lastStat.stat === "freeThrowsMade") {
-          // Update the player's individual stats
-          player[lastStat.stat] -= 1;
-          player.freeThrowsAttempted -= 1;
-          player.points -= 1;
-
-          // Update the team's stats
-          teamStats[lastStat.stat] -= 1;
-          teamStats.freeThrowsAttempted -= 1;
-          teamStats.points -= 1;
-        } else {
-          // Update the player's individual stats
-          player[lastStat.stat] -= 1;
-
-          // Update the team's stats
-          teamStats[lastStat.stat] -= 1;
-        }
+    // Update the player's individual stats
+    const updatedPlayerStats = game.players.map((player) => {
+      if (player.playerId !== lastStat.playerId) {
+        return player;
       }
 
-      return player;
+      switch (lastStat.stat) {
+        case "twoPointsMade":
+          return {
+            ...player,
+            twoPointsMade: player.twoPointsMade - 1,
+            twoPointsAttempted: player.twoPointsAttempted - 1,
+            points: player.points - 2,
+          };
+        case "threePointsMade":
+          return {
+            ...player,
+            threePointsMade: player.threePointsMade - 1,
+            threePointsAttempted: player.threePointsAttempted - 1,
+            points: player.points - 3,
+          };
+        case "freeThrowsMade":
+          return {
+            ...player,
+            freeThrowsMade: player.freeThrowsMade - 1,
+            freeThrowsAttempted: player.freeThrowsAttempted - 1,
+            points: player.points - 1,
+          };
+        default:
+          return {
+            ...player,
+            [lastStat.stat]: player[lastStat.stat] - 1,
+          };
+      }
     });
 
+    // Update the team's total stats
+    const updatedTeamStats = { ...game.teamStats };
+
+    switch (lastStat.stat) {
+      case "twoPointsMade":
+        updatedTeamStats.twoPointsMade -= 1;
+        updatedTeamStats.twoPointsAttempted -= 1;
+        updatedTeamStats.points -= 2;
+      case "threePointsMade":
+        updatedTeamStats.threePointsMade -= 1;
+        updatedTeamStats.threePointsAttempted -= 1;
+        updatedTeamStats.points -= 3;
+      case "freeThrowsMade":
+        updatedTeamStats.freeThrowsMade -= 1;
+        updatedTeamStats.freeThrowsAttempted -= 1;
+        updatedTeamStats.points -= 1;
+      default:
+        updatedTeamStats[lastStat.stat] -= 1;
+    }
+
+    setStatSelected("");
     setGame({
       ...game,
-      players: updatedStats,
-      teamStats: teamStats,
+      players: updatedPlayerStats,
+      teamStats: updatedTeamStats,
       playByPlay: {
         ...game.playByPlay,
         [quarter]: game.playByPlay[quarter].slice(0, -1),
@@ -330,7 +332,12 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
         <>
           <h2 className="text-center my-2 text-lg">Who assisted?</h2>
           <div className="flex flex-row flex-wrap justify-center">
-            <div className={bubbleStyling} onClick={() => addAssist(null)}>
+            <div
+              className={bubbleStyling}
+              onClick={() => {
+                addAssist(null);
+              }}
+            >
               None
             </div>
             {game.players
@@ -339,7 +346,9 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
                 <div
                   key={player.playerId}
                   className={bubbleStyling}
-                  onClick={() => addAssist(player)}
+                  onClick={() => {
+                    addAssist(player);
+                  }}
                 >
                   {player.name}
                 </div>
