@@ -354,7 +354,7 @@ const StatsTracker = ({
       </div>
       {screen === screenOptions.stats && (
         <>
-          <h2 className="text-center my-2 text-lg">Choose a stat</h2>
+          <h2 className="text-center my-2 text-lg font-bold">Choose a stat</h2>
           <div className="flex flex-row flex-wrap justify-center">
             {statsLegend.map((stat, index) => (
               <div
@@ -370,7 +370,9 @@ const StatsTracker = ({
       )}
       {screen === screenOptions.players && (
         <>
-          <h2 className="text-center my-2 text-lg">Choose a player</h2>
+          <h2 className="text-center my-2 text-lg font-bold">
+            Which player {statsMap[statSelected]}?
+          </h2>
           <div className="flex flex-row flex-wrap justify-center">
             {game.players.map((player) => (
               <div
@@ -389,7 +391,9 @@ const StatsTracker = ({
       )}
       {screen === screenOptions.assists && (
         <>
-          <h2 className="text-center my-2 text-lg">Who assisted?</h2>
+          <h2 className="text-center my-2 text-lg font-bold">
+            Who assisted {shotMaker.name}?
+          </h2>
           <div className="flex flex-row flex-wrap justify-center">
             <div
               className={bubbleStyling}
