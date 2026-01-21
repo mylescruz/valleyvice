@@ -94,6 +94,7 @@ const StatsTrackerLayout = () => {
                 game={game}
                 setGame={setGame}
                 setScreen={setScreen}
+                postTrackedGame={postTrackedGame}
               />
             )}
             {screen !== "info" && (

@@ -7,7 +7,7 @@ const gameDetailsInput = "border-2 border-(--secondary) rounded-lg py-1 px-2";
 const buttonStyling =
   "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer disabled:cursor-auto disabled:bg-gray-500";
 
-const GameInfoForm = ({ info, game, setGame, setScreen }) => {
+const GameInfoForm = ({ info, game, setGame, setScreen, postTrackedGame }) => {
   const currentRoster = info.currentRoster
     .filter((player) => player.playerId !== "vvSubs")
     .map((player) => {
@@ -54,7 +54,7 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
   };
 
   // Update the selected players for the game
-  const completeGameInfo = (e) => {
+  const completeGameInfo = async (e) => {
     e.preventDefault();
 
     const updatedPlayers = game.players
@@ -79,7 +79,11 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
       })
       .sort((player1, player2) => player1.number - player2.number);
 
-    setGame({ ...game, players: updatedPlayers });
+    const updatedGame = { ...game, players: updatedPlayers };
+
+    setGame(updatedGame);
+
+    await postTrackedGame(updatedGame);
 
     setScreen("tracker");
   };
