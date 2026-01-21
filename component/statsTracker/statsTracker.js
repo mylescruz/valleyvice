@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatsTrackerTable from "./statsTrackerTable";
 import dateFormatter from "@/helpers/dateFormatter";
 import { useState } from "react";
+import ConfirmRestartModal from "./confirmRestartModal";
 
 const statsLegend = [
   { name: "2PM", value: "twoPointsMade" },
@@ -45,11 +46,29 @@ const screenOptions = {
   assists: "assists",
 };
 
-const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
+const quarterStyling =
+  "font-bold rounded-lg mx-2 px-2 py-1 bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer";
+const selectedQuarterStyling =
+  "font-bold rounded-lg mx-2 px-2 py-1 bg-(--primary) hover:bg-(--secondary) hover:cursor-pointer";
+const restartButtonStyling =
+  "font-bold rounded-lg mx-2 px-2 py-1 bg-gray-500 hover:bg-(--primary) hover:cursor-pointer";
+const endButtonStyling =
+  "font-bold rounded-lg mx-2 px-2 py-1 bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer";
+const bubbleStyling =
+  "border-2 border-(--secondary) w-[70px] aspect-square rounded-full flex flex-col items-center justify-center m-2 font-bold hover:bg-(--primary) hover:cursor-pointer";
+
+const StatsTracker = ({
+  game,
+  setGame,
+  postTrackedGame,
+  setCompleteModal,
+  deleteTrackedGame,
+}) => {
   const [quarter, setQuarter] = useState("quarter1");
   const [screen, setScreen] = useState(screenOptions.stats);
   const [shotMaker, setShotMaker] = useState("");
   const [statSelected, setStatSelected] = useState("");
+  const [restartModal, setRestartModal] = useState(false);
 
   const selectQuarter = (quarterIndex) => {
     if (quarterIndex === 0) {
@@ -275,19 +294,14 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
     await postTrackedGame({ ...game, currentlyTracking: true });
   };
 
+  const confirmRestart = () => {
+    setRestartModal(true);
+  };
+
   const completeGame = () => {
     setGame({ ...game, valleyViceScore: game.teamStats.points });
     setCompleteModal(true);
   };
-
-  const quarterStyling =
-    "font-bold rounded-lg mx-2 px-2 py-1 bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer";
-  const selectedQuarterStyling =
-    "font-bold rounded-lg mx-2 px-2 py-1 bg-(--primary) hover:bg-(--secondary) hover:cursor-pointer";
-  const buttonStyling =
-    "font-bold rounded-lg mx-2 px-2 py-1 bg-(--secondary) hover:bg-(--primary) hover:cursor-pointer";
-  const bubbleStyling =
-    "border-2 border-(--secondary) w-[70px] aspect-square rounded-full flex flex-col items-center justify-center m-2 font-bold hover:bg-(--primary) hover:cursor-pointer";
 
   return (
     <>
@@ -426,11 +440,21 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
         </div>
       </div>
 
-      <div className="flex flex-col items-end">
-        <button className={buttonStyling} onClick={completeGame}>
-          Game Over
+      <div className="flex flex-row justify-between">
+        <button className={restartButtonStyling} onClick={confirmRestart}>
+          Start Over
+        </button>
+        <button className={endButtonStyling} onClick={completeGame}>
+          Finish Game
         </button>
       </div>
+
+      {restartModal && (
+        <ConfirmRestartModal
+          setRestartModal={setRestartModal}
+          deleteTrackedGame={deleteTrackedGame}
+        />
+      )}
     </>
   );
 };

@@ -104,6 +104,7 @@ const StatsTrackerLayout = () => {
                 postTrackedGame={postTrackedGame}
                 setScreen={setScreen}
                 setCompleteModal={setCompleteModal}
+                deleteTrackedGame={deleteTrackedGame}
               />
             )}
           </div>
