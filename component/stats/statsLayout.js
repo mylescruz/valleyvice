@@ -1,27 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import TotalsTable from "./totalsTable";
 import AverageTable from "./averageTable";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
 import useInfo from "@/hooks/useInfo";
+import useSeasonStats from "@/hooks/useSeasonStats";
 
-const StatsLayout = () => {
-  const { info, infoLoading } = useInfo();
-  const [seasonNumber, setSeasonNumber] = useState(null);
+const InnerStatsLayout = ({ info }) => {
+  const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
 
-  useEffect(() => {
-    if (!infoLoading && info) {
-      setSeasonNumber(info.currentSeason);
-    }
-  }, [info, infoLoading]);
+  const { seasonStats, seasonStatsLoading } = useSeasonStats(seasonNumber);
 
   const selectSeason = (e) => {
     setSeasonNumber(e.target.value);
   };
 
-  if (infoLoading && !info && !seasonNumber) {
+  if (seasonStatsLoading) {
     return <LoadingIndicator />;
-  } else if (info && seasonNumber) {
+  } else if (!seasonStats) {
+    return <ErrorLayout />;
+  } else {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
@@ -41,13 +39,23 @@ const StatsLayout = () => {
             </select>
           </div>
 
-          <TotalsTable seasonNumber={seasonNumber} />
-          <AverageTable seasonNumber={seasonNumber} />
+          <TotalsTable seasonStats={seasonStats} />
+          <AverageTable seasonStats={seasonStats} />
         </div>
       </div>
     );
-  } else {
+  }
+};
+
+const StatsLayout = () => {
+  const { info, infoLoading } = useInfo();
+
+  if (infoLoading) {
+    return <LoadingIndicator />;
+  } else if (!info) {
     return <ErrorLayout />;
+  } else {
+    return <InnerStatsLayout info={info} />;
   }
 };
 
