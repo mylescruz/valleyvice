@@ -7,7 +7,7 @@ import { useState } from "react";
 import Logo from "./logo";
 
 const linkStyling =
-  "mx-2 md:mx-6 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10";
+  "mx-2 sm:mx-4 font-bold text-lg lg:text-xl hover:text-[var(--secondary)] lg:mx-10";
 const mobileLinkStyling = "mx-4 my-1 font-bold text-lg";
 
 const Header = () => {
@@ -22,7 +22,7 @@ const Header = () => {
     { name: "Roster", link: "/roster", adminPage: false },
     { name: "Analytics", link: "/analytics", adminPage: false },
     { name: "Tracker", link: "/tracker", adminPage: true },
-    { name: "Team Info", link: "/info", adminPage: true },
+    { name: "Team", link: "/info", adminPage: true },
   ];
 
   const userSignOut = async () => {
@@ -63,13 +63,13 @@ const Header = () => {
           </div>
           <div className="flex-1"></div>
         </div>
-        <div className="hidden sm:flex sm:w-full sm:items-center">
+        <div className="hidden sm:flex sm:w-full sm:flex-row sm:items-center">
           <div className="m-4">
             <Link href="/">
               <Logo />
             </Link>
           </div>
-          <div className="">
+          <div className="flex flex-row w-50">
             {pages.map((page, index) =>
               session ? (
                 <Link key={index} href={page.link} className={linkStyling}>
