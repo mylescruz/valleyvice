@@ -5,7 +5,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import StatsTrackerTable from "./statsTrackerTable";
 import dateFormatter from "@/helpers/dateFormatter";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ConfirmRestartModal from "./confirmRestartModal";
 
 const statsLegend = [
@@ -69,6 +69,26 @@ const StatsTracker = ({
   const [shotMaker, setShotMaker] = useState("");
   const [statSelected, setStatSelected] = useState("");
   const [restartModal, setRestartModal] = useState(false);
+  const [gameSaved, setGameSaved] = useState(false);
+  const savingGameRef = useRef(false);
+
+  useEffect(() => {
+    if (!game || savingGameRef.current) {
+      return;
+    }
+
+    const timeout = setTimeout(async () => {
+      savingGameRef.current = true;
+      try {
+        await postTrackedGame(game);
+      } finally {
+        savingGameRef.current = false;
+        setGameSaved(true);
+      }
+    }, 5000);
+
+    return () => clearTimeout(timeout);
+  }, [game, postTrackedGame]);
 
   const selectQuarter = (quarterIndex) => {
     if (quarterIndex === 0) {
@@ -204,6 +224,7 @@ const StatsTracker = ({
       playByPlay: updatedPlayByPlay,
       currentlyTracking: false,
     });
+    setGameSaved(false);
     setScreen(screenOptions.stats);
   };
 
@@ -287,11 +308,13 @@ const StatsTracker = ({
       },
       currentlyTracking: false,
     });
+    setGameSaved(false);
   };
 
   const saveGame = async () => {
     setGame({ ...game, currentlyTracking: true });
     await postTrackedGame({ ...game, currentlyTracking: true });
+    setGameSaved(true);
   };
 
   const confirmRestart = () => {
@@ -409,11 +432,11 @@ const StatsTracker = ({
               onClick={undoStat}
             />
             <div className="flex flex-row">
-              {game.currentlyTracking && <p className="text-sm mr-4">Saved</p>}
+              {gameSaved && <p className="text-sm mr-4">Saved</p>}
               <FontAwesomeIcon
                 icon={faFloppyDisk}
                 className={`${
-                  game.currentlyTracking
+                  gameSaved
                     ? "text-gray-500"
                     : "text-lg hover:text-(--primary) hover:cursor-pointer"
                 }`}
