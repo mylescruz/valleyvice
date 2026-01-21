@@ -337,20 +337,25 @@ const StatsTracker = ({
           {dateFormatter(game.date)} at {game.location}
         </p>
       </div>
-      <div className="flex flex-row justify-center my-4">
-        {Array.from({ length: 4 }, (_, index) => (
-          <div
-            key={index}
-            className={
-              quarter === `quarter${index + 1}`
-                ? selectedQuarterStyling
-                : quarterStyling
-            }
-            onClick={() => selectQuarter(index)}
-          >
-            Q{index + 1}
-          </div>
-        ))}
+      <div className="my-4">
+        <h1 className="font-bold text-center my-2">
+          Choose which quarter the game is in
+        </h1>
+        <div className="flex flex-row justify-center">
+          {Array.from({ length: 4 }, (_, index) => (
+            <div
+              key={index}
+              className={
+                quarter === `quarter${index + 1}`
+                  ? selectedQuarterStyling
+                  : quarterStyling
+              }
+              onClick={() => selectQuarter(index)}
+            >
+              Q{index + 1}
+            </div>
+          ))}
+        </div>
       </div>
       {screen === screenOptions.stats && (
         <>
