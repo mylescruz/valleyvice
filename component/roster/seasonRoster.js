@@ -7,9 +7,11 @@ import ErrorLayout from "../layout/errorLayout";
 const SeasonRoster = ({ seasonNumber }) => {
   const { roster, rosterLoading } = useRoster(seasonNumber);
 
-  if (rosterLoading && !roster) {
+  if (rosterLoading) {
     return <LoadingIndicator />;
-  } else if (roster) {
+  } else if (!roster) {
+    <ErrorLayout />;
+  } else {
     return (
       <div className="flex flex-col items-center">
         <h1 className="text-3xl text-(--primary) text-center font-bold mb-4">
@@ -47,12 +49,10 @@ const SeasonRoster = ({ seasonNumber }) => {
                   </div>
                 </div>
               </Link>
-            )
+            ),
         )}
       </div>
     );
-  } else {
-    return <ErrorLayout />;
   }
 };
 
