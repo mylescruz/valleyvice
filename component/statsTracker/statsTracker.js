@@ -122,14 +122,17 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
         updatedTeamStats.twoPointsMade += 1;
         updatedTeamStats.twoPointsAttempted += 1;
         updatedTeamStats.points += 2;
+        break;
       case "threePointsMade":
         updatedTeamStats.threePointsMade += 1;
         updatedTeamStats.threePointsAttempted += 1;
         updatedTeamStats.points += 3;
+        break;
       case "freeThrowsMade":
         updatedTeamStats.freeThrowsMade += 1;
         updatedTeamStats.freeThrowsAttempted += 1;
         updatedTeamStats.points += 1;
+        break;
       default:
         updatedTeamStats[statSelected] += 1;
     }
@@ -223,14 +226,17 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
         updatedTeamStats.twoPointsMade -= 1;
         updatedTeamStats.twoPointsAttempted -= 1;
         updatedTeamStats.points -= 2;
+        break;
       case "threePointsMade":
         updatedTeamStats.threePointsMade -= 1;
         updatedTeamStats.threePointsAttempted -= 1;
         updatedTeamStats.points -= 3;
+        break;
       case "freeThrowsMade":
         updatedTeamStats.freeThrowsMade -= 1;
         updatedTeamStats.freeThrowsAttempted -= 1;
         updatedTeamStats.points -= 1;
+        break;
       default:
         updatedTeamStats[lastStat.stat] -= 1;
     }
