@@ -3,12 +3,15 @@ import LoadingIndicator from "../layout/loadingIndicator";
 import OpponentsChart from "./opponentsChart";
 import TotalLeadersChart from "./totalLeadersChart";
 import AverageLeadersChart from "./averageLeadersChart";
+import ErrorLayout from "../layout/errorLayout";
 
 const AnalyticsLayout = () => {
   const { analytics, analyticsLoading } = useAnalytics();
 
-  if (analyticsLoading && !analytics) {
+  if (analyticsLoading) {
     return <LoadingIndicator />;
+  } else if (!analytics) {
+    return <ErrorLayout />;
   } else {
     return (
       <div className="flex flex-col items-center">
