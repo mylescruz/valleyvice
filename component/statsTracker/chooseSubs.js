@@ -16,13 +16,15 @@ const ChooseSubs = ({
         );
       })
       .filter((sub) => {
-        return !availablePlayers.some((playerId) => playerId === sub.playerId);
+        return !availablePlayers.some(
+          (player) => player.playerId === sub.playerId,
+        );
       })
       .filter((sub) => {
         return !game.players.some((player) => player.playerId === sub.playerId);
       })
       .filter((sub) => sub.playerId !== "vvSubs");
-  }, [info, game, availablePlayers]);
+  }, [info.allPlayers, info.currentRoster, game.players, availablePlayers]);
   const [chosenSubs, setChosenSubs] = useState([]);
 
   // Add or remove a sub from the chosen subs for the game
