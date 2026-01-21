@@ -17,7 +17,9 @@ const PlayerLayout = ({ playerId }) => {
 
   if (playerLoading) {
     return <LoadingIndicator />;
-  } else if (player) {
+  } else if (!player) {
+    return <ErrorLayout />;
+  } else {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
@@ -88,8 +90,6 @@ const PlayerLayout = ({ playerId }) => {
         </div>
       </div>
     );
-  } else {
-    return <ErrorLayout />;
   }
 };
 
