@@ -12,9 +12,11 @@ const TOTAL_CELLS_STYLE = "w-1/19 p-1 text-center";
 const GameLayout = ({ seasonNumber, gameNumber }) => {
   const { game, gameLoading } = useGame(seasonNumber, gameNumber);
 
-  if (gameLoading && !game) {
+  if (gameLoading) {
     return <LoadingIndicator />;
-  } else if (game) {
+  } else if (!game) {
+    return <ErrorLayout />;
+  } else {
     return (
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
@@ -80,7 +82,7 @@ const GameLayout = ({ seasonNumber, gameNumber }) => {
                             {value}
                             {key.includes("Percentage") && "%"}
                           </td>
-                        )
+                        ),
                     )}
                   </tr>
                 ))}
@@ -141,8 +143,6 @@ const GameLayout = ({ seasonNumber, gameNumber }) => {
         {game.playByPlay && <PlayByPlay playByPlay={game.playByPlay} />}
       </div>
     );
-  } else {
-    return <ErrorLayout />;
   }
 };
 
