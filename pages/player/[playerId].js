@@ -1,5 +1,5 @@
 import LoadingIndicator from "@/component/layout/loadingIndicator";
-import PlayerLayout from "@/component/roster/playerLayout";
+import PlayerLayout from "@/component/player/playerLayout";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
