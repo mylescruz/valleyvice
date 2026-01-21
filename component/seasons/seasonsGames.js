@@ -9,9 +9,11 @@ import ErrorLayout from "../layout/errorLayout";
 const SeasonsGames = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
 
-  if (seasonLoading && !season) {
+  if (seasonLoading) {
     return <LoadingIndicator />;
-  } else if (season) {
+  } else if (!season) {
+    return <ErrorLayout />;
+  } else {
     return (
       <>
         <div className="text-center my-4">
@@ -74,8 +76,6 @@ const SeasonsGames = ({ seasonNumber }) => {
         </div>
       </>
     );
-  } else {
-    return <ErrorLayout />;
   }
 };
 
