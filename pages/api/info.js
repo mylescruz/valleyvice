@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       // Get the details of the current season
       const seasonNumber = currentSeason.seasonNumber;
       const roster = currentSeason.roster.sort(
-        (player1, player2) => player1.number - player2.number
+        (player1, player2) => player1.number - player2.number,
       );
 
       // Get all former players

@@ -4,7 +4,6 @@ import CompleteGame from "./completeGame";
 import GameInfoForm from "./gameInfoForm";
 import useTrackedGame from "@/hooks/useTrackedGame";
 import StatsTracker from "./statsTracker";
-import ErrorLayout from "../layout/errorLayout";
 import useInfo from "@/hooks/useInfo";
 
 const emptyGame = {
@@ -57,7 +56,11 @@ const StatsTrackerLayout = () => {
 
   // Set the tracked game to the previous tracked game or an empty game
   useEffect(() => {
-    if (!trackedGameLoading && trackedGame && !infoLoading && info) {
+    if (!info) {
+      return;
+    }
+
+    if (trackedGame) {
       setGame(trackedGame);
       setEnterGameInfo(false);
     } else {
@@ -68,11 +71,19 @@ const StatsTrackerLayout = () => {
       });
       setEnterGameInfo(true);
     }
-  }, [trackedGame, trackedGameLoading, infoLoading, info]);
+  }, [trackedGame, info]);
 
-  if (trackedGameLoading && infoLoading) {
+  if (trackedGameLoading || infoLoading) {
     return <LoadingIndicator />;
-  } else if (info) {
+  } else if (!info) {
+    return (
+      <div className="text-center">
+        <p className="text-red-600 font-bold">
+          Error loading the tracker! Please try again later!
+        </p>
+      </div>
+    );
+  } else {
     return (
       <>
         <div className="flex flex-col items-center mt-4">
@@ -108,8 +119,6 @@ const StatsTrackerLayout = () => {
         )}
       </>
     );
-  } else {
-    return <ErrorLayout />;
   }
 };
 
