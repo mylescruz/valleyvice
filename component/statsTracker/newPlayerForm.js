@@ -5,7 +5,7 @@ const NewPlayerForm = ({
   setGame,
   availablePlayers,
   setAvailablePlayers,
-  closeEnterNewPlayer,
+  setSubsModal,
 }) => {
   const [newPlayer, setNewPlayer] = useState({
     playerId: "",
@@ -33,7 +33,7 @@ const NewPlayerForm = ({
       players: [...game.players, { ...newPlayer, playerId: newPlayerId }],
     });
 
-    closeEnterNewPlayer();
+    setSubsModal("none");
   };
 
   const gameDetailsInputGroup = "flex flex-col my-1.5";
@@ -73,7 +73,7 @@ const NewPlayerForm = ({
           <div className="flex flex-row justify-end mt-4">
             <button
               className={`${buttonStyling} bg-gray-500`}
-              onClick={closeEnterNewPlayer}
+              onClick={() => setSubsModal("none")}
             >
               Cancel
             </button>

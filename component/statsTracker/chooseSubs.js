@@ -6,7 +6,7 @@ const ChooseSubs = ({
   setGame,
   availablePlayers,
   setAvailablePlayers,
-  closeChooseSubs,
+  setSubsModal,
 }) => {
   const availableSubs = useMemo(() => {
     return info.allPlayers
@@ -46,7 +46,7 @@ const ChooseSubs = ({
       players: [...game.players, ...chosenSubs],
     });
 
-    closeChooseSubs();
+    setSubsModal("none");
   };
 
   const buttonStyling =
@@ -78,7 +78,7 @@ const ChooseSubs = ({
           <div className="flex flex-row justify-end mt-4">
             <button
               className={`${buttonStyling} bg-gray-500`}
-              onClick={closeChooseSubs}
+              onClick={() => setSubsModal("none")}
             >
               Cancel
             </button>

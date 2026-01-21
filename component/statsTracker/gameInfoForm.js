@@ -20,8 +20,7 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
     .sort((player1, player2) => player1.number - player2.number);
 
   const [availablePlayers, setAvailablePlayers] = useState(currentRoster);
-  const [chooseSubs, setChooseSubs] = useState(false);
-  const [inputPlayer, setInputPlayer] = useState(false);
+  const [subsModal, setSubsModal] = useState("none");
 
   const handleInput = (e) => {
     setGame({ ...game, [e.target.id]: e.target.value });
@@ -83,22 +82,6 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
     setGame({ ...game, players: updatedPlayers });
 
     setScreen("tracker");
-  };
-
-  const enterNewPlayer = () => {
-    setInputPlayer(true);
-  };
-
-  const closeEnterNewPlayer = () => {
-    setInputPlayer(false);
-  };
-
-  const enterSubstitute = () => {
-    setChooseSubs(true);
-  };
-
-  const closeChooseSubs = () => {
-    setChooseSubs(false);
   };
 
   return (
@@ -190,13 +173,13 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
             <div className="flex flex-row justify-between">
               <div
                 className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                onClick={enterSubstitute}
+                onClick={() => setSubsModal("subs")}
               >
                 Subs
               </div>
               <div
                 className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
-                onClick={enterNewPlayer}
+                onClick={() => setSubsModal("new")}
               >
                 New
               </div>
@@ -214,23 +197,23 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
         </div>
       </form>
 
-      {chooseSubs && (
+      {subsModal === "subs" && (
         <ChooseSubs
           info={info}
           game={game}
           setGame={setGame}
           availablePlayers={availablePlayers}
           setAvailablePlayers={setAvailablePlayers}
-          closeChooseSubs={closeChooseSubs}
+          setSubsModal={setSubsModal}
         />
       )}
-      {inputPlayer && (
+      {subsModal === "new" && (
         <NewPlayerForm
           game={game}
           setGame={setGame}
           availablePlayers={availablePlayers}
           setAvailablePlayers={setAvailablePlayers}
-          closeEnterNewPlayer={closeEnterNewPlayer}
+          setSubsModal={setSubsModal}
         />
       )}
     </div>
