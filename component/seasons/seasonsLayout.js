@@ -1,8 +1,8 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import SeasonsGames from "./seasonsGames";
-import { InfoContext } from "@/contexts/InfoContext";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
+import useInfo from "@/hooks/useInfo";
 
 const InnerSeasonsLayout = ({ info }) => {
   const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
@@ -37,7 +37,7 @@ const InnerSeasonsLayout = ({ info }) => {
 };
 
 const SeasonsLayout = () => {
-  const { info, infoLoading } = useContext(InfoContext);
+  const { info, infoLoading } = useInfo();
 
   if (infoLoading) {
     return <LoadingIndicator />;

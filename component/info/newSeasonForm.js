@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
-import { InfoContext } from "@/contexts/InfoContext";
 import LoadingIndicator from "../layout/loadingIndicator";
 import useSeason from "@/hooks/useSeason";
 
@@ -12,13 +11,12 @@ const buttonStyling =
   "font-bold rounded-lg ml-4 px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
 
 const NewSeasonForm = ({
+  info,
   newSeason,
   setNewSeason,
   emptySeason,
   setInputNewSeason,
 }) => {
-  const { info } = useContext(InfoContext);
-
   const { postSeason } = useSeason(info.currentSeason);
 
   const [inputPlayer, setInputPlayer] = useState(false);

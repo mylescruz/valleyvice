@@ -1,8 +1,8 @@
 import LoadingIndicator from "../layout/loadingIndicator";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import SeasonRoster from "./seasonRoster";
-import { InfoContext } from "@/contexts/InfoContext";
 import ErrorLayout from "../layout/errorLayout";
+import useInfo from "@/hooks/useInfo";
 
 const InnerRosterLayout = ({ info }) => {
   const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
@@ -37,7 +37,7 @@ const InnerRosterLayout = ({ info }) => {
 };
 
 const RosterLayout = () => {
-  const { info, infoLoading } = useContext(InfoContext);
+  const { info, infoLoading } = useInfo();
 
   if (infoLoading) {
     return <LoadingIndicator />;

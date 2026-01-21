@@ -1,11 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import LoadingIndicator from "../layout/loadingIndicator";
 import CompleteGame from "./completeGame";
 import GameInfoForm from "./gameInfoForm";
-import { InfoContext } from "@/contexts/InfoContext";
 import useTrackedGame from "@/hooks/useTrackedGame";
 import StatsTracker from "./statsTracker";
 import ErrorLayout from "../layout/errorLayout";
+import useInfo from "@/hooks/useInfo";
 
 const emptyGame = {
   seasonNumber: "",
@@ -43,7 +43,7 @@ const emptyGame = {
 };
 
 const StatsTrackerLayout = () => {
-  const { info, infoLoading } = useContext(InfoContext);
+  const { info, infoLoading } = useInfo();
   const {
     trackedGame,
     trackedGameLoading,
@@ -79,6 +79,8 @@ const StatsTrackerLayout = () => {
           <div className="w-11/12 sm:w-4/5">
             {enterGameInfo ? (
               <GameInfoForm
+                info={info}
+                infoLoading={infoLoading}
                 game={game}
                 setGame={setGame}
                 setEnterGameInfo={setEnterGameInfo}

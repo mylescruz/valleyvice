@@ -1,7 +1,7 @@
-import { InfoContext } from "@/contexts/InfoContext";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import LoadingIndicator from "../layout/loadingIndicator";
 import NewSeasonForm from "./newSeasonForm";
+import useInfo from "@/hooks/useInfo";
 
 const buttonStyling =
   "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
@@ -26,7 +26,7 @@ const emptySeason = {
 };
 
 const InfoLayout = () => {
-  const { info, infoLoading } = useContext(InfoContext);
+  const { info, infoLoading } = useInfo();
 
   const [inputNewSeason, setInputNewSeason] = useState(false);
   const [newSeason, setNewSeason] = useState(emptySeason);
@@ -92,6 +92,7 @@ const InfoLayout = () => {
 
         {inputNewSeason && (
           <NewSeasonForm
+            info={info}
             newSeason={newSeason}
             setNewSeason={setNewSeason}
             emptySeason={emptySeason}

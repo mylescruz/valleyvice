@@ -1,10 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
-import { InfoContext } from "@/contexts/InfoContext";
 import ChooseSubs from "./chooseSubs";
 
-const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
-  const { info, infoLoading } = useContext(InfoContext);
+const GameInfoForm = ({
+  info,
+  infoLoading,
+  game,
+  setGame,
+  setEnterGameInfo,
+}) => {
   const [availablePlayers, setAvailablePlayers] = useState([]);
   const [chooseSubs, setChooseSubs] = useState(false);
   const [inputPlayer, setInputPlayer] = useState(false);
@@ -46,13 +50,13 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
     // Add the selected player to the game's roster if they're not already there
     if (!game.players.some((player) => player.playerId === playerId)) {
       const addedPlayer = availablePlayers.find(
-        (player) => player.playerId === playerId
+        (player) => player.playerId === playerId,
       );
       setGame({ ...game, players: [...game.players, addedPlayer] });
     } else {
       // Remove the player from the game roster if they are already there
       const updatedPlayers = game.players.filter(
-        (player) => player.playerId !== playerId
+        (player) => player.playerId !== playerId,
       );
       setGame({ ...game, players: updatedPlayers });
     }
@@ -218,6 +222,8 @@ const GameInfoForm = ({ game, setGame, setEnterGameInfo }) => {
 
       {chooseSubs && (
         <ChooseSubs
+          info={info}
+          infoLoading={infoLoading}
           game={game}
           setGame={setGame}
           availablePlayers={availablePlayers}

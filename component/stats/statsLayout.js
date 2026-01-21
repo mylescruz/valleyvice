@@ -1,12 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TotalsTable from "./totalsTable";
 import AverageTable from "./averageTable";
-import { InfoContext } from "@/contexts/InfoContext";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
+import useInfo from "@/hooks/useInfo";
 
 const StatsLayout = () => {
-  const { info, infoLoading } = useContext(InfoContext);
+  const { info, infoLoading } = useInfo();
   const [seasonNumber, setSeasonNumber] = useState(null);
 
   useEffect(() => {

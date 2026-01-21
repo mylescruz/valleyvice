@@ -1,14 +1,14 @@
-import { InfoContext } from "@/contexts/InfoContext";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const ChooseSubs = ({
+  info,
+  infoLoading,
   game,
   setGame,
   availablePlayers,
   setAvailablePlayers,
   closeChooseSubs,
 }) => {
-  const { info, infoLoading } = useContext(InfoContext);
   const [availableSubs, setAvailableSubs] = useState([]);
   const [chosenSubs, setChosenSubs] = useState([]);
 
@@ -18,17 +18,17 @@ const ChooseSubs = ({
       const subs = info.allPlayers
         .filter((sub) => {
           return !info.currentRoster.some(
-            (player) => player.playerId === sub.playerId
+            (player) => player.playerId === sub.playerId,
           );
         })
         .filter((sub) => {
           return !availablePlayers.some(
-            (playerId) => playerId === sub.playerId
+            (playerId) => playerId === sub.playerId,
           );
         })
         .filter((sub) => {
           return !game.players.some(
-            (player) => player.playerId === sub.playerId
+            (player) => player.playerId === sub.playerId,
           );
         })
         .filter((sub) => sub.playerId !== "vvSubs");
