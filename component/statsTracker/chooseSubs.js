@@ -71,7 +71,7 @@ const ChooseSubs = ({
                   manageSubs(player.playerId);
                 }}
               >
-                {player.name}
+                <p className="text-center">{player.name}</p>
               </div>
             ))}
           </div>

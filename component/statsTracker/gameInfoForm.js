@@ -2,6 +2,11 @@ import { useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
 import ChooseSubs from "./chooseSubs";
 
+const gameDetailsInputGroup = "flex flex-col my-1.5 mx-2";
+const gameDetailsInput = "border-2 border-(--secondary) rounded-lg py-1 px-2";
+const buttonStyling =
+  "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer disabled:cursor-auto disabled:bg-gray-500";
+
 const GameInfoForm = ({ info, game, setGame, setScreen }) => {
   const currentRoster = info.currentRoster
     .filter((player) => player.playerId !== "vvSubs")
@@ -96,11 +101,6 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
     setChooseSubs(false);
   };
 
-  const gameDetailsInputGroup = "flex flex-col my-1.5 mx-2";
-  const gameDetailsInput = "border-2 border-(--secondary) rounded-lg py-1 px-2";
-  const buttonStyling =
-    "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer";
-
   return (
     <div className="flex flex-col items-center">
       <h1 className="text-3xl font-bold text-(--primary) text-center">
@@ -169,7 +169,7 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
             </div>
           </div>
           <div className="flex flex-col items-center mt-1.5">
-            <p>Who played this game?</p>
+            <p>Choose the players for this game</p>
             <div className="flex flex-row flex-wrap justify-center lg:w-3/4 xl:w-4/5">
               {availablePlayers.map((player) => (
                 <div
@@ -185,24 +185,31 @@ const GameInfoForm = ({ info, game, setGame, setScreen }) => {
                   {player.name}
                 </div>
               ))}
+            </div>
+            <p>Choose from old subs or add a new one</p>
+            <div className="flex flex-row justify-between">
               <div
                 className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
                 onClick={enterSubstitute}
               >
-                Subs?
+                Subs
               </div>
               <div
                 className="border-2 border-(--secondary) w-[65px] aspect-square rounded-full flex flex-col items-center justify-center m-2 hover:bg-(--primary) hover:cursor-pointer hover:font-bold"
                 onClick={enterNewPlayer}
               >
-                New?
+                New
               </div>
             </div>
           </div>
         </div>
         <div className="mt-2 text-center">
-          <button type="submit" className={buttonStyling}>
-            Enter
+          <button
+            type="submit"
+            className={buttonStyling}
+            disabled={game.players.length < 4}
+          >
+            Start Game
           </button>
         </div>
       </form>
