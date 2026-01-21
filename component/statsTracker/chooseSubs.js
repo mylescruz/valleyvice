@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const ChooseSubs = ({
   info,
@@ -8,33 +8,22 @@ const ChooseSubs = ({
   setAvailablePlayers,
   closeChooseSubs,
 }) => {
-  const [availableSubs, setAvailableSubs] = useState([]);
-  const [chosenSubs, setChosenSubs] = useState([]);
-
-  // Set the subs to the players not currently on the roster or already selected to play in this game
-  useEffect(() => {
-    if (info) {
-      const subs = info.allPlayers
-        .filter((sub) => {
-          return !info.currentRoster.some(
-            (player) => player.playerId === sub.playerId,
-          );
-        })
-        .filter((sub) => {
-          return !availablePlayers.some(
-            (playerId) => playerId === sub.playerId,
-          );
-        })
-        .filter((sub) => {
-          return !game.players.some(
-            (player) => player.playerId === sub.playerId,
-          );
-        })
-        .filter((sub) => sub.playerId !== "vvSubs");
-
-      setAvailableSubs(subs);
-    }
+  const availableSubs = useMemo(() => {
+    return info.allPlayers
+      .filter((sub) => {
+        return !info.currentRoster.some(
+          (player) => player.playerId === sub.playerId,
+        );
+      })
+      .filter((sub) => {
+        return !availablePlayers.some((playerId) => playerId === sub.playerId);
+      })
+      .filter((sub) => {
+        return !game.players.some((player) => player.playerId === sub.playerId);
+      })
+      .filter((sub) => sub.playerId !== "vvSubs");
   }, [info, game, availablePlayers]);
+  const [chosenSubs, setChosenSubs] = useState([]);
 
   // Add or remove a sub from the chosen subs for the game
   const manageSubs = (playerId) => {
