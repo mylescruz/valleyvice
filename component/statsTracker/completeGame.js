@@ -10,8 +10,8 @@ const CompleteGame = ({
   game,
   setGame,
   emptyGame,
-  setGameFinished,
-  setEnterGameInfo,
+  setScreen,
+  setCompleteModal,
   deleteTrackedGame,
 }) => {
   const { postGame } = useGames();
@@ -27,7 +27,7 @@ const CompleteGame = ({
   };
 
   const closeComplete = () => {
-    setGameFinished(false);
+    setCompleteModal(false);
   };
 
   const submitGame = async () => {
@@ -41,7 +41,7 @@ const CompleteGame = ({
       setGame(emptyGame);
 
       closeComplete();
-      setEnterGameInfo(true);
+      setScreen("info");
       window.alert("Game stats saved!");
     } catch (error) {
       window.alert("Error saving game stats. Check console.");

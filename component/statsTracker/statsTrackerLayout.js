@@ -51,8 +51,8 @@ const StatsTrackerLayout = () => {
   } = useTrackedGame();
 
   const [game, setGame] = useState(emptyGame);
-  const [enterGameInfo, setEnterGameInfo] = useState(false);
-  const [gameFinished, setGameFinished] = useState(false);
+  const [screen, setScreen] = useState("info");
+  const [completeModal, setCompleteModal] = useState(false);
 
   // Set the tracked game to the previous tracked game or an empty game
   useEffect(() => {
@@ -62,14 +62,14 @@ const StatsTrackerLayout = () => {
 
     if (trackedGame) {
       setGame(trackedGame);
-      setEnterGameInfo(false);
+      setScreen("tracker");
     } else {
       setGame({
         ...emptyGame,
         seasonNumber: info.currentSeason,
         gameNumber: info.lastGameNumberPlayed + 1,
       });
-      setEnterGameInfo(true);
+      setScreen("info");
     }
   }, [trackedGame, info]);
 
@@ -88,32 +88,34 @@ const StatsTrackerLayout = () => {
       <>
         <div className="flex flex-col items-center mt-4">
           <div className="w-11/12 sm:w-4/5">
-            {enterGameInfo ? (
+            {screen === "info" && (
               <GameInfoForm
                 info={info}
                 infoLoading={infoLoading}
                 game={game}
                 setGame={setGame}
-                setEnterGameInfo={setEnterGameInfo}
+                setScreen={setScreen}
               />
-            ) : (
+            )}
+            {screen !== "info" && (
               <StatsTracker
                 game={game}
                 setGame={setGame}
                 postTrackedGame={postTrackedGame}
-                setGameFinished={setGameFinished}
+                setScreen={setScreen}
+                setCompleteModal={setCompleteModal}
               />
             )}
           </div>
         </div>
 
-        {gameFinished && (
+        {completeModal && (
           <CompleteGame
             game={game}
             setGame={setGame}
             emptyGame={emptyGame}
-            setGameFinished={setGameFinished}
-            setEnterGameInfo={setEnterGameInfo}
+            setScreen={setScreen}
+            setCompleteModal={setCompleteModal}
             deleteTrackedGame={deleteTrackedGame}
           />
         )}

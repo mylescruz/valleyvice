@@ -23,7 +23,7 @@ const statsLegend = [
   { name: "CKD", value: "cooked" },
 ];
 
-const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
+const StatsTracker = ({ game, setGame, postTrackedGame, setCompleteModal }) => {
   const [quarter, setQuarter] = useState("quarter1");
   const [chooseStat, setChooseStat] = useState(true);
   const [choosePlayer, setChoosePlayer] = useState(false);
@@ -253,7 +253,7 @@ const StatsTracker = ({ game, setGame, postTrackedGame, setGameFinished }) => {
 
   const completeGame = () => {
     setGame({ ...game, valleyViceScore: game.teamStats.points });
-    setGameFinished(true);
+    setCompleteModal(true);
   };
 
   const quarterStyling =

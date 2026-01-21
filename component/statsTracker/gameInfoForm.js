@@ -2,13 +2,7 @@ import { useEffect, useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
 import ChooseSubs from "./chooseSubs";
 
-const GameInfoForm = ({
-  info,
-  infoLoading,
-  game,
-  setGame,
-  setEnterGameInfo,
-}) => {
+const GameInfoForm = ({ info, infoLoading, game, setGame, setScreen }) => {
   const [availablePlayers, setAvailablePlayers] = useState([]);
   const [chooseSubs, setChooseSubs] = useState(false);
   const [inputPlayer, setInputPlayer] = useState(false);
@@ -90,7 +84,7 @@ const GameInfoForm = ({
 
     setGame({ ...game, players: updatedPlayers });
 
-    setEnterGameInfo(false);
+    setScreen("tracker");
   };
 
   const enterNewPlayer = () => {
