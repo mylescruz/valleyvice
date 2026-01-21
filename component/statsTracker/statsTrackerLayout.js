@@ -91,7 +91,6 @@ const StatsTrackerLayout = () => {
             {screen === "info" && (
               <GameInfoForm
                 info={info}
-                infoLoading={infoLoading}
                 game={game}
                 setGame={setGame}
                 setScreen={setScreen}

@@ -1,29 +1,22 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import NewPlayerForm from "./newPlayerForm";
 import ChooseSubs from "./chooseSubs";
 
-const GameInfoForm = ({ info, infoLoading, game, setGame, setScreen }) => {
-  const [availablePlayers, setAvailablePlayers] = useState([]);
+const GameInfoForm = ({ info, game, setGame, setScreen }) => {
+  const currentRoster = info.currentRoster
+    .filter((player) => player.playerId !== "vvSubs")
+    .map((player) => {
+      return {
+        playerId: player.playerId,
+        name: player.name,
+        number: player.number,
+      };
+    })
+    .sort((player1, player2) => player1.number - player2.number);
+
+  const [availablePlayers, setAvailablePlayers] = useState(currentRoster);
   const [chooseSubs, setChooseSubs] = useState(false);
   const [inputPlayer, setInputPlayer] = useState(false);
-
-  // Set the available players from the current roster
-  useEffect(() => {
-    if (!infoLoading && info) {
-      const currentRoster = info.currentRoster
-        .filter((player) => player.playerId !== "vvSubs")
-        .map((player) => {
-          return {
-            playerId: player.playerId,
-            name: player.name,
-            number: player.number,
-          };
-        })
-        .sort((player1, player2) => player1.number - player2.number);
-
-      setAvailablePlayers(currentRoster);
-    }
-  }, [info, infoLoading]);
 
   const handleInput = (e) => {
     setGame({ ...game, [e.target.id]: e.target.value });
@@ -217,7 +210,6 @@ const GameInfoForm = ({ info, infoLoading, game, setGame, setScreen }) => {
       {chooseSubs && (
         <ChooseSubs
           info={info}
-          infoLoading={infoLoading}
           game={game}
           setGame={setGame}
           availablePlayers={availablePlayers}

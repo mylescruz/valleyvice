@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 
 const ChooseSubs = ({
   info,
-  infoLoading,
   game,
   setGame,
   availablePlayers,
@@ -14,7 +13,7 @@ const ChooseSubs = ({
 
   // Set the subs to the players not currently on the roster or already selected to play in this game
   useEffect(() => {
-    if (!infoLoading && info) {
+    if (info) {
       const subs = info.allPlayers
         .filter((sub) => {
           return !info.currentRoster.some(
@@ -35,7 +34,7 @@ const ChooseSubs = ({
 
       setAvailableSubs(subs);
     }
-  }, [infoLoading, info, game, availablePlayers]);
+  }, [info, game, availablePlayers]);
 
   // Add or remove a sub from the chosen subs for the game
   const manageSubs = (playerId) => {
