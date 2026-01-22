@@ -18,7 +18,6 @@ export default async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db(process.env.MONGO_DB);
   const seasonsCol = db.collection("seasons");
-  const seasonStatsCol = db.collection("seasonStats");
   const playersCol = db.collection("players");
 
   // Function to get the season data from MongoDB
@@ -136,14 +135,6 @@ export default async function handler(req, res) {
       // Add the new season to MongoDB
       const postSeasonResult = await seasonsCol.insertOne(season);
       console.log(postSeasonResult);
-
-      // Add the new season stats object for the new season
-      const postSeasonStatsResult = await seasonStatsCol.insertOne({
-        seasonNumber: newSeason.seasonNumber,
-        players: [],
-        teamStats: [],
-      });
-      console.log(postSeasonStatsResult);
 
       // Send the new season object back to the client
       res.status(200).json(newSeason);
