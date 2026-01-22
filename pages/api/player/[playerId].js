@@ -94,7 +94,7 @@ export default async function handler(req, res) {
               ? 0
               : Math.round(
                   (totalStats.twoPointsMade / totalStats.twoPointsAttempted) *
-                    100
+                    100,
                 ),
           threePointPercentage:
             totalStats.threePointsAttempted === 0
@@ -102,20 +102,20 @@ export default async function handler(req, res) {
               : Math.round(
                   (totalStats.threePointsMade /
                     totalStats.threePointsAttempted) *
-                    100
+                    100,
                 ),
           freeThrowPercentage:
             totalStats.freeThrowsAttempted === 0
               ? 0
               : Math.round(
                   (totalStats.freeThrowsMade / totalStats.freeThrowsAttempted) *
-                    100
+                    100,
                 ),
           fieldGoalPercentage: Math.round(
             ((totalStats.twoPointsMade + totalStats.threePointsMade) /
               (totalStats.twoPointsAttempted +
                 totalStats.threePointsAttempted)) *
-              100
+              100,
           ),
         },
         averageStats: averageStats,

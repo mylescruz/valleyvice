@@ -19,6 +19,7 @@ export default async function handler(req, res) {
   const db = client.db(process.env.MONGO_DB);
   const seasonsCol = db.collection("seasons");
   const seasonStatsCol = db.collection("seasonStats");
+  const playersCol = db.collection("players");
 
   // Function to get the season data from MongoDB
   async function getSeasonData(seasonNumber) {
@@ -75,6 +76,19 @@ export default async function handler(req, res) {
     }
   }
 
+  async function checkExistingPlayer(player) {
+    await playersCol.updateOne(
+      { playerId: player.playerId },
+      {
+        $setOnInsert: {
+          ...player,
+          seasons: [],
+        },
+      },
+      { upsert: true },
+    );
+  }
+
   if (method === "GET") {
     try {
       const season = await getSeasonData(seasonNumber);
@@ -100,6 +114,11 @@ export default async function handler(req, res) {
           imageAlt: `${player.name} Roster Picture`,
         };
       });
+
+      // Enter a new player into the database if they don't already exist
+      for (const player of players) {
+        await checkExistingPlayer(player);
+      }
 
       // Create the new season object
       const season = {
