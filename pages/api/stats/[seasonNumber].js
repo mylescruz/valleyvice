@@ -33,7 +33,7 @@ export default async function handler(req, res) {
       res
         .status(500)
         .send(
-          `There was an error retrieving season ${seasonNumber} stats. Please try again later`
+          `There was an error retrieving season ${seasonNumber} stats. Please try again later`,
         );
     }
   } else {
