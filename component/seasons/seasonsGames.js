@@ -11,7 +11,7 @@ const SeasonsGames = ({ seasonNumber }) => {
 
   if (seasonLoading) {
     return <LoadingIndicator />;
-  } else if (!season) {
+  } else if (!season || season.gamesPlayed === 0) {
     return <ErrorLayout />;
   } else {
     return (
