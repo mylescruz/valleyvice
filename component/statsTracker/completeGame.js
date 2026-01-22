@@ -1,5 +1,5 @@
 import useGames from "@/hooks/useGames";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 const gameDetailsInputGroup = "flex flex-col my-1.5";
 const gameDetailsInput =
@@ -10,8 +10,6 @@ const buttonStyling =
 const CompleteGame = ({
   game,
   setGame,
-  emptyGame,
-  setScreen,
   setCompleteModal,
   deleteTrackedGame,
 }) => {

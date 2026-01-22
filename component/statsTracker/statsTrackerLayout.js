@@ -103,6 +103,7 @@ const StatsTrackerLayout = () => {
                 setGame={setGame}
                 postTrackedGame={postTrackedGame}
                 setScreen={setScreen}
+                completeModal={completeModal}
                 setCompleteModal={setCompleteModal}
                 deleteTrackedGame={deleteTrackedGame}
               />
@@ -114,8 +115,6 @@ const StatsTrackerLayout = () => {
           <CompleteGame
             game={game}
             setGame={setGame}
-            emptyGame={emptyGame}
-            setScreen={setScreen}
             setCompleteModal={setCompleteModal}
             deleteTrackedGame={deleteTrackedGame}
           />
