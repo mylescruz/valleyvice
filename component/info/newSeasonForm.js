@@ -16,6 +16,7 @@ const NewSeasonForm = ({
   setNewSeason,
   emptySeason,
   setInputNewSeason,
+  getInfo,
 }) => {
   const { postSeason } = useSeason(info.currentSeason);
 
@@ -78,6 +79,9 @@ const NewSeasonForm = ({
       setNewSeason(emptySeason);
 
       setInputNewSeason(false);
+
+      // Fetch the changed info object since the stat was
+      await getInfo();
     } catch (error) {
       console.error("New season error: ", error);
       window.alert(

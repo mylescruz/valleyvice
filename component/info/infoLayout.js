@@ -26,7 +26,7 @@ const emptySeason = {
 };
 
 const InfoLayout = () => {
-  const { info, infoLoading } = useInfo();
+  const { info, infoLoading, getInfo } = useInfo();
 
   const [inputNewSeason, setInputNewSeason] = useState(false);
   const [newSeason, setNewSeason] = useState(emptySeason);
@@ -97,6 +97,7 @@ const InfoLayout = () => {
             setNewSeason={setNewSeason}
             emptySeason={emptySeason}
             setInputNewSeason={setInputNewSeason}
+            getInfo={getInfo}
           />
         )}
       </div>
