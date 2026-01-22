@@ -1,4 +1,5 @@
 import useGames from "@/hooks/useGames";
+import { useRouter } from "next/router";
 
 const gameDetailsInputGroup = "flex flex-col my-1.5";
 const gameDetailsInput =
@@ -15,6 +16,8 @@ const CompleteGame = ({
   deleteTrackedGame,
 }) => {
   const { postGame } = useGames();
+
+  const router = useRouter();
 
   const handleInput = (e) => {
     const input = e.target.value;
@@ -38,11 +41,9 @@ const CompleteGame = ({
       // Delete the tracked game from MongoDB
       await deleteTrackedGame();
 
-      setGame(emptyGame);
-
-      closeComplete();
-      setScreen("info");
       window.alert("Game stats saved!");
+
+      router.refresh();
     } catch (error) {
       window.alert("Error saving game stats. Check console.");
       console.error(error);
