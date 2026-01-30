@@ -101,131 +101,112 @@ export default async function handler(req, res) {
         );
         console.log(seasonUpdateResult);
 
-        // Update the players' stats in MongoDB
-        await Promise.all(
-          game.players.map(async (player) => {
-            const currentPlayer = await playersCol.findOne(
-              {
-                playerId: player.playerId,
-              },
-              { session },
-            );
+        const currentSeasonGames = await gamesCol
+          .find({ seasonNumber: game.seasonNumber })
+          .toArray();
 
-            if (!currentPlayer) {
-              throw new Error(
-                `There is no player with the playerId: ${player.playerId}. Please add the player and then try to save the game again.`,
-              );
-            }
+        // Get the total stats of each player for the season
+        const seasonStatsMap = new Map();
 
-            const currentSeason = currentPlayer.seasons.find(
-              (season) => season.seasonNumber === game.seasonNumber,
-            );
+        currentSeasonGames.forEach((currentGame) => {
+          currentGame.players.forEach((player) => {
+            const playerStats = seasonStatsMap.get(player.playerId);
 
-            if (currentSeason) {
-              const totalTwoPointsMade =
-                player.twoPointsMade + currentSeason.twoPointsMade;
-              const totalTwoPointAttempts =
-                player.twoPointsAttempted + currentSeason.twoPointsAttempted;
-              const twoPointPercentage = calculatePercentage(
-                totalTwoPointsMade,
-                totalTwoPointAttempts,
-              );
-
-              const totalThreePointsMade =
-                player.threePointsMade + currentSeason.threePointsMade;
-              const totalThreePointAttempts =
-                player.threePointsAttempted +
-                currentSeason.threePointsAttempted;
-              const threePointPercentage = calculatePercentage(
-                totalThreePointsMade,
-                totalThreePointAttempts,
-              );
-
-              const totalFreeThrowsMade =
-                player.freeThrowsMade + currentSeason.freeThrowsMade;
-              const totalFreeThrowAttempts =
-                player.freeThrowsAttempted + currentSeason.freeThrowsAttempted;
-              const freeThrowPercentage = calculatePercentage(
-                totalFreeThrowsMade,
-                totalFreeThrowAttempts,
-              );
-
-              await playersCol.updateOne(
-                {
-                  playerId: player.playerId,
-                  "seasons.seasonNumber": game.seasonNumber,
-                },
-                {
-                  $inc: {
-                    "seasons.$.gamesPlayed": 1,
-                    "seasons.$.points": player.points,
-                    "seasons.$.twoPointsMade": player.twoPointsMade,
-                    "seasons.$.twoPointsAttempted": player.twoPointsAttempted,
-                    "seasons.$.threePointsMade": player.threePointsMade,
-                    "seasons.$.threePointsAttempted":
-                      player.threePointsAttempted,
-                    "seasons.$.freeThrowsMade": player.freeThrowsMade,
-                    "seasons.$.freeThrowsAttempted": player.freeThrowsAttempted,
-                    "seasons.$.rebounds": player.rebounds,
-                    "seasons.$.assists": player.assists,
-                    "seasons.$.steals": player.steals,
-                    "seasons.$.blocks": player.blocks,
-                    "seasons.$.turnovers": player.turnovers,
-                    "seasons.$.personalFouls": player.personalFouls,
-                    "seasons.$.cooked": player.cooked,
-                  },
-                  $set: {
-                    "seasons.$.twoPointPercentage": twoPointPercentage,
-                    "seasons.$.threePointPercentage": threePointPercentage,
-                    "seasons.$.freeThrowPercentage": freeThrowPercentage,
-                  },
-                },
-                { session },
-              );
+            if (!playerStats) {
+              seasonStatsMap.set(player.playerId, {
+                seasonNumber: game.seasonNumber,
+                gamesPlayed: 1,
+                points: player.points,
+                twoPointsMade: player.twoPointsMade,
+                twoPointsAttempted: player.twoPointsAttempted,
+                threePointsMade: player.threePointsMade,
+                threePointsAttempted: player.threePointsAttempted,
+                freeThrowsMade: player.freeThrowsMade,
+                freeThrowsAttempted: player.freeThrowsAttempted,
+                rebounds: player.rebounds,
+                assists: player.assists,
+                steals: player.steals,
+                blocks: player.blocks,
+                turnovers: player.turnovers,
+                personalFouls: player.personalFouls,
+                cooked: player.cooked,
+              });
             } else {
-              await playersCol.updateOne(
-                {
-                  playerId: player.playerId,
-                },
-                {
-                  $push: {
-                    seasons: {
-                      seasonNumber: game.seasonNumber,
-                      gamesPlayed: 1,
-                      points: player.points,
-                      twoPointsMade: player.twoPointsMade,
-                      twoPointsAttempted: player.twoPointsAttempted,
-                      twoPointPercentage: calculatePercentage(
-                        player.twoPointsMade,
-                        player.twoPointsAttempted,
-                      ),
-                      threePointsMade: player.threePointsMade,
-                      threePointsAttempted: player.threePointsAttempted,
-                      threePointPercentage: calculatePercentage(
-                        player.threePointsMade,
-                        player.threePointsAttempted,
-                      ),
-                      freeThrowsMade: player.freeThrowsMade,
-                      freeThrowsAttempted: player.freeThrowsAttempted,
-                      freeThrowPercentage: calculatePercentage(
-                        player.freeThrowsMade,
-                        player.freeThrowsAttempted,
-                      ),
-                      rebounds: player.rebounds,
-                      assists: player.assists,
-                      steals: player.steals,
-                      blocks: player.blocks,
-                      turnovers: player.turnovers,
-                      personalFouls: player.personalFouls,
-                      cooked: player.cooked,
-                    },
-                  },
-                },
-                { session },
-              );
+              playerStats.gamesPlayed += 1;
+              playerStats.points += player.points;
+              playerStats.twoPointsMade += player.twoPointsMade;
+              playerStats.twoPointsAttempted += player.twoPointsAttempted;
+              playerStats.threePointsMade += player.threePointsMade;
+              playerStats.threePointsAttempted += player.threePointsAttempted;
+              playerStats.freeThrowsMade += player.freeThrowsMade;
+              playerStats.freeThrowsAttempted += player.freeThrowsAttempted;
+              playerStats.rebounds += player.rebounds;
+              playerStats.assists += player.assists;
+              playerStats.steals += player.steals;
+              playerStats.blocks += player.blocks;
+              playerStats.turnovers += player.turnovers;
+              playerStats.personalFouls += player.personalFouls;
+              playerStats.cooked += player.cooked;
             }
-          }),
-        );
+          });
+        });
+
+        // Update each player's total stats
+        for (const [playerId, playerStats] of seasonStatsMap.entries()) {
+          // Get the percentages for each shot
+          playerStats.twoPointPercentage = calculatePercentage(
+            playerStats.twoPointsMade,
+            playerStats.twoPointsAttempted,
+          );
+          playerStats.threePointPercentage = calculatePercentage(
+            playerStats.threePointsMade,
+            playerStats.threePointsAttempted,
+          );
+          playerStats.freeThrowPercentage = calculatePercentage(
+            playerStats.freeThrowsMade,
+            playerStats.freeThrowsAttempted,
+          );
+
+          const currentPlayer = await playersCol.findOne(
+            { playerId: playerId },
+            { session },
+          );
+
+          if (!currentPlayer) {
+            throw new Error(
+              `There is no player with the playerId: ${playerId}. Please add the player and then try to save the game again.`,
+            );
+          }
+
+          const seasonExists = currentPlayer.seasons.some(
+            (season) => season.seasonNumber === game.seasonNumber,
+          );
+
+          // Update the player's current season or add the season to the player's season field
+          if (!seasonExists) {
+            currentPlayer.seasons.push(playerStats);
+          } else {
+            currentPlayer.seasons = currentPlayer.seasons.map((seasonStats) => {
+              if (seasonStats.seasonNumber === game.seasonNumber) {
+                return playerStats;
+              }
+
+              return seasonStats;
+            });
+          }
+
+          const updatePlayerResults = await playersCol.updateOne(
+            { playerId: playerId },
+            {
+              $set: {
+                seasons: currentPlayer.seasons,
+              },
+            },
+            { session },
+          );
+
+          console.log(updatePlayerResults);
+        }
 
         // Update the player's stats for the given season
         await updateSeasonStats({
