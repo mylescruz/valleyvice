@@ -1,3 +1,4 @@
+import calculatePercentage from "@/helpers/calculatePercentage";
 import clientPromise from "@/lib/mongodb";
 
 export default async function handler(req, res) {
@@ -89,33 +90,21 @@ export default async function handler(req, res) {
         seasons: seasons,
         totalStats: {
           ...totalStats,
-          twoPointPercentage:
-            totalStats.twoPointsAttempted === 0
-              ? 0
-              : Math.round(
-                  (totalStats.twoPointsMade / totalStats.twoPointsAttempted) *
-                    100,
-                ),
-          threePointPercentage:
-            totalStats.threePointsAttempted === 0
-              ? 0
-              : Math.round(
-                  (totalStats.threePointsMade /
-                    totalStats.threePointsAttempted) *
-                    100,
-                ),
-          freeThrowPercentage:
-            totalStats.freeThrowsAttempted === 0
-              ? 0
-              : Math.round(
-                  (totalStats.freeThrowsMade / totalStats.freeThrowsAttempted) *
-                    100,
-                ),
-          fieldGoalPercentage: Math.round(
-            ((totalStats.twoPointsMade + totalStats.threePointsMade) /
-              (totalStats.twoPointsAttempted +
-                totalStats.threePointsAttempted)) *
-              100,
+          twoPointPercentage: calculatePercentage(
+            totalStats.twoPointsMade,
+            totalStats.twoPointsAttempted,
+          ),
+          threePointPercentage: calculatePercentage(
+            totalStats.threePointsMade,
+            totalStats.threePointsAttempted,
+          ),
+          freeThrowPercentage: calculatePercentage(
+            totalStats.freeThrowsMade,
+            totalStats.freeThrowsAttempted,
+          ),
+          fieldGoalPercentage: calculatePercentage(
+            totalStats.twoPointsMade + totalStats.threePointsMade,
+            totalStats.twoPointsAttempted + totalStats.threePointsAttempted,
           ),
         },
         averageStats: averageStats,
