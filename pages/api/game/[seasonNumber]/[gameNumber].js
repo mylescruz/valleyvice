@@ -1,3 +1,4 @@
+import calculatePercentage from "@/helpers/calculatePercentage";
 import clientPromise from "@/lib/mongodb";
 
 // Legend to update the playByPlay
@@ -88,30 +89,21 @@ export default async function handler(req, res) {
         ...game,
         teamStats: {
           ...teamStats,
-          twoPointPercentage:
-            teamStats.twoPointsAttempted !== 0
-              ? (
-                  (teamStats.twoPointsMade / teamStats.twoPointsAttempted) *
-                  100
-                ).toFixed(0)
-              : "0",
-          threePointPercentage:
-            teamStats.threePointsAttempted !== 0
-              ? (
-                  (teamStats.threePointsMade / teamStats.threePointsAttempted) *
-                  100
-                ).toFixed(0)
-              : "0",
-          freeThrowPercentage:
-            teamStats.freeThrowsAttempted !== 0
-              ? (
-                  (teamStats.freeThrowsMade / teamStats.freeThrowsAttempted) *
-                  100
-                ).toFixed(0)
-              : "0",
+          twoPointPercentage: calculatePercentage(
+            teamStats.twoPointsMade,
+            teamStats.twoPointsAttempted,
+          ),
+          threePointPercentage: calculatePercentage(
+            teamStats.threePointsMade,
+            teamStats.threePointsAttempted,
+          ),
+          freeThrowPercentage: calculatePercentage(
+            teamStats.freeThrowsMade,
+            teamStats.freeThrowsAttempted,
+          ),
         },
         players: game.players.sort(
-          (player1, player2) => player1.number - player2.number
+          (player1, player2) => player1.number - player2.number,
         ),
         playByPlay: allPlays,
       };
