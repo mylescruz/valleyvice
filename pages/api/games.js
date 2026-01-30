@@ -121,6 +121,12 @@ export default async function handler(req, res) {
               { session },
             );
 
+            if (!currentPlayer) {
+              throw new Error(
+                `There is no player with the playerId: ${player.playerId}. Please add the player and then try to save the game again.`,
+              );
+            }
+
             const currentSeason = currentPlayer.seasons.find(
               (season) => season.seasonNumber === game.seasonNumber,
             );
