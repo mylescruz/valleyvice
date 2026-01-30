@@ -91,21 +91,22 @@ export default async function handler(req, res) {
         console.log(insertGameResult);
 
         // Update the season with the results of the new game
-        let updateStatement = {
-          $inc: {
-            gamesPlayed: 1,
-          },
-        };
+        const wins = await gamesCol.find({ result: "W" }).toArray();
+        const losses = await gamesCol.find({ result: "L" }).toArray();
 
-        if (finalGame.result === "W") {
-          updateStatement.$inc.wins = 1;
-        } else if (finalGame.result === "L") {
-          updateStatement.$inc.losses = 1;
-        }
+        const numWins = wins.length;
+        const numLosses = losses.length;
+        const numGames = numWins + numLosses;
 
         const seasonUpdateResult = await seasonsCol.updateOne(
           { seasonNumber: game.seasonNumber },
-          updateStatement,
+          {
+            $set: {
+              gamesPlayed: numGames,
+              wins: numWins,
+              losses: numLosses,
+            },
+          },
           { session },
         );
         console.log(seasonUpdateResult);
