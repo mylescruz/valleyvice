@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const useGame = (seasonNumber, gameNumber) => {
   const [game, setGame] = useState(null);
@@ -27,7 +27,41 @@ const useGame = (seasonNumber, gameNumber) => {
     getGame();
   }, [seasonNumber, gameNumber]);
 
-  return { game, gameLoading };
+  const putGame = useCallback(
+    async (editedGame) => {
+      setGameLoading(true);
+
+      try {
+        const response = await fetch(
+          `/api/game/${seasonNumber}/${gameNumber}`,
+          {
+            method: "PUT",
+            headers: {
+              Accept: "application.json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(editedGame),
+          },
+        );
+
+        if (response.ok) {
+          const updatedGame = await response.json();
+          setGame(updatedGame);
+        } else {
+          const error = await response.text();
+          throw new Error(error);
+        }
+      } catch (error) {
+        setGame(null);
+        console.error(error);
+      } finally {
+        setGameLoading(false);
+      }
+    },
+    [seasonNumber, gameNumber],
+  );
+
+  return { game, gameLoading, putGame };
 };
 
 export default useGame;
