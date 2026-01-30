@@ -3,6 +3,7 @@ import clientPromise from "@/lib/mongodb";
 import { authOptions } from "./auth/[...nextauth]";
 import { updateSeasonStats } from "@/lib/updateSeasonStats";
 import { setAllTimeLeaders } from "@/lib/setAllTimeLeaders";
+import calculatePercentage from "@/helpers/calculatePercentage";
 
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
@@ -36,39 +37,28 @@ export default async function handler(req, res) {
         finalGame.valleyViceScore > finalGame.opponentScore ? "W" : "L";
 
       const updatedPlayers = finalGame.players.map((player) => {
-        const twoPointPercentage =
-          player.twoPointsAttempted !== 0
-            ? Math.round(
-                (player.twoPointsMade / player.twoPointsAttempted) * 100,
-              )
-            : 0;
-        const threePointPercentage =
-          player.threePointsAttempted !== 0
-            ? Math.round(
-                (player.threePointsMade / player.threePointsAttempted) * 100,
-              )
-            : 0;
-        const freeThrowPercentage =
-          player.freeThrowsAttempted !== 0
-            ? Math.round(
-                (player.freeThrowsMade / player.freeThrowsAttempted) * 100,
-              )
-            : 0;
-
         return {
           playerId: player.playerId,
           name: player.name,
           number: player.number,
-          points: player.points,
           twoPointsMade: player.twoPointsMade,
           twoPointsAttempted: player.twoPointsAttempted,
-          twoPointPercentage: twoPointPercentage,
+          twoPointPercentage: calculatePercentage(
+            player.twoPointsMade,
+            player.twoPointsAttempted,
+          ),
           threePointsMade: player.threePointsMade,
           threePointsAttempted: player.threePointsAttempted,
-          threePointPercentage: threePointPercentage,
+          threePointPercentage: calculatePercentage(
+            player.threePointsMade,
+            player.threePointsAttempted,
+          ),
           freeThrowsMade: player.freeThrowsMade,
           freeThrowsAttempted: player.freeThrowsAttempted,
-          freeThrowPercentage: freeThrowPercentage,
+          freeThrowPercentage: calculatePercentage(
+            player.freeThrowsMade,
+            player.freeThrowsAttempted,
+          ),
           rebounds: player.rebounds,
           assists: player.assists,
           steals: player.steals,
@@ -132,40 +122,33 @@ export default async function handler(req, res) {
             );
 
             if (currentSeason) {
+              const totalTwoPointsMade =
+                player.twoPointsMade + currentSeason.twoPointsMade;
               const totalTwoPointAttempts =
                 player.twoPointsAttempted + currentSeason.twoPointsAttempted;
-              const twoPointPercentage =
-                totalTwoPointAttempts !== 0
-                  ? Math.round(
-                      ((currentSeason.twoPointsMade + player.twoPointsMade) /
-                        totalTwoPointAttempts) *
-                        100,
-                    )
-                  : "0";
+              const twoPointPercentage = calculatePercentage(
+                totalTwoPointsMade,
+                totalTwoPointAttempts,
+              );
 
+              const totalThreePointsMade =
+                player.threePointsMade + currentSeason.threePointsMade;
               const totalThreePointAttempts =
                 player.threePointsAttempted +
                 currentSeason.threePointsAttempted;
-              const threePointPercentage =
-                totalThreePointAttempts !== 0
-                  ? Math.round(
-                      ((currentSeason.threePointsMade +
-                        player.threePointsMade) /
-                        totalThreePointAttempts) *
-                        100,
-                    )
-                  : "0";
+              const threePointPercentage = calculatePercentage(
+                totalThreePointsMade,
+                totalThreePointAttempts,
+              );
 
+              const totalFreeThrowsMade =
+                player.freeThrowsMade + currentSeason.freeThrowsMade;
               const totalFreeThrowAttempts =
                 player.freeThrowsAttempted + currentSeason.freeThrowsAttempted;
-              const freeThrowPercentage =
-                totalFreeThrowAttempts !== 0
-                  ? Math.round(
-                      ((currentSeason.freeThrowsMade + player.freeThrowsMade) /
-                        totalFreeThrowAttempts) *
-                        100,
-                    )
-                  : "0";
+              const freeThrowPercentage = calculatePercentage(
+                totalFreeThrowsMade,
+                totalFreeThrowAttempts,
+              );
 
               await playersCol.updateOne(
                 {
@@ -212,34 +195,22 @@ export default async function handler(req, res) {
                       points: player.points,
                       twoPointsMade: player.twoPointsMade,
                       twoPointsAttempted: player.twoPointsAttempted,
-                      twoPointPercentage:
-                        player.twoPointsAttempted !== 0
-                          ? Math.round(
-                              (player.twoPointsMade /
-                                player.twoPointsAttempted) *
-                                100,
-                            )
-                          : 0,
+                      twoPointPercentage: calculatePercentage(
+                        player.twoPointsMade,
+                        player.twoPointsAttempted,
+                      ),
                       threePointsMade: player.threePointsMade,
                       threePointsAttempted: player.threePointsAttempted,
-                      threePointPercentage:
-                        player.threePointsAttempted !== 0
-                          ? Math.round(
-                              (player.threePointsMade /
-                                player.threePointsAttempted) *
-                                100,
-                            )
-                          : 0,
+                      threePointPercentage: calculatePercentage(
+                        player.threePointsMade,
+                        player.threePointsAttempted,
+                      ),
                       freeThrowsMade: player.freeThrowsMade,
                       freeThrowsAttempted: player.freeThrowsAttempted,
-                      freeThrowPercentage:
-                        player.freeThrowsAttempted !== 0
-                          ? Math.round(
-                              (player.freeThrowsMade /
-                                player.freeThrowsAttempted) *
-                                100,
-                            )
-                          : 0,
+                      freeThrowPercentage: calculatePercentage(
+                        player.freeThrowsMade,
+                        player.freeThrowsAttempted,
+                      ),
                       rebounds: player.rebounds,
                       assists: player.assists,
                       steals: player.steals,
