@@ -32,8 +32,7 @@ export default async function handler(req, res) {
       // Add the new game to MongoDB
       let { teamStats, currentlyTracking, ...finalGame } = game;
 
-      finalGame.valleyViceScore = teamStats.points;
-      finalGame.result =
+      const result =
         finalGame.valleyViceScore > finalGame.opponentScore ? "W" : "L";
 
       const updatedPlayers = finalGame.players.map((player) => {
@@ -41,6 +40,7 @@ export default async function handler(req, res) {
           playerId: player.playerId,
           name: player.name,
           number: player.number,
+          points: player.points,
           twoPointsMade: player.twoPointsMade,
           twoPointsAttempted: player.twoPointsAttempted,
           twoPointPercentage: calculatePercentage(
@@ -74,6 +74,7 @@ export default async function handler(req, res) {
         const insertGameResult = await gamesCol.insertOne(
           {
             ...finalGame,
+            result: result,
             players: updatedPlayers,
           },
           { session },
@@ -81,11 +82,15 @@ export default async function handler(req, res) {
         console.log(insertGameResult);
 
         // Update the season with the results of the new game
-        const wins = await gamesCol.find({ result: "W" }).toArray();
-        const losses = await gamesCol.find({ result: "L" }).toArray();
+        const numWins = await gamesCol.countDocuments(
+          { seasonNumber: game.seasonNumber, result: "W" },
+          { session },
+        );
+        const numLosses = await gamesCol.countDocuments(
+          { seasonNumber: game.seasonNumber, result: "L" },
+          { session },
+        );
 
-        const numWins = wins.length;
-        const numLosses = losses.length;
         const numGames = numWins + numLosses;
 
         const seasonUpdateResult = await seasonsCol.updateOne(
