@@ -6,22 +6,18 @@ import useGame from "@/hooks/useGame";
 
 const InnerEditGameLayout = ({ game }) => {
   const [editedGame, setEditedGame] = useState(game);
-  const [screen, setScreen] = useState("details");
-
-  const closeEdit = () => {
-    setEdit(false);
-  };
 
   return (
-    <div>
-      {screen === "details" && (
+    <div className="w-11/12 sm:w-4/5 mx-auto">
+      <h1 className="text-2xl text-(--primary) text-center font-bold">
+        Edit Game {editedGame.gameNumber} of Season {editedGame.seasonNumber}
+      </h1>
+      <div className="flex flex-col items-center md:flex-row">
         <EditGameInfoForm
           editedGame={editedGame}
           setEditedGame={setEditedGame}
-          setScreen={setScreen}
-          closeEdit={closeEdit}
         />
-      )}
+      </div>
     </div>
   );
 };

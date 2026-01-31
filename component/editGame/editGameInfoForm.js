@@ -3,12 +3,7 @@ const gameDetailsInput = "border-2 border-(--secondary) rounded-lg py-1 px-2";
 const buttonStyling =
   "bg-(--secondary) font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer disabled:cursor-auto disabled:bg-gray-500";
 
-const EditGameInfoForm = ({
-  editedGame,
-  setEditedGame,
-  setScreen,
-  closeEdit,
-}) => {
+const EditGameInfoForm = ({ editedGame, setEditedGame }) => {
   const handleInput = (e) => {
     setEditedGame((prev) => ({
       ...prev,
@@ -17,7 +12,7 @@ const EditGameInfoForm = ({
   };
 
   const completeGameInfo = () => {
-    setScreen("stats");
+    // Call PUT game
   };
 
   return (
@@ -85,9 +80,6 @@ const EditGameInfoForm = ({
         </div>
       </div>
       <div className="mt-2 text-center flex flex-row justify-between">
-        <button type="submit" className={buttonStyling} onClick={closeEdit}>
-          Cancel
-        </button>
         <button
           type="submit"
           className={buttonStyling}
