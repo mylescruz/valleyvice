@@ -3,6 +3,7 @@ import EditGameInfoForm from "./editGameInfoForm";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
 import useGame from "@/hooks/useGame";
+import EditGameStats from "./editGameStats";
 
 const InnerEditGameLayout = ({ game }) => {
   const [editedGame, setEditedGame] = useState(game);
@@ -12,11 +13,12 @@ const InnerEditGameLayout = ({ game }) => {
       <h1 className="text-2xl text-(--primary) text-center font-bold">
         Edit Game {editedGame.gameNumber} of Season {editedGame.seasonNumber}
       </h1>
-      <div className="flex flex-col items-center md:flex-row">
+      <div className="flex flex-col items-center md:flex-row md:items-start">
         <EditGameInfoForm
           editedGame={editedGame}
           setEditedGame={setEditedGame}
         />
+        <EditGameStats editedGame={editedGame} setEditedGame={setEditedGame} />
       </div>
     </div>
   );
