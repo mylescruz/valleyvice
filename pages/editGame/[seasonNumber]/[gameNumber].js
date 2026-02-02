@@ -1,16 +1,21 @@
 import EditGameLayout from "@/component/editGame/editGameLayout";
 import LoadingIndicator from "@/component/layout/loadingIndicator";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
 export default function Page() {
+  const { data: session, status } = useSession();
+
   const router = useRouter();
 
   const seasonNumber = parseInt(router.query.seasonNumber);
   const gameNumber = parseInt(router.query.gameNumber);
 
-  if (!seasonNumber || !gameNumber) {
+  if (status === "loading" || !seasonNumber || !gameNumber) {
     return <LoadingIndicator />;
+  } else if (!session) {
+    router.push("/");
   } else {
     return (
       <>
