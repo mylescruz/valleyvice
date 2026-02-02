@@ -107,7 +107,7 @@ export default async function handler(req, res) {
         console.log(seasonUpdateResult);
 
         const currentSeasonGames = await gamesCol
-          .find({ seasonNumber: game.seasonNumber })
+          .find({ seasonNumber: game.seasonNumber }, { session })
           .toArray();
 
         // Get the total stats of each player for the season
