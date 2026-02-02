@@ -4,7 +4,7 @@ const statTitle = "font-bold";
 
 const EditGameStats = ({ editedGame }) => {
   return (
-    <div className="w-full flex flex-col mt-4 ">
+    <div className="w-full md:w-3/4 flex flex-col">
       <h2 className="text-xl font-bold text-(--secondary) mb-2">
         Player Stats
       </h2>
