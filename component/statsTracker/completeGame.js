@@ -1,5 +1,7 @@
 import useGames from "@/hooks/useGames";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import LoadingIndicator from "../layout/loadingIndicator";
 
 const gameDetailsInputGroup = "flex flex-col my-1.5";
 const gameDetailsInput =
@@ -17,6 +19,8 @@ const CompleteGame = ({
 
   const router = useRouter();
 
+  const [savingGame, setSavingGame] = useState(false);
+
   const handleInput = (e) => {
     const input = e.target.value;
 
@@ -32,6 +36,8 @@ const CompleteGame = ({
   };
 
   const submitGame = async () => {
+    setSavingGame(true);
+
     try {
       // Post the new game to MongoDB
       await postGame(game);
@@ -45,55 +51,69 @@ const CompleteGame = ({
     } catch (error) {
       window.alert("Error saving game stats. Check console.");
       console.error(error);
-      closeComplete();
       return;
+    } finally {
+      setSavingGame(false);
+      closeComplete();
     }
   };
 
   return (
     <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-[rgba(255,255,255,0.2)] z-50 flex flex-col justify-center items-center">
-      <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
-        <h1 className="text-(--primary) text-xl mb-2">Finish Game</h1>
-        <p>Enter final scores of the game</p>
-        <form className="w-full flex flex-col sm:flex-row sm:justify-between">
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="valleyViceScore">Valley Vice</label>
-            <input
-              id="valleyViceScore"
-              type="number"
-              onChange={handleInput}
-              className={gameDetailsInput}
-              value={game.valleyViceScore}
-              required
-            />
+      {!savingGame && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
+          <h1 className="text-(--primary) text-xl mb-2">Finish Game</h1>
+          <p>Enter final scores of the game</p>
+          <form className="w-full flex flex-col sm:flex-row sm:justify-between">
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="valleyViceScore">Valley Vice</label>
+              <input
+                id="valleyViceScore"
+                type="number"
+                onChange={handleInput}
+                className={gameDetailsInput}
+                value={game.valleyViceScore}
+                required
+              />
+            </div>
+            <div className={gameDetailsInputGroup}>
+              <label htmlFor="opponentScore">{game.opponent}</label>
+              <input
+                id="opponentScore"
+                type="number"
+                onChange={handleInput}
+                className={gameDetailsInput}
+                value={game.opponentScore}
+                required
+              />
+            </div>
+          </form>
+          <div className="flex flex-row justify-end mt-4">
+            <button
+              className={`${buttonStyling} bg-gray-500`}
+              onClick={closeComplete}
+            >
+              Cancel
+            </button>
+            <button
+              className={`${buttonStyling} bg-(--secondary)`}
+              disabled={game.opponentScore === ""}
+              onClick={submitGame}
+            >
+              Complete
+            </button>
           </div>
-          <div className={gameDetailsInputGroup}>
-            <label htmlFor="opponentScore">{game.opponent}</label>
-            <input
-              id="opponentScore"
-              type="number"
-              onChange={handleInput}
-              className={gameDetailsInput}
-              value={game.opponentScore}
-              required
-            />
-          </div>
-        </form>
-        <div className="flex flex-row justify-end mt-4">
-          <button
-            className={`${buttonStyling} bg-gray-500`}
-            onClick={closeComplete}
-          >
-            Cancel
-          </button>
-          <button
-            className={`${buttonStyling} bg-(--secondary)`}
-            onClick={submitGame}
-          >
-            Complete
-          </button>
         </div>
-      </div>
+      )}
+
+      {savingGame && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
+          <h1 className="text-(--primary) text-xl mb-2 text-center">
+            Saving Game
+          </h1>
+          <LoadingIndicator />
+        </div>
+      )}
     </div>
   );
 };
