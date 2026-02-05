@@ -1,7 +1,7 @@
 import useGames from "@/hooks/useGames";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import LoadingIndicator from "../layout/loadingIndicator";
+import { useRouter } from "next/router";
 
 const gameDetailsInputGroup = "flex flex-col my-1.5";
 const gameDetailsInput =
@@ -19,7 +19,7 @@ const CompleteGame = ({
 
   const router = useRouter();
 
-  const [savingGame, setSavingGame] = useState(false);
+  const [status, setStatus] = useState("finalize");
 
   const handleInput = (e) => {
     const input = e.target.value;
@@ -32,11 +32,12 @@ const CompleteGame = ({
   };
 
   const closeComplete = () => {
+    setStatus("finalize");
     setCompleteModal(false);
   };
 
   const submitGame = async () => {
-    setSavingGame(true);
+    setStatus("saving");
 
     try {
       // Post the new game to MongoDB
@@ -45,22 +46,21 @@ const CompleteGame = ({
       // Delete the tracked game from MongoDB
       await deleteTrackedGame();
 
-      window.alert("Game stats saved!");
-
-      router.refresh();
+      setStatus("saved");
     } catch (error) {
-      window.alert("Error saving game stats. Check console.");
+      setStatus("error");
       console.error(error);
       return;
-    } finally {
-      setSavingGame(false);
-      closeComplete();
     }
+  };
+
+  const viewGame = () => {
+    router.push(`/games/${game.seasonNumber}/${game.gameNumber}`);
   };
 
   return (
     <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-[rgba(255,255,255,0.2)] z-50 flex flex-col justify-center items-center">
-      {!savingGame && (
+      {status === "finalize" && (
         <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
           <h1 className="text-(--primary) text-xl mb-2">Finish Game</h1>
           <p>Enter final scores of the game</p>
@@ -88,7 +88,7 @@ const CompleteGame = ({
               />
             </div>
           </form>
-          <div className="flex flex-row justify-end mt-4">
+          <div className="w-full flex flex-row justify-between mt-4">
             <button
               className={`${buttonStyling} bg-gray-500`}
               onClick={closeComplete}
@@ -96,7 +96,7 @@ const CompleteGame = ({
               Cancel
             </button>
             <button
-              className={`${buttonStyling} bg-(--secondary)`}
+              className={`${buttonStyling} bg-(--secondary) disabled:bg-gray-500 disabled:cursor-default`}
               disabled={game.opponentScore === ""}
               onClick={submitGame}
             >
@@ -106,12 +106,45 @@ const CompleteGame = ({
         </div>
       )}
 
-      {savingGame && (
-        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
+      {status === "saving" && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col items-center justify-center">
           <h1 className="text-(--primary) text-xl mb-2 text-center">
             Saving Game
           </h1>
           <LoadingIndicator />
+        </div>
+      )}
+
+      {status === "error" && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
+          <h1 className="text-red text-xl mb-2 text-center">
+            Error saving game stats!
+          </h1>
+          <p className="text-center">Reach out to Myles</p>
+          <div className="w-full text-center">
+            <button
+              className={`${buttonStyling} bg-(--secondary)`}
+              onClick={closeComplete}
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      )}
+
+      {status === "saved" && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
+          <h1 className="text-(--primary) text-xl mb-2 text-center">
+            Game Stats Saved!
+          </h1>
+          <div className="w-full flex flex-row justify-center text-center mt-4">
+            <button
+              className={`${buttonStyling} bg-(--secondary)`}
+              onClick={viewGame}
+            >
+              View Game
+            </button>
+          </div>
         </div>
       )}
     </div>
