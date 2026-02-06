@@ -72,7 +72,7 @@ const InnerEditGameLayout = ({ game, putGame }) => {
         <h1 className="text-xl lg:text-2xl mb-2 text-(--primary) text-center font-bold">
           Edit Game {editedGame.gameNumber} of Season {editedGame.seasonNumber}
         </h1>
-        <div className="flex flex-col items-center md:flex-row md:items-start">
+        <div className="flex flex-col items-center lg:flex-row lg:items-start">
           <EditGameInfoForm
             editedGame={editedGame}
             setEditedGame={setEditedGame}

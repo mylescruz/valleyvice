@@ -114,7 +114,7 @@ const EditPlayerStatsModal = ({
     <div className="fixed top-0 left-0 w-full h-full bg-(--shadow) z-50 flex flex-col justify-center items-center">
       <div className="w-11/12 sm:w-1/2 lg:w-1/3 xl:w-1/4 h-[90%] md:h-[75%] bg-(--background) p-4 rounded-lg my-4 md:my-0 flex flex-col overflow-y-auto">
         <form className="flex flex-col my-4" onSubmit={updateStats}>
-          <h2 className="text-xl font-bold text-(--primary)">
+          <h2 className="text-xl font-bold text-(--primary) text-center md:text-start">
             Edit Stats for {editedPlayer.name}
           </h2>
           <div className="flex flex-col my-4">

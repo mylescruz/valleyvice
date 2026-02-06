@@ -9,11 +9,11 @@ const EditGameInfoForm = ({ editedGame, setEditedGame }) => {
     }));
   };
   return (
-    <div className="w-full md:w-1/4">
-      <h2 className="text-lg font-bold text-(--secondary) text-center md:text-start">
+    <div className="w-full lg:w-1/4">
+      <h2 className="text-xl font-bold text-(--secondary) text-center lg:text-start">
         Game Info
       </h2>
-      <div className="flex flex-col md:flex-row">
+      <div className="flex flex-col lg:flex-row">
         <div className="flex flex-col">
           <div className={gameDetailsInputGroup}>
             <label htmlFor="date" className="font-bold text-lg">
