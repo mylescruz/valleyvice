@@ -149,7 +149,7 @@ export default async function handler(req, res) {
               location: updatedGame.location,
               opponent: updatedGame.opponent,
               opponentScore: updatedGame.opponentScore,
-              vallyeViceScore: updatedGame.vallyeViceScore,
+              valleyViceScore: updatedGame.valleyViceScore,
               result: updatedGame.result,
               players: updatedGame.players,
             },
