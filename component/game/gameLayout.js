@@ -6,13 +6,15 @@ import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
 import useGame from "@/hooks/useGame";
 import PlayByPlay from "./playByPlay";
+import { useSession } from "next-auth/react";
 
 const TOTAL_CELLS_STYLE = "w-1/19 p-1 text-center";
 
 const GameLayout = ({ seasonNumber, gameNumber }) => {
+  const { data: session, status } = useSession();
   const { game, gameLoading } = useGame(seasonNumber, gameNumber);
 
-  if (gameLoading) {
+  if (gameLoading || status === "loading") {
     return <LoadingIndicator />;
   } else if (!game) {
     return <ErrorLayout />;
@@ -44,6 +46,14 @@ const GameLayout = ({ seasonNumber, gameNumber }) => {
               {game.location}
             </p>
             <p>{dateFormatter(game.date)}</p>
+            {session && (
+              <Link
+                href={`/editGame/${seasonNumber}/${gameNumber}`}
+                className="my-2 text-(--secondary) font-bold hover:text-(--primary)"
+              >
+                Edit Game
+              </Link>
+            )}
           </div>
           <div className="flex flex-col overflow-x-auto my-4">
             <table>
