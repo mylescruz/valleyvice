@@ -1,6 +1,7 @@
 import calculatePercentage from "@/helpers/calculatePercentage";
 import clientPromise from "@/lib/mongodb";
 import { setAllTimeLeaders } from "@/lib/setAllTimeLeaders";
+import { updateSeasonRecord } from "@/lib/updateSeasonRecord";
 import { updateSeasonStats } from "@/lib/updateSeasonStats";
 
 // Legend to update the playByPlay
@@ -158,29 +159,10 @@ export default async function handler(req, res) {
         console.log(updateResult);
 
         // Update the season with the results of the new game
-        const numWins = await gamesCol.countDocuments(
-          { seasonNumber: updatedGame.seasonNumber, result: "W" },
-          { session },
-        );
-        const numLosses = await gamesCol.countDocuments(
-          { seasonNumber: updatedGame.seasonNumber, result: "L" },
-          { session },
-        );
-
-        const numGames = numWins + numLosses;
-
-        const seasonUpdateResult = await seasonsCol.updateOne(
-          { seasonNumber: updatedGame.seasonNumber },
-          {
-            $set: {
-              gamesPlayed: numGames,
-              wins: numWins,
-              losses: numLosses,
-            },
-          },
-          { session },
-        );
-        console.log(seasonUpdateResult);
+        await updateSeasonRecord({
+          seasonNumber: updatedGame.seasonNumber,
+          session,
+        });
 
         const currentSeasonGames = await gamesCol
           .find({ seasonNumber: updatedGame.seasonNumber }, { session })
