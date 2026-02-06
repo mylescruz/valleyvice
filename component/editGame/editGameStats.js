@@ -2,7 +2,7 @@ const mainStats = "flex flex-col";
 const allStats = "hidden lg:flex lg:flex-col";
 const statTitle = "font-bold";
 
-const EditGameStats = ({ editedGame }) => {
+const EditGameStats = ({ editedGame, openEditPlayer }) => {
   return (
     <div className="w-full md:w-3/4 flex flex-col">
       <h2 className="text-xl font-bold text-(--secondary) mb-2">
@@ -18,7 +18,12 @@ const EditGameStats = ({ editedGame }) => {
               <p className="text-(--secondary) font-bold">
                 #{player.number} {player.name}
               </p>
-              <p className="text-(--secondary) font-bold">Edit</p>
+              <p
+                className="text-(--secondary) font-bold cursor-pointer"
+                onClick={() => openEditPlayer(player)}
+              >
+                Edit
+              </p>
             </div>
             <div className="flex flex-row justify-between">
               <div className={mainStats}>

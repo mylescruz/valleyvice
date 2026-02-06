@@ -6,6 +6,7 @@
   --primary: #50c2ff;
   --secondary: #ff7aad;
   --tertiary: #1a1717;
+  --shadow: rgba(255, 255, 255, 0.2);
 }
 
 body {
