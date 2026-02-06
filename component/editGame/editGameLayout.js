@@ -10,10 +10,11 @@ import EditPlayerStatsModal from "./editPlayerStatsModal";
 const buttonStyling =
   "font-bold rounded-lg px-2 py-1 hover:bg-(--primary) hover:cursor-pointer text-nowrap";
 
-const InnerEditGameLayout = ({ game }) => {
+const InnerEditGameLayout = ({ game, putGame }) => {
   const [editedGame, setEditedGame] = useState(game);
   const [openEditModal, setOpenEditModal] = useState(false);
   const [editedPlayer, setEditedPlayer] = useState({});
+  const [status, setStatus] = useState("none");
 
   const router = useRouter();
 
@@ -48,7 +49,23 @@ const InnerEditGameLayout = ({ game }) => {
     router.push(`game/${game.seasonNumber}/${game.gameNumber}`);
   };
 
-  const saveEdit = () => {
+  const closeComplete = () => {
+    setStatus("none");
+  };
+
+  const saveEdit = async () => {
+    setStatus("saving");
+
+    try {
+      await putGame(game);
+
+      router.push(`game/${game.seasonNumber}/${game.gameNumber}`);
+    } catch (error) {
+      console.error(error);
+      setStatus("error");
+    } finally {
+      setStatus("none");
+    }
     // PUT method
   };
 
@@ -92,19 +109,45 @@ const InnerEditGameLayout = ({ game }) => {
           updatePlayerStats={updatePlayerStats}
         />
       )}
+
+      {status === "error" && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
+          <h1 className="text-red text-xl mb-2 text-center">
+            Error updating the game&#39;s stats!
+          </h1>
+          <p className="text-center">Reach out to Myles</p>
+          <div className="w-full text-center">
+            <button
+              className={`${buttonStyling} bg-(--secondary)`}
+              onClick={closeComplete}
+            >
+              Ok
+            </button>
+          </div>
+        </div>
+      )}
+
+      {status === "saving" && (
+        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col items-center justify-center">
+          <h1 className="text-(--primary) text-xl mb-2 text-center">
+            Saving Game
+          </h1>
+          <LoadingIndicator />
+        </div>
+      )}
     </>
   );
 };
 
 const EditGameLayout = ({ seasonNumber, gameNumber }) => {
-  const { game, gameLoading } = useGame(seasonNumber, gameNumber);
+  const { game, gameLoading, putGame } = useGame(seasonNumber, gameNumber);
 
   if (gameLoading) {
     return <LoadingIndicator />;
   } else if (!game) {
     return <ErrorLayout />;
   } else {
-    return <InnerEditGameLayout game={game} />;
+    return <InnerEditGameLayout game={game} putGame={putGame} />;
   }
 };
 
