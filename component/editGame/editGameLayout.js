@@ -46,7 +46,7 @@ const InnerEditGameLayout = ({ game, putGame }) => {
   };
 
   const closeEdit = () => {
-    router.push(`game/${game.seasonNumber}/${game.gameNumber}`);
+    router.push(`/games/${game.seasonNumber}/${game.gameNumber}`);
   };
 
   const closeComplete = () => {
@@ -54,19 +54,16 @@ const InnerEditGameLayout = ({ game, putGame }) => {
   };
 
   const saveEdit = async () => {
-    setStatus("saving");
+    setStatus("loading");
 
     try {
-      await putGame(game);
+      await putGame(editedGame);
 
-      router.push(`game/${game.seasonNumber}/${game.gameNumber}`);
+      setStatus("saved");
     } catch (error) {
       console.error(error);
       setStatus("error");
-    } finally {
-      setStatus("none");
     }
-    // PUT method
   };
 
   return (
@@ -111,28 +108,50 @@ const InnerEditGameLayout = ({ game, putGame }) => {
       )}
 
       {status === "error" && (
-        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col">
-          <h1 className="text-red text-xl mb-2 text-center">
-            Error updating the game&#39;s stats!
-          </h1>
-          <p className="text-center">Reach out to Myles</p>
-          <div className="w-full text-center">
-            <button
-              className={`${buttonStyling} bg-(--secondary)`}
-              onClick={closeComplete}
-            >
-              Ok
-            </button>
+        <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-(--shadow) z-50 flex flex-col justify-center items-center">
+          <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 h-1/2 bg-(--background) p-4 rounded-lg flex flex-col">
+            <h1 className="text-(--primary) text-xl mb-2 text-center">
+              Error updating the game&#39;s stats!
+            </h1>
+            <p className="text-center mb-2">Reach out to Myles</p>
+            <div className="w-full text-center">
+              <button
+                className={`${buttonStyling} bg-(--secondary)`}
+                onClick={closeComplete}
+              >
+                Ok
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      {status === "saving" && (
-        <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) p-4 rounded-lg flex flex-col items-center justify-center">
-          <h1 className="text-(--primary) text-xl mb-2 text-center">
-            Saving Game
-          </h1>
-          <LoadingIndicator />
+      {status === "loading" && (
+        <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-(--shadow) z-50 flex flex-col justify-center items-center">
+          <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 h-1/2 bg-(--background) p-4 rounded-lg flex flex-col items-center justify-center">
+            <h1 className="text-(--primary) text-xl mb-2 text-center">
+              Saving Game
+            </h1>
+            <LoadingIndicator />
+          </div>
+        </div>
+      )}
+
+      {status === "saved" && (
+        <div className="fixed top-0 left-0 w-[100%] h-[100%] bg-(--shadow) z-50 flex flex-col justify-center items-center">
+          <div className="w-11/12 sm:w-2/3 md:w-3/5 lg:w-2/5 xl:w-2/7 bg-(--background) h-1/4 p-4 rounded-lg flex flex-col items-center justify-center">
+            <h1 className="text-(--primary) text-xl mb-4 text-center">
+              This game&#39;s stats were updated
+            </h1>
+            <div className="w-full text-center">
+              <button
+                className={`${buttonStyling} bg-(--secondary)`}
+                onClick={closeEdit}
+              >
+                View Game
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </>

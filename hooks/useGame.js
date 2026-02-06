@@ -29,8 +29,6 @@ const useGame = (seasonNumber, gameNumber) => {
 
   const putGame = useCallback(
     async (editedGame) => {
-      setGameLoading(true);
-
       try {
         const response = await fetch(
           `/api/game/${seasonNumber}/${gameNumber}`,
@@ -52,10 +50,8 @@ const useGame = (seasonNumber, gameNumber) => {
           throw new Error(error);
         }
       } catch (error) {
-        setGame(null);
         console.error(error);
-      } finally {
-        setGameLoading(false);
+        throw new Error(error);
       }
     },
     [seasonNumber, gameNumber],
