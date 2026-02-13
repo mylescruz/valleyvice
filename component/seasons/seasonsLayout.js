@@ -1,8 +1,8 @@
 import { useState } from "react";
-import SeasonsGames from "./seasonsGames";
 import LoadingIndicator from "../layout/loadingIndicator";
 import ErrorLayout from "../layout/errorLayout";
 import useInfo from "@/hooks/useInfo";
+import GamesInSeason from "./gamesInSeason";
 
 const InnerSeasonsLayout = ({ info }) => {
   const [seasonNumber, setSeasonNumber] = useState(info.currentSeason);
@@ -30,7 +30,7 @@ const InnerSeasonsLayout = ({ info }) => {
           </select>
         </div>
 
-        <SeasonsGames seasonNumber={seasonNumber} />
+        <GamesInSeason seasonNumber={seasonNumber} />
       </div>
     </div>
   );

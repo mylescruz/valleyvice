@@ -6,7 +6,7 @@ import LoadingIndicator from "../layout/loadingIndicator";
 import dateFormatter from "@/helpers/dateFormatter";
 import ErrorLayout from "../layout/errorLayout";
 
-const SeasonsGames = ({ seasonNumber }) => {
+const GamesInSeason = ({ seasonNumber }) => {
   const { season, seasonLoading } = useSeason(seasonNumber);
 
   if (seasonLoading) {
@@ -79,4 +79,4 @@ const SeasonsGames = ({ seasonNumber }) => {
   }
 };
 
-export default SeasonsGames;
+export default GamesInSeason;
