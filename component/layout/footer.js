@@ -18,7 +18,7 @@ const Footer = () => {
         </p>
       )}
       <Link href="https://www.mylescruz.com/" target="_blank">
-        <p className={footerTextStyling}>© Myles Cruz 2025</p>
+        <p className={footerTextStyling}>© 2026 Myles Cruz</p>
       </Link>
     </div>
   );
