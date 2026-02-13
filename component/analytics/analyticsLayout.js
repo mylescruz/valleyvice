@@ -16,10 +16,6 @@ const AnalyticsLayout = () => {
       <div className="flex flex-col items-center">
         <div className="w-11/12 sm:w-4/5">
           <LeadersLayout allTimeLeaders={analytics.allTimeLeaders} />
-          <div className="flex flex-col items-center my-4">
-            <h1 className="text-center">Most Wins</h1>
-            <OpponentsChart opponents={analytics.opponents} />
-          </div>
         </div>
       </div>
     );
