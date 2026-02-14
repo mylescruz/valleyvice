@@ -9,6 +9,43 @@ export default async function handler(req, res) {
   const gamesCol = db.collection("games");
   const playersCol = db.collection("players");
   const leadersCol = db.collection("leaders");
+  const analyticsCol = db.collection("analytics");
+
+  // Get the career total stats for each player
+  const getCareerTotals = async () => {
+    try {
+      const careerTotals = await analyticsCol
+        .find({
+          subject: "player",
+          valueType: "total",
+          period: "career",
+        })
+        .toArray();
+
+      return careerTotals;
+    } catch (error) {
+      console.error(`Error getting players' total career stats: ${error}`);
+      throw new Error(error);
+    }
+  };
+
+  // Get the career average stats for each player
+  const getCareerAverages = async () => {
+    try {
+      const careerAverages = await analyticsCol
+        .find({
+          subject: "player",
+          valueType: "average",
+          period: "career",
+        })
+        .toArray();
+
+      return careerAverages;
+    } catch (error) {
+      console.error(`Error getting players' total average stats: ${error}`);
+      throw new Error(error);
+    }
+  };
 
   // Get how many total games, total wins and total losses against opponents
   const getOpponentsData = async () => {
@@ -71,11 +108,19 @@ export default async function handler(req, res) {
       // Get average leaders data
       const averageLeaders = await getAverageLeaders();
 
+      const careerTotals = await getCareerTotals();
+
+      const careerAverages = await getCareerAverages();
+
       const analytics = {
         opponents: opponents,
         allTimeLeaders: {
           totalLeaders: totalLeaders,
           averageLeaders: averageLeaders,
+        },
+        players: {
+          careerTotals,
+          careerAverages,
         },
       };
 

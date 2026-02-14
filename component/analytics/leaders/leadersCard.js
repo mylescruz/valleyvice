@@ -4,7 +4,7 @@ const LeadersCard = ({ stat }) => {
   return (
     <div className="border-2 border-(--secondary) rounded-lg m-2 px-4 py-4">
       <div className="flex flex-col items-center text-center font-bold">
-        <h1 className="text-white text-2xl">{stat.stat}</h1>
+        <h1 className="text-white text-2xl">{stat.statKey}</h1>
         <Image
           src={`/images/${stat.imageSrc}`}
           alt={stat.imageAlt}
