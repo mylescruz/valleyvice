@@ -2,8 +2,8 @@ import { getServerSession } from "next-auth";
 import clientPromise from "@/lib/mongodb";
 import { authOptions } from "./auth/[...nextauth]";
 import { updateSeasonStats } from "@/lib/updateSeasonStats";
-import { setAllTimeLeaders } from "@/lib/setAllTimeLeaders";
 import calculatePercentage from "@/helpers/calculatePercentage";
+import { updatePlayerRanks } from "@/lib/updatePlayerRanks";
 
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
@@ -220,7 +220,7 @@ export default async function handler(req, res) {
         });
 
         // Update the all time leader's rankings
-        await setAllTimeLeaders({ session });
+        await updatePlayerRanks({ session });
       });
 
       // Send retrieved game back to the client

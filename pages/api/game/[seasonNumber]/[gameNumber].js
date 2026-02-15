@@ -1,6 +1,6 @@
 import calculatePercentage from "@/helpers/calculatePercentage";
 import clientPromise from "@/lib/mongodb";
-import { setAllTimeLeaders } from "@/lib/setAllTimeLeaders";
+import { updatePlayerRanks } from "@/lib/updatePlayerRanks";
 import { updateSeasonRecord } from "@/lib/updateSeasonRecord";
 import { updateSeasonStats } from "@/lib/updateSeasonStats";
 
@@ -278,7 +278,7 @@ export default async function handler(req, res) {
         });
 
         // Update the all time leader's rankings
-        await setAllTimeLeaders({ session });
+        await updatePlayerRanks({ session });
       });
 
       // Send updated game back to the client
