@@ -112,7 +112,10 @@ export default async function handler(req, res) {
 
       const careerAverages = await getCareerAverages();
 
+      const teamStats = await getOverallTeamStats(analyticsCol);
+
       const analytics = {
+        teamStats: teamStats,
         opponents: opponents,
         allTimeLeaders: {
           totalLeaders: totalLeaders,
@@ -132,5 +135,21 @@ export default async function handler(req, res) {
     }
   } else {
     res.status(405).send(`Method ${method} not allowed`);
+  }
+}
+
+async function getOverallTeamStats(analyticsCol) {
+  try {
+    const teamStats = await analyticsCol
+      .find({
+        subject: "team",
+        period: "career",
+      })
+      .toArray();
+
+    return teamStats;
+  } catch (error) {
+    console.error(`Error getting the team's total stats: ${error}`);
+    throw new Error(error);
   }
 }
