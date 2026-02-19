@@ -4,6 +4,7 @@ import { authOptions } from "./auth/[...nextauth]";
 import { updateSeasonStats } from "@/lib/updateSeasonStats";
 import calculatePercentage from "@/helpers/calculatePercentage";
 import { updatePlayerRanks } from "@/lib/updatePlayerRanks";
+import updateOverallTeamStats from "@/lib/updateOverallTeamStats";
 
 export default async function handler(req, res) {
   // Authorize server access using NextAuth
@@ -221,6 +222,9 @@ export default async function handler(req, res) {
 
         // Update the all time leader's rankings
         await updatePlayerRanks({ session });
+
+        // Update the team's overall stats
+        await updateOverallTeamStats(session);
       });
 
       // Send retrieved game back to the client
