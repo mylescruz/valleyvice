@@ -74,7 +74,13 @@ const StatsTracker = ({
   const savingGameRef = useRef(false);
 
   useEffect(() => {
-    if (!game || savingGameRef.current || completeModal || restartModal) {
+    if (
+      !game ||
+      gameSaved ||
+      savingGameRef.current ||
+      completeModal ||
+      restartModal
+    ) {
       return;
     }
 
@@ -89,7 +95,7 @@ const StatsTracker = ({
     }, 5000);
 
     return () => clearTimeout(timeout);
-  }, [game, postTrackedGame, completeModal, restartModal]);
+  }, [game, gameSaved, postTrackedGame, completeModal, restartModal]);
 
   const selectQuarter = (quarterIndex) => {
     if (quarterIndex === 0) {
