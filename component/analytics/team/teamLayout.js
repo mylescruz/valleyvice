@@ -5,7 +5,7 @@ const TeamLayout = ({ teamStats }) => {
     .filter((stat) => stat.valueType === "total")
     .map((stat) => {
       return {
-        statKey: stat.statName,
+        title: stat.statName,
         value: stat.value,
       };
     })
@@ -13,6 +13,12 @@ const TeamLayout = ({ teamStats }) => {
 
   const averageStats = [...teamStats]
     .filter((stat) => stat.valueType === "average")
+    .map((stat) => {
+      return {
+        title: stat.statKey,
+        value: stat.value,
+      };
+    })
     .sort((a, b) => a.statOrder - b.statOrder);
 
   return (
@@ -21,7 +27,7 @@ const TeamLayout = ({ teamStats }) => {
         <h1 className="text-center text-3xl text-(--primary) font-bold mb-2">
           Team Totals
         </h1>
-        <div className="w-full justify-content-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="w-full justify-content-center grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5">
           {totalStats.map((stat) => (
             <TeamStatCard key={stat._id} stat={stat} />
           ))}
