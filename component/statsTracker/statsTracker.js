@@ -432,7 +432,7 @@ const StatsTracker = ({
         </>
       )}
 
-      <div className="flex flex-col my-4 overflow-x-auto">
+      <div className="flex flex-col my-4">
         <div className="flex flex-col mb-2">
           <h2 className="text-center text-(--primary) text-2xl font-bold">
             Game Stats
@@ -462,7 +462,9 @@ const StatsTracker = ({
           </div>
         </div>
 
-        <StatsTrackerTable game={game} />
+        <div className="overflow-x-auto">
+          <StatsTrackerTable game={game} />
+        </div>
 
         <h2 className="mt-4 text-center text-(--primary) text-2xl font-bold">
           Play By Play
